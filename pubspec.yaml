@@ -37,7 +37,7 @@ dependencies:
   flutter_screenutil: ^5.8.4
   get: 4.6.5
   shared_preferences: ^2.2.0
-  fluttertoast: ^8.2.2
+  fluttertoast: ^8.2.4
   ftoast: ^2.0.0
   audioplayers: ^5.2.1
   assets_audio_player: ^3.1.1
@@ -69,6 +69,8 @@ flutter:
     # - images/a_dot_ham.jpeg
     - images/flutter_pers.jpg
     - images/portrait.jpg
+    - images/game/bgpic1.jpeg
+    - images/game/mainlevel.png
     - audios/
 
   # An image asset can refer to one or more resolution-specific "variants", see
@@ -92,7 +94,7 @@ flutter:
   #     fonts:
   #       - asset: fonts/TrajanPro.ttf
   #       - asset: fonts/TrajanPro_Bold.ttf
-  #         weight: 700
+  #         weight: 7001
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

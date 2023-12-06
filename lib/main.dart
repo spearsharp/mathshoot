@@ -1,4 +1,5 @@
 import 'dart:ffi';
+import 'dart:ui';
 
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
@@ -8,7 +9,7 @@ import 'dart:math';
 import 'services/screeenAdapter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'services/localStorage.dart';
-import 'Game/game.dart';
+import 'Game/gamelvl1.dart';
 import 'package:audioplayers/audioplayers.dart';
 
 void main() {
@@ -65,6 +66,7 @@ class _HomePageState extends State<HomePage> {
     // audioPlayer.setReleaseMode(ReleaseMode.loop);
 
     AssetsAudioPlayer.newPlayer().open(
+      // local audio play , assetsaudioplayer
       Audio("audios/9346.wav"),
       autoStart: true,
       showNotification: true,
@@ -74,6 +76,10 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
+    MediaQueryData queryData = MediaQuery.of(context);
+    double screenHeight = queryData.size.height;
+    double screenWidth = queryData.size.width;
+    print("screenHeight: $screenHeight");
     return Scaffold(
         appBar: AppBar(
           //background picture
@@ -134,17 +140,28 @@ class _HomePageState extends State<HomePage> {
                       print("levelup:$levelup");
                       Navigator.of(context)
                           .push(MaterialPageRoute(builder: (context) {
-                        return GameStage(level: currentlevel + 1);
+                        return Gamelvl1Stage(
+                            level: currentlevel + 1,
+                            durationTime: durationTime,
+                            inputController: _inputController,
+                            scoreController: _scoreController,
+                            levelController: _levelController);
                       }));
                     } else if (level < currentlevel) {
                       levelup = false;
                       currentlevel = level;
                       print("level:$level");
                       print("currentLevel:$currentlevel");
-                      print("currentlevelup:$currentlevel");
+                      print("levelend:$currentlevel");
+                      print("gameover:$level");
                       Navigator.of(context)
                           .push(MaterialPageRoute(builder: (context) {
-                        return GameStage(level: currentlevel - 1);
+                        return Gamelvl1Stage(
+                            level: currentlevel - 1,
+                            durationTime: durationTime,
+                            inputController: _inputController,
+                            scoreController: _scoreController,
+                            levelController: _levelController);
                       }));
                     } else if (level == currentlevel) {
                       levelkeep = true;
@@ -176,28 +193,19 @@ class _HomePageState extends State<HomePage> {
                     ));
               }),
         ),
-        body: levelkeep
-            ? Stack(
-                children: [
-                  // clevel = localStorage.getData("levelName"),
-                  // Text("Children level: $clevel"),
-                  ...List.generate(level, (index) {
-                    return Game(
-                        durationTime: durationTime,
-                        inputController: _inputController,
-                        scoreController: _scoreController,
-                        levelController: _levelController);
-                  }),
-                  // localStorage.removeData("levelName"),
-                  KeyPad(inputController: _inputController)
-                ],
-              )
-            : levelup
+        body: Container(
+            height: 1000,
+            width: screenWidth,
+            decoration: const BoxDecoration(
+                image: DecorationImage(
+                    fit: BoxFit.cover,
+                    image: AssetImage("images/game/bgpic1.jpeg"))),
+            child: levelkeep
                 ? Stack(
                     children: [
                       // clevel = localStorage.getData("levelName"),
                       // Text("Children level: $clevel"),
-                      ...List.generate(level + 1, (index) {
+                      ...List.generate(level, (index) {
                         return Game(
                             durationTime: durationTime,
                             inputController: _inputController,
@@ -208,21 +216,37 @@ class _HomePageState extends State<HomePage> {
                       KeyPad(inputController: _inputController)
                     ],
                   )
-                : Stack(
-                    children: [
-                      // clevel = localStorage.getData("levelName"),
-                      // Text("Children level: $clevel"),
-                      ...List.generate(level - 1, (index) {
-                        return Game(
-                            durationTime: durationTime,
-                            inputController: _inputController,
-                            scoreController: _scoreController,
-                            levelController: _levelController);
-                      }),
-                      // localStorage.removeData("levelName"),
-                      KeyPad(inputController: _inputController)
-                    ],
-                  ));
+                : levelup
+                    ? Stack(
+                        children: [
+                          // clevel = localStorage.getData("levelName"),
+                          // Text("Children level: $clevel"),
+                          ...List.generate(level + 1, (index) {
+                            return Game(
+                                durationTime: durationTime,
+                                inputController: _inputController,
+                                scoreController: _scoreController,
+                                levelController: _levelController);
+                          }),
+                          // localStorage.removeData("levelName"),
+                          KeyPad(inputController: _inputController)
+                        ],
+                      )
+                    : Stack(
+                        children: [
+                          // clevel = localStorage.getData("levelName"),
+                          // Text("Children level: $clevel"),
+                          ...List.generate(level - 1, (index) {
+                            return Game(
+                                durationTime: durationTime,
+                                inputController: _inputController,
+                                scoreController: _scoreController,
+                                levelController: _levelController);
+                          }),
+                          // localStorage.removeData("levelName"),
+                          KeyPad(inputController: _inputController)
+                        ],
+                      )));
   }
 }
 

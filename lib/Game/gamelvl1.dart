@@ -3,16 +3,23 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
-class GameStage extends StatefulWidget {
+class Gamelvl1Stage extends StatefulWidget {
   final int level;
-  const GameStage({super.key, required this.level});
+  const Gamelvl1Stage(
+      {super.key,
+      required this.level,
+      required int durationTime,
+      required StreamController<int> inputController,
+      required StreamController<int> scoreController,
+      required StreamController<int> levelController});
 
   @override
-  State<GameStage> createState() => _GameStageState();
+  State<Gamelvl1Stage> createState() => _Gamelvl1StageState();
 }
 
-class _GameStageState extends State<GameStage> {
+class _Gamelvl1StageState extends State<Gamelvl1Stage> {
   late int level;
   late int currentlevel;
   @override
@@ -59,20 +66,22 @@ class _GameStageState extends State<GameStage> {
                       print("level:$level");
                       print("currentLevel:$currentlevel");
                       print("levelup:$levelup");
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return GameStage(level: currentlevel + 1);
-                      }));
+                      Fluttertoast.showToast(msg: "levelup successfuul");
+                      // Navigator.of(context)
+                      //     .push(MaterialPageRoute(builder: (context) {
+                      //   return Gamelvl2Stage(level: currentlevel + 1);
+                      // }));
                     } else if (level < currentlevel) {
                       levelup = false;
                       currentlevel = level;
                       print("level:$level");
                       print("currentLevel:$currentlevel");
-                      print("currentlevelup:$currentlevel");
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return GameStage(level: currentlevel - 1);
-                      }));
+                      print("leveldown:$currentlevel");
+                      Fluttertoast.showToast(msg: "levelup failed");
+                      // Navigator.of(context)
+                      //     .push(MaterialPageRoute(builder: (context) {
+                      //   return GameStage(level: currentlevel - 1);
+                      // }));
                     } else if (level == currentlevel) {
                       levelkeep = true;
                     } else {
