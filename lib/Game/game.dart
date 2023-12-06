@@ -36,39 +36,6 @@ class _GameStageState extends State<GameStage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          //background picture
-          //         static const String imageUrl =
-          //     '/thumbs/268085-wallpaper-1080-2400.jpg';
-          // static const Widget appName = const Text(
-          //   '坚果前端',
-          //   style: const TextStyle(
-          //       color: Colors.white, fontSize: 48, fontWeight: FontWeight.bold),
-          // );
-
-          // @override
-          // Widget build(BuildContext context) {
-          //   return Scaffold(
-          //     appBar: AppBar(
-          //       title: const Text('坚果前端'),
-          //     ),
-          //     body: Container(
-          //       width: double.infinity,
-          //       height: double.infinity,
-          //       decoration: BoxDecoration(
-          //         image: DecorationImage(
-          //           image: NetworkImage(imageUrl),
-          //         ),
-          //       ),
-          //       child: Column(
-          //         mainAxisAlignment: MainAxisAlignment.center,
-          //         children: [
-          //           appName,
-          //         ],
-          //       ),
-          //     ),
-          //   );
-          // }
-          //
           centerTitle: true,
           title: StreamBuilder(
               stream: _scoreController.stream,
@@ -340,6 +307,20 @@ class KeyPad extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    List _keyPadList = [
+      '1',
+      '2',
+      '3',
+      '4',
+      '5',
+      '6',
+      '7',
+      '8',
+      '9',
+      '0',
+      '.',
+      '↵'
+    ]; // keyboard with special input
     return Align(
       alignment: Alignment.bottomCenter,
       child: Container(
@@ -348,7 +329,7 @@ class KeyPad extends StatelessWidget {
         shrinkWrap: true,
         crossAxisCount: 3,
         childAspectRatio: 5 / 2,
-        children: List.generate(9, (index) {
+        children: List.generate(12, (index) {
           return TextButton(
               style: ButtonStyle(
                   shape:
@@ -357,11 +338,26 @@ class KeyPad extends StatelessWidget {
                       MaterialStateProperty.all(Colors.primaries[index][300]),
                   foregroundColor: MaterialStateProperty.all(Colors.black45)),
               onPressed: () {
-                inputController.add(index + 1);
+                inputController.add(_keyPadList[index]);
+                print("$_keyPadList[index]");
               },
-              child: Text("${index + 1}",
+              child: Text("$_keyPadList[index]",
                   style: Theme.of(context).textTheme.headlineMedium));
         }),
+        // children: List.generate(12, (index) {
+        //   return TextButton(
+        //       style: ButtonStyle(
+        //           shape:
+        //               MaterialStateProperty.all(const RoundedRectangleBorder()),
+        //           backgroundColor:
+        //               MaterialStateProperty.all(Colors.primaries[index][300]),
+        //           foregroundColor: MaterialStateProperty.all(Colors.black45)),
+        //       onPressed: () {
+        //         inputController.add(index + 1);
+        //       },
+        //       child: Text("${index + 1}",
+        //           style: Theme.of(context).textTheme.headlineMedium));
+        // }),
       )),
     );
   }

@@ -51,15 +51,12 @@ class _HomePageState extends State<HomePage> {
 
   int score = 0;
   int level = 1;
-  int durationTime = Random().nextInt(5000) + 5000;
-//BGM playing https://www.jianshu.com/p/9086e7343dc1  https://cloud.tencent.com/developer/ask/sof/703303  https://cloud.tencent.com/developer/ask/sof/106209149
-  // _LoadMusic() async {
-  //   print("test for background playing");
-  //   await audioPlayer.play(UrlSource(
-  //       'https://img3.tukuppt.com/newpreview_music/09/01/62/5c89fd22dea6948307.mp3'));
-  //   //   // await audiocache.loadPath('audios/eM01.mp3');
-  // }
+  int baloonAmt = 1;
 
+  int durationTime = Random().nextInt(5000) + 5800;
+  // audioPlayer.play(UrlSource(
+  //     'https://img3.tukuppt.com/newpreview_music/09/01/62/5c89fd22dea6948307.mp3'));
+  // audioPlayer.setReleaseMode(ReleaseMode.loop);
   @override
   void initState() {
     super.initState();
@@ -68,19 +65,50 @@ class _HomePageState extends State<HomePage> {
     // audioPlayer.setReleaseMode(ReleaseMode.loop);
 
     AssetsAudioPlayer.newPlayer().open(
-      Audio("audios/eM01.mp3"),
+      Audio("audios/9346.wav"),
       autoStart: true,
       showNotification: true,
       loopMode: LoopMode.single,
     );
-    // ignore: invalid_use_of_visible_for_testing_member
-    // load: AudioPlayer()..setReleaseMode(ReleaseMode.loop));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          //background picture
+          //         static const String imageUrl =
+          //     '/thumbs/268085-wallpaper-1080-2400.jpg';
+          // static const Widget appName = const Text(
+          //   '坚果前端',
+          //   style: const TextStyle(
+          //       color: Colors.white, fontSize: 48, fontWeight: FontWeight.bold),
+          // );
+
+          // @override
+          // Widget build(BuildContext context) {
+          //   return Scaffold(
+          //     appBar: AppBar(
+          //       title: const Text('坚果前端'),
+          //     ),
+          //     body: Container(
+          //       width: double.infinity,
+          //       height: double.infinity,
+          //       decoration: BoxDecoration(
+          //         image: DecorationImage(
+          //           image: NetworkImage(imageUrl),
+          //         ),
+          //       ),
+          //       child: Column(
+          //         mainAxisAlignment: MainAxisAlignment.center,
+          //         children: [
+          //           appName,
+          //         ],
+          //       ),
+          //     ),
+          //   );
+          // }
+          //s
           centerTitle: true,
           title: StreamBuilder(
               stream: _scoreController.stream,
