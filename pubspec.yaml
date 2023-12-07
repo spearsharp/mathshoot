@@ -71,6 +71,13 @@ flutter:
     - images/portrait.jpg
     - images/game/bgpic1.jpeg
     - images/game/mainlevel.png
+    - images/game/3baloon.png
+    - images/game/7baloon.png
+    - images/game/1baloon.png
+    - images/game/firesmogbomb.gif
+    - images/game/goldcyclebomb.gif
+    - images/game/popbombcelebrate.gif
+    - images/game/smogbomb.gif
     - audios/
 
   # An image asset can refer to one or more resolution-specific "variants", see

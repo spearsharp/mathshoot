@@ -138,15 +138,15 @@ class _HomePageState extends State<HomePage> {
                       print("level:$level");
                       print("currentLevel:$currentlevel");
                       print("levelup:$levelup");
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return Gamelvl1Stage(
-                            level: currentlevel + 1,
-                            durationTime: durationTime,
-                            inputController: _inputController,
-                            scoreController: _scoreController,
-                            levelController: _levelController);
-                      }));
+                      // Navigator.of(context)
+                      //     .push(MaterialPageRoute(builder: (context) {
+                      //   return Gamelvl1Stage(
+                      //       level: currentlevel + 1,
+                      //       durationTime: durationTime,
+                      //       inputController: _inputController,
+                      //       scoreController: _scoreController,
+                      //       levelController: _levelController);
+                      // }));
                     } else if (level < currentlevel) {
                       levelup = false;
                       currentlevel = level;
@@ -154,15 +154,15 @@ class _HomePageState extends State<HomePage> {
                       print("currentLevel:$currentlevel");
                       print("levelend:$currentlevel");
                       print("gameover:$level");
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return Gamelvl1Stage(
-                            level: currentlevel - 1,
-                            durationTime: durationTime,
-                            inputController: _inputController,
-                            scoreController: _scoreController,
-                            levelController: _levelController);
-                      }));
+                      // Navigator.of(context)
+                      //     .push(MaterialPageRoute(builder: (context) {
+                      //   return Gamelvl1Stage(
+                      //       level: currentlevel - 1,
+                      //       durationTime: durationTime,
+                      //       inputController: _inputController,
+                      //       scoreController: _scoreController,
+                      //       levelController: _levelController);
+                      // }));
                     } else if (level == currentlevel) {
                       levelkeep = true;
                     } else {
@@ -290,7 +290,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
   late int a, b, c, d, e, f, g, netscore, levelevent;
   late Color color;
   late bool t, l;
-  late int durationTime;
+  late int durationTime, holdTime;
   String m = '()';
   String n = '/';
   late AnimationController _animationController;
@@ -337,6 +337,28 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
     }
   }
 
+  _showPic(context, _animationController) async* {
+    print("_showPic Started:$holdTime");
+    _animationController.AnimatedBuilder(
+      animation: _animationController,
+      child: const AssetImage("images/game/smogbomb.gif"),
+      // builder: (BuildContext context, Widget? child) {
+      //   return child;
+      // },
+    );
+  }
+
+  // ignore: non_constant_identifier_names
+  AssetImage _UpdatePic(t) {
+    if (t) {
+      print("气球图");
+      return const AssetImage("images/game/1baloon.png");
+    } else {
+      print("爆炸图");
+      return const AssetImage("images/game/smogbomb.gif");
+    }
+  }
+
 //level up and awearded
 
   @override
@@ -357,12 +379,23 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
     widget.inputController.stream.listen((event) {
       int total = d + e;
       if (total == event) {
-        t = true;
+        t = false;
+        holdTime = 1;
         score(t);
-        // level levelup or leveldown check
         level(l);
-        reset();
-        _animationController.forward(from: 0.0);
+        setState(() {
+          _UpdatePic(t);
+          Future.delayed(const Duration(seconds: 1), () {
+            print("停顿1秒");
+            print("停顿结束");
+            // level levelup or leveldown check
+            reset();
+            _animationController.forward(from: 0.0);
+            print("重新开始");
+          });
+        });
+        // reset();
+        // _animationController.forward(from: 0.0);
       }
     });
     _animationController.addStatusListener((status) {
@@ -387,17 +420,31 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
         animation: _animationController,
         builder: (context, child) {
           return Positioned(
-              top: Tween(begin: -10.00, end: 500.00)
+              top: Tween(begin: screenHeight * 0.9, end: -screenHeight * 0.2)
                   .animate(_animationController)
                   .value,
               left: x,
               child: Container(
+                  // decoration: ,
+                  color: Colors.red.withOpacity(0),
+                  width: screenWidth * 0.25,
+                  height: screenHeight * 0.3,
                   padding: const EdgeInsets.fromLTRB(8, 5, 8, 5),
-                  decoration: BoxDecoration(
-                      color: color, borderRadius: BorderRadius.circular(18)),
-                  child:
-                      // ignore: unnecessary_brace_in_string_interps
-                      Text("$d+$e=?", style: const TextStyle(fontSize: 18))));
+                  child: ListView(children: [
+                    Container(
+                        color: Colors.red.withOpacity(0),
+                        child: Image(image: _UpdatePic(t))),
+                    Container(
+                        alignment: Alignment.center,
+                        decoration: BoxDecoration(
+                          color: color,
+                          borderRadius: BorderRadius.circular(18),
+                          // image: const DecorationImage(
+                          //     image: AssetImage("images/game/freeorangebaloon.png")),
+                        ),
+                        child: Text("$d+$e=?",
+                            style: const TextStyle(fontSize: 18))),
+                  ])));
         });
   }
 }
