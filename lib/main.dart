@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/utils.dart';
 import 'dart:async';
 import 'dart:math';
+import 'Game/gamelvl1.dart';
 import 'services/screeenAdapter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'services/localStorage.dart';
@@ -84,52 +85,22 @@ class _HomePageState extends State<HomePage> {
           title: StreamBuilder(
               stream: _scoreController.stream,
               builder: (context, snapshot) {
-                // if (currentlevel != level) {}
-                // currentlevel = level;
                 if (snapshot.hasData) {
                   if (score >= 0) {
                     score += snapshot.data as int;
+                    if (score > 20) {
+                      print("level up");
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (context) {
+                        return GameLvl1(score: score);
+                      }));
+                    }
                     if (score < 0) {
                       score = 0;
+                      print("Game Over");
                     }
                   } else {
                     score = 0;
-                  }
-                  if (level >= 1) {
-                    level = (score ~/ 10);
-                    if (level > currentlevel) {
-                      levelup = true;
-                      currentlevel = level;
-                      print("level:$level");
-                      print("currentLevel:$currentlevel");
-                      print("levelup:$levelup");
-                      // Navigator.of(context)
-                      //     .push(MaterialPageRoute(builder: (context) {
-                      //   return Gamelvl1Stage(
-                      //       level: currentlevel + 1,
-                      //       durationTime: durationTime,
-                      //       inputController: _inputController,
-                      //       scoreController: _scoreController,
-                      //       levelController: _levelController);
-                      // }));
-                    } else if (level < currentlevel) {
-                      levelup = false;
-                      currentlevel = level;
-                      print("level:$level");
-                      print("currentLevel:$currentlevel");
-                      print("levelend:$currentlevel");
-                      print("gameover:$level");
-                    } else if (level == currentlevel) {
-                      levelkeep = true;
-                    } else {
-                      levelkeep = false;
-                      print("level up/down error");
-                    }
-                    if (level < 1) {
-                      level = 1;
-                    }
-                  } else {
-                    level = 1;
                   }
                   // localStorage.setData("levelName", level);
                 }
@@ -160,10 +131,12 @@ class _HomePageState extends State<HomePage> {
               children: [
                 // clevel = localStorage.getData("levelName"),
                 // Text("Children level: $clevel"),
-                ...List.generate(3, (index) {
+                ...List.generate(10, (index) {
                   print("durationTime:: $durationTime");
                   // generate numbers of baloon
                   return Game(
+                      screenHeight: screenHeight,
+                      screenWidth: screenWidth,
                       inputController: _inputController,
                       scoreController: _scoreController,
                       levelController: _levelController);
@@ -177,11 +150,15 @@ class _HomePageState extends State<HomePage> {
 
 //Arithmatic game section
 class Game extends StatefulWidget {
+  final double screenHeight;
+  final double screenWidth;
   final StreamController<int> inputController;
   final StreamController<int> scoreController;
   final StreamController<int> levelController;
   const Game(
       {super.key,
+      required this.screenHeight,
+      required this.screenWidth,
       required this.inputController,
       required this.scoreController,
       required this.levelController});
@@ -200,12 +177,12 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
 
 //game restart
-  reset() {
+  reset(screenWidth) {
     // var arithRes = arithCalcSentence(){};   // insert arith
     t = true;
     d = Random().nextInt(5) + 1;
     e = Random().nextInt(5);
-    x = Random().nextDouble() * 320;
+    x = Random().nextDouble() * screenWidth * 0.7;
     color = Colors.primaries[Random().nextInt(Colors.primaries.length)];
   }
 
@@ -217,17 +194,17 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
   //score update
   score(t) {
     if (t) {
-      widget.scoreController.add(3);
-      netscore = netscore + 3;
-      if (netscore > 10) {
-        l = true;
-        netscore = 0;
-      }
-    } else {
       widget.scoreController.add(-1);
       netscore = netscore - 1;
       if (netscore < 0) {
         l = false;
+        netscore = 0;
+      }
+    } else {
+      widget.scoreController.add(3);
+      netscore = netscore + 3;
+      if (netscore > 10) {
+        l = true;
         netscore = 0;
       }
     }
@@ -283,7 +260,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
     netscore = 0;
     super.initState();
 
-    reset(); //first round to play
+    reset(widget.screenWidth); //first round to play
     // TODO: implement initState
     _animationController = AnimationController(
         vsync: this, duration: Duration(milliseconds: durationTime));
@@ -300,7 +277,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
         level(l);
         setState(() {
           _UpdatePic(t, d, e);
-          reset();
+          reset(widget.screenWidth);
           _animationController.forward(from: 0.0);
         });
       }
@@ -311,7 +288,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
       if (status == AnimationStatus.completed) {
         t = false;
         score(t);
-        reset();
+        reset(widget.screenWidth);
         _animationController.forward(from: 0.0);
       }
       //get inputController data,and monitorring
@@ -327,7 +304,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
         animation: _animationController,
         builder: (context, child) {
           return Positioned(
-              top: Tween(begin: screenHeight * 0.9, end: -screenHeight * 0.3)
+              top: Tween(begin: screenHeight * 0.6, end: -screenHeight * 0.3)
                   .animate(_animationController)
                   .value,
               left: x,
@@ -356,7 +333,7 @@ class KeyPad extends StatelessWidget {
           child: GridView.count(
         shrinkWrap: true,
         crossAxisCount: 5,
-        childAspectRatio: 5 / 3,
+        childAspectRatio: 5 / 4,
         children: List.generate(10, (index) {
           return TextButton(
               style: ButtonStyle(

@@ -78,6 +78,7 @@ flutter:
     - images/game/goldcyclebomb.gif
     - images/game/popbombcelebrate.gif
     - images/game/smogbomb.gif
+    - images/game/mainlevel.png
     - audios/
 
   # An image asset can refer to one or more resolution-specific "variants", see

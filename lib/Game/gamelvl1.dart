@@ -6,38 +6,21 @@ import 'package:flutter/material.dart';
 import 'package:get/utils.dart';
 import 'dart:async';
 import 'dart:math';
-import 'services/screeenAdapter.dart';
+import '../services/screeenAdapter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'services/localStorage.dart';
-import 'Game/gamelvl2.dart';
+import '../services/localStorage.dart';
 import 'package:audioplayers/audioplayers.dart';
+// import 'services/arith.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
+class GameLvl1 extends StatefulWidget {
+  final int score;
+  const GameLvl1({super.key, required this.score});
 
   @override
-  Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: "Flatter Game",
-      theme: ThemeData(primarySwatch: Colors.blue),
-      home: const HomePage(),
-    );
-  }
+  State<GameLvl1> createState() => _GameLvl1State();
 }
 
-class HomePage extends StatefulWidget {
-  const HomePage({super.key});
-
-  @override
-  State<HomePage> createState() => _HomePageState();
-}
-
-class _HomePageState extends State<HomePage> {
+class _GameLvl1State extends State<GameLvl1> {
   late bool levelup;
   bool levelkeep = true;
   int currentlevel = 0;
@@ -51,7 +34,7 @@ class _HomePageState extends State<HomePage> {
   final StreamController<int> _levelController = StreamController.broadcast();
 
   int score = 0;
-  int level = 1;
+  int level = 2;
   int baloonAmt = 1;
   int durationTime = Random().nextInt(5000) + 5800;
 
@@ -61,7 +44,7 @@ class _HomePageState extends State<HomePage> {
 
     AssetsAudioPlayer.newPlayer().open(
       // local audio play , assetsaudioplayer
-      Audio("audios/9346.wav"),
+      Audio("audios/8286.wav"),
       autoStart: true,
       showNotification: true,
       loopMode: LoopMode.single,
@@ -75,8 +58,12 @@ class _HomePageState extends State<HomePage> {
     double screenWidth = queryData.size.width;
     print("screenHeight: $screenHeight");
     return Scaffold(
+        extendBodyBehindAppBar: true,
         appBar: AppBar(
           centerTitle: true,
+          shadowColor: Colors.transparent,
+          backgroundColor: Colors.transparent,
+          elevation: 0,
           title: StreamBuilder(
               stream: _scoreController.stream,
               builder: (context, snapshot) {
@@ -99,15 +86,10 @@ class _HomePageState extends State<HomePage> {
                       print("level:$level");
                       print("currentLevel:$currentlevel");
                       print("levelup:$levelup");
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return Gamelvl1Stage(
-                            level: currentlevel + 1,
-                            durationTime: durationTime,
-                            inputController: _inputController,
-                            scoreController: _scoreController,
-                            levelController: _levelController);
-                      }));
+                      // Navigator.of(context)
+                      //     .push(MaterialPageRoute(builder: (context) {
+                      //   return GameLvl2(score: score);
+                      // }));
                     } else if (level < currentlevel) {
                       levelup = false;
                       currentlevel = level;
@@ -146,12 +128,12 @@ class _HomePageState extends State<HomePage> {
               }),
         ),
         body: Container(
-            height: 1000,
+            height: screenHeight,
             width: screenWidth,
             decoration: const BoxDecoration(
                 image: DecorationImage(
-                    fit: BoxFit.cover,
-                    image: AssetImage("images/game/bgpic1.jpeg"))),
+                    fit: BoxFit.fill,
+                    image: AssetImage("images/game/mainlevel.png"))),
             child: Stack(
               children: [
                 // clevel = localStorage.getData("levelName"),
@@ -160,6 +142,8 @@ class _HomePageState extends State<HomePage> {
                   print("durationTime:: $durationTime");
                   // generate numbers of baloon
                   return Game(
+                      screenHeight: screenHeight,
+                      screenWidth: screenWidth,
                       inputController: _inputController,
                       scoreController: _scoreController,
                       levelController: _levelController);
@@ -173,11 +157,15 @@ class _HomePageState extends State<HomePage> {
 
 //Arithmatic game section
 class Game extends StatefulWidget {
+  final double screenHeight;
+  final double screenWidth;
   final StreamController<int> inputController;
   final StreamController<int> scoreController;
   final StreamController<int> levelController;
   const Game(
       {super.key,
+      required this.screenHeight,
+      required this.screenWidth,
       required this.inputController,
       required this.scoreController,
       required this.levelController});
@@ -196,11 +184,12 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
   late AnimationController _animationController;
 
 //game restart
-  reset() {
+  reset(screenWidth) {
+    // var arithRes = arithCalcSentence(){};   // insert arith
     t = true;
     d = Random().nextInt(5) + 1;
     e = Random().nextInt(5);
-    x = Random().nextDouble() * 320;
+    x = Random().nextDouble() * screenWidth * 0.7;
     color = Colors.primaries[Random().nextInt(Colors.primaries.length)];
   }
 
@@ -240,11 +229,13 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
   // ignore: non_constant_identifier_names
   ListView _UpdatePic(t, d, e) {
     if (t) {
-      print("气球图");
+      // print("气球图");
       return ListView(children: [
         Container(
             color: Colors.red.withOpacity(0),
-            child: Image(image: AssetImage("images/game/1baloon.png"))),
+            child: const Image(
+                alignment: Alignment.topCenter,
+                image: AssetImage("images/game/3baloon.png"))),
         Container(
             alignment: Alignment.center,
             decoration: BoxDecoration(
@@ -254,13 +245,13 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
             child: Text("$d+$e=?", style: const TextStyle(fontSize: 18))),
       ]);
     } else {
-      print("爆炸图");
+      // print("爆炸图");
       t = true;
       return ListView(children: [
         Container(
             color: Colors.red.withOpacity(0),
             child: const Image(
-              image: AssetImage("images/game/smogbomb.gif"),
+              image: AssetImage("images/game/goldcyclebomb.gif"),
               fit: BoxFit.contain,
             )),
       ]);
@@ -278,20 +269,24 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
     netscore = 0;
     super.initState();
 
-    reset(); //first round to play
+    reset(widget.screenWidth); //first round to play
     // TODO: implement initState
     _animationController = AnimationController(
         vsync: this, duration: Duration(milliseconds: durationTime));
     _animationController.forward();
     widget.inputController.stream.listen((event) {
       int total = d + e;
+      print("d:: $d");
+      print("e:: $e");
+      print("event:: $event");
+
       if (total == event) {
         t = false;
         score(t);
         level(l);
         setState(() {
           _UpdatePic(t, d, e);
-          reset();
+          reset(widget.screenWidth);
           _animationController.forward(from: 0.0);
         });
       }
@@ -302,7 +297,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
       if (status == AnimationStatus.completed) {
         t = false;
         score(t);
-        reset();
+        reset(widget.screenWidth);
         _animationController.forward(from: 0.0);
       }
       //get inputController data,and monitorring
@@ -318,15 +313,14 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
         animation: _animationController,
         builder: (context, child) {
           return Positioned(
-              top: Tween(begin: screenHeight * 0.9, end: -screenHeight * 0.2)
+              top: Tween(begin: screenHeight * 0.6, end: -screenHeight * 0.3)
                   .animate(_animationController)
                   .value,
               left: x,
               child: Container(
-                  // decoration: ,
                   color: Colors.red.withOpacity(0),
                   width: screenWidth * 0.25,
-                  height: screenHeight * 0.3,
+                  height: screenHeight,
                   padding: const EdgeInsets.fromLTRB(8, 5, 8, 5),
                   child: _UpdatePic(t, d, e)));
         });
@@ -346,9 +340,9 @@ class KeyPad extends StatelessWidget {
           // color: Colors.red,
           child: GridView.count(
         shrinkWrap: true,
-        crossAxisCount: 3,
-        childAspectRatio: 5 / 2,
-        children: List.generate(9, (index) {
+        crossAxisCount: 5,
+        childAspectRatio: 5 / 4,
+        children: List.generate(10, (index) {
           return TextButton(
               style: ButtonStyle(
                   shape:
@@ -357,9 +351,9 @@ class KeyPad extends StatelessWidget {
                       MaterialStateProperty.all(Colors.primaries[index][300]),
                   foregroundColor: MaterialStateProperty.all(Colors.black45)),
               onPressed: () {
-                inputController.add(index + 1);
+                inputController.add(index);
               },
-              child: Text("${index + 1}",
+              child: Text("$index",
                   style: Theme.of(context).textTheme.headlineMedium));
         }),
       )),
