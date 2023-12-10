@@ -38,7 +38,6 @@ class _GameMainState extends State<GameMain> {
     double screenHeight = queryData.size.height;
     double screenWidth = queryData.size.width;
     return Scaffold(
-      drawer: const Drawer(child: Drawerleft()),
       backgroundColor: Colors.transparent,
       // appBar: AppBar(),
       body: Container(
@@ -54,7 +53,16 @@ class _GameMainState extends State<GameMain> {
                 alignment: Alignment.bottomCenter,
                 child: ListView(
                   children: [
-                    SizedBox(height: screenHeight * 0.5),
+                    SizedBox(height: screenHeight * 0.35),
+                    SizedBox(
+                      height: screenHeight * 0.2,
+                      child: Image(
+                          image:
+                              AssetImage("images/game/animatedmathsign.gif")),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
                     InkWell(
                         onTap: () {
                           Navigator.pushNamed(context, "/gamelvl1",
@@ -62,7 +70,7 @@ class _GameMainState extends State<GameMain> {
                         },
                         child: Container(
                             padding: EdgeInsets.fromLTRB(
-                                0, 0, 0, screenHeight * 0.02),
+                                0, 0, 0, screenHeight * 0.015),
                             decoration: const BoxDecoration(
                                 image: DecorationImage(
                               image:
@@ -90,7 +98,7 @@ class _GameMainState extends State<GameMain> {
                         },
                         child: Container(
                             padding: EdgeInsets.fromLTRB(
-                                0, 0, 0, screenHeight * 0.02),
+                                0, 0, 0, screenHeight * 0.015),
                             decoration: const BoxDecoration(
                                 image: DecorationImage(
                               image:
@@ -118,7 +126,7 @@ class _GameMainState extends State<GameMain> {
                         },
                         child: Container(
                             padding: EdgeInsets.fromLTRB(
-                                0, 0, 0, screenHeight * 0.02),
+                                0, 0, 0, screenHeight * 0.015),
                             decoration: const BoxDecoration(
                                 image: DecorationImage(
                               image:
