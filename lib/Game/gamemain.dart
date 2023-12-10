@@ -1,5 +1,8 @@
+import 'dart:ui';
+
 import 'package:arithg/routers/routers.dart';
 import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:get/utils.dart';
 import '../services/screeenAdapter.dart';
 import 'package:flutter/material.dart';
 
@@ -39,91 +42,101 @@ class _GameMainState extends State<GameMain> {
       backgroundColor: Colors.transparent,
       // appBar: AppBar(),
       body: Container(
-          alignment: Alignment.center,
+          alignment: Alignment.bottomCenter,
           decoration: const BoxDecoration(
               image: DecorationImage(
             fit: BoxFit.cover,
             image: AssetImage("images/game/animatedballonbackgroumdpic.gif"),
           )),
-          child: Stack(alignment: Alignment.topCenter, children: [
-            const SizedBox(
-              height: 30.0,
-            ),
+          child: Stack(alignment: Alignment.bottomCenter, children: [
             Container(
+                // width: screenWidth * 0.6,
+                alignment: Alignment.bottomCenter,
                 child: ListView(
-              children: [
-                InkWell(
-                  onTap: () {
-                    Navigator.pushNamed(context, "/gamelvl1",
-                        arguments: {"title": "mainpage"});
-                  },
-                  child: const Image(
-                    fit: BoxFit.contain,
-                    image: AssetImage("images/game/yellowtitlebelt.png"),
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    Navigator.pushNamed(context, "/gamelvl1",
-                        arguments: {"title": "mainpage"});
-                  },
-                  child: const Image(
-                    fit: BoxFit.contain,
-                    image: AssetImage("images/game/yellowtitlebelt.png"),
-                  ),
-                ),
-                InkWell(
-                  onTap: () {
-                    Navigator.pushNamed(context, "/gamelvl1",
-                        arguments: {"title": "mainpage"});
-                  },
-                  child: const Image(
-                    fit: BoxFit.contain,
-                    image: AssetImage("images/game/yellowtitlebelt.png"),
-                  ),
-                )
-              ],
-            ))
+                  children: [
+                    SizedBox(height: screenHeight * 0.5),
+                    InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(context, "/gamelvl1",
+                              arguments: {"title": "mainpage"});
+                        },
+                        child: Container(
+                            padding: EdgeInsets.fromLTRB(
+                                0, 0, 0, screenHeight * 0.02),
+                            decoration: const BoxDecoration(
+                                image: DecorationImage(
+                              image:
+                                  AssetImage("images/game/yellowtitlebelt.png"),
+                            )),
+                            child: const Text(
+                              "Start",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 36.0,
+                                color: Color.fromARGB(255, 28, 16, 1),
+                                decorationStyle: TextDecorationStyle.dashed,
+                                letterSpacing: 5.0,
+                                decorationColor: Colors.white,
+                                fontFamily: 'MagicBaloon',
+                              ),
+                            ))),
+                    SizedBox(
+                      height: screenHeight * 0.01,
+                    ),
+                    InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(context, "/gamelvl1",
+                              arguments: {"title": "mainpage"});
+                        },
+                        child: Container(
+                            padding: EdgeInsets.fromLTRB(
+                                0, 0, 0, screenHeight * 0.02),
+                            decoration: const BoxDecoration(
+                                image: DecorationImage(
+                              image:
+                                  AssetImage("images/game/yellowtitlebelt.png"),
+                            )),
+                            child: const Text(
+                              "Exit",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 36.0,
+                                color: Color.fromARGB(255, 28, 16, 1),
+                                decorationStyle: TextDecorationStyle.dashed,
+                                letterSpacing: 5.0,
+                                decorationColor: Colors.white,
+                                fontFamily: 'MagicBaloon',
+                              ),
+                            ))),
+                    SizedBox(
+                      height: screenHeight * 0.01,
+                    ),
+                    InkWell(
+                        onTap: () {
+                          Navigator.pushNamed(context, "/gamelvl1",
+                              arguments: {"title": "mainpage"});
+                        },
+                        child: Container(
+                            padding: EdgeInsets.fromLTRB(
+                                0, 0, 0, screenHeight * 0.02),
+                            decoration: const BoxDecoration(
+                                image: DecorationImage(
+                              image:
+                                  AssetImage("images/game/yellowtitlebelt.png"),
+                            )),
+                            child: const Text("Setting",
+                                textAlign: TextAlign.center,
+                                style: TextStyle(
+                                  fontSize: 36.0,
+                                  color: Color.fromARGB(255, 28, 16, 1),
+                                  decorationStyle: TextDecorationStyle.dashed,
+                                  letterSpacing: 5.0,
+                                  decorationColor: Colors.white,
+                                  fontFamily: 'MagicBaloon',
+                                ))))
+                  ],
+                ))
           ])),
-    );
-  }
-}
-
-class Drawerleft extends StatefulWidget {
-  const Drawerleft({super.key});
-
-  @override
-  State<Drawerleft> createState() => _DrawerleftState();
-}
-
-class _DrawerleftState extends State<Drawerleft> {
-  @override
-  Widget build(BuildContext context) {
-    return const Column(
-      children: [
-        UserAccountsDrawerHeader(
-          accountName: Text("Spear 老师"),
-          accountEmail: Text("spear.yao@goldmanfuks.com"),
-          currentAccountPicture: CircleAvatar(
-            backgroundImage: AssetImage("images/portrait.jpg"),
-          ),
-          decoration: BoxDecoration(
-              color: Colors.yellow,
-              image: DecorationImage(
-                  image: AssetImage("images/flutter_pers.jpg"),
-                  // image: NetworkImage(// child:ClipOval()  实现圆形图片
-                  //     "https://www.itying.com/images/flutter/1.png"),
-                  fit: BoxFit.cover)),
-        ),
-        ListTile(
-            leading: CircleAvatar(child: Icon(Icons.access_time_outlined)),
-            // onTap: HomePage(),
-            title: Text("个人中心")),
-        Divider(),
-        ListTile(
-            leading: CircleAvatar(child: Icon(Icons.access_time_outlined)),
-            title: Text("系统设置"))
-      ],
     );
   }
 }
