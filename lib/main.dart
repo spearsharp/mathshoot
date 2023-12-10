@@ -3,6 +3,7 @@ import 'dart:ui';
 
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
 import 'package:get/utils.dart';
 import 'dart:async';
 import 'dart:math';
@@ -50,7 +51,7 @@ class _HomePageState extends State<HomePage> {
       StreamController.broadcast(); //multiple listener
   final StreamController<int> _scoreController = StreamController.broadcast();
   final StreamController<int> _levelController = StreamController.broadcast();
-
+  var _assetAudioPlay = AssetsAudioPlayer.newPlayer();
   int score = 0;
   int level = 1;
   int baloonAmt = 1;
@@ -60,13 +61,22 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     super.initState();
 
-    AssetsAudioPlayer.newPlayer().open(
+    _assetAudioPlay.open(
       // local audio play , assetsaudioplayer
       Audio("audios/9346.wav"),
       autoStart: true,
       showNotification: true,
       loopMode: LoopMode.single,
     );
+  }
+
+  void audioStop() {
+    _assetAudioPlay.stop();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -90,6 +100,7 @@ class _HomePageState extends State<HomePage> {
                     score += snapshot.data as int;
                     if (score > 20) {
                       print("level up");
+                      audioStop();
                       Navigator.of(context)
                           .push(MaterialPageRoute(builder: (context) {
                         return GameLvl1(score: score);
