@@ -79,7 +79,14 @@ flutter:
     - images/game/popbombcelebrate.gif
     - images/game/smogbomb.gif
     - images/game/mainlevel.png
-    - audios/
+    - images/game/animatedballonbackgroumdpic.gif
+    - images/game/yellowtitlebelt.png
+    - audios/mainenteranceBGM.wav
+    - audios/level1_BGM.mp3
+    - audios/level2_BGM.MP3
+    - audios/switherBGM.wav
+    - audios/presskeyBGM.wav
+    - audios/endingBGM.mp3
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

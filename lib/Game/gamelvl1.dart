@@ -3,9 +3,11 @@ import 'dart:ui';
 
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
 import 'package:get/utils.dart';
 import 'dart:async';
 import 'dart:math';
+import '../Game/gamelvl2.dart';
 import '../services/screeenAdapter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/localStorage.dart';
@@ -13,8 +15,8 @@ import 'package:audioplayers/audioplayers.dart';
 // import 'services/arith.dart';
 
 class GameLvl1 extends StatefulWidget {
-  final int score;
-  const GameLvl1({super.key, required this.score});
+  final Map arguments;
+  const GameLvl1({super.key, required this.arguments});
 
   @override
   State<GameLvl1> createState() => _GameLvl1State();
@@ -32,9 +34,9 @@ class _GameLvl1State extends State<GameLvl1> {
       StreamController.broadcast(); //multiple listener
   final StreamController<int> _scoreController = StreamController.broadcast();
   final StreamController<int> _levelController = StreamController.broadcast();
-
+  var _assetAudioPlay = AssetsAudioPlayer.newPlayer();
   int score = 0;
-  int level = 2;
+  int level = 1;
   int baloonAmt = 1;
   int durationTime = Random().nextInt(5000) + 5800;
 
@@ -42,13 +44,22 @@ class _GameLvl1State extends State<GameLvl1> {
   void initState() {
     super.initState();
 
-    AssetsAudioPlayer.newPlayer().open(
+    _assetAudioPlay.open(
       // local audio play , assetsaudioplayer
-      Audio("audios/8286.wav"),
+      Audio("audios/9346.wav"),
       autoStart: true,
       showNotification: true,
       loopMode: LoopMode.single,
     );
+  }
+
+  void audioStop() {
+    _assetAudioPlay.stop();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -67,47 +78,25 @@ class _GameLvl1State extends State<GameLvl1> {
           title: StreamBuilder(
               stream: _scoreController.stream,
               builder: (context, snapshot) {
-                // if (currentlevel != level) {}
-                // currentlevel = level;
                 if (snapshot.hasData) {
                   if (score >= 0) {
                     score += snapshot.data as int;
+                    if (score > 20) {
+                      print("level up");
+                      audioStop();
+                      Navigator.of(context)
+                          .push(MaterialPageRoute(builder: (context) {
+                        return GameLvl2(
+                          arguments: {score: score},
+                        );
+                      }));
+                    }
                     if (score < 0) {
                       score = 0;
+                      print("Game Over");
                     }
                   } else {
                     score = 0;
-                  }
-                  if (level >= 1) {
-                    level = (score ~/ 10);
-                    if (level > currentlevel) {
-                      levelup = true;
-                      currentlevel = level;
-                      print("level:$level");
-                      print("currentLevel:$currentlevel");
-                      print("levelup:$levelup");
-                      // Navigator.of(context)
-                      //     .push(MaterialPageRoute(builder: (context) {
-                      //   return GameLvl2(score: score);
-                      // }));
-                    } else if (level < currentlevel) {
-                      levelup = false;
-                      currentlevel = level;
-                      print("level:$level");
-                      print("currentLevel:$currentlevel");
-                      print("levelend:$currentlevel");
-                      print("gameover:$level");
-                    } else if (level == currentlevel) {
-                      levelkeep = true;
-                    } else {
-                      levelkeep = false;
-                      print("level up/down error");
-                    }
-                    if (level < 1) {
-                      level = 1;
-                    }
-                  } else {
-                    level = 1;
                   }
                   // localStorage.setData("levelName", level);
                 }
@@ -133,7 +122,7 @@ class _GameLvl1State extends State<GameLvl1> {
             decoration: const BoxDecoration(
                 image: DecorationImage(
                     fit: BoxFit.fill,
-                    image: AssetImage("images/game/mainlevel.png"))),
+                    image: AssetImage("images/game/bgpic1.jpeg"))),
             child: Stack(
               children: [
                 // clevel = localStorage.getData("levelName"),
@@ -201,17 +190,17 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
   //score update
   score(t) {
     if (t) {
-      widget.scoreController.add(3);
-      netscore = netscore + 3;
-      if (netscore > 10) {
-        l = true;
-        netscore = 0;
-      }
-    } else {
       widget.scoreController.add(-1);
       netscore = netscore - 1;
       if (netscore < 0) {
         l = false;
+        netscore = 0;
+      }
+    } else {
+      widget.scoreController.add(3);
+      netscore = netscore + 3;
+      if (netscore > 10) {
+        l = true;
         netscore = 0;
       }
     }
@@ -233,9 +222,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
       return ListView(children: [
         Container(
             color: Colors.red.withOpacity(0),
-            child: const Image(
-                alignment: Alignment.topCenter,
-                image: AssetImage("images/game/3baloon.png"))),
+            child: Image(image: AssetImage("images/game/1baloon.png"))),
         Container(
             alignment: Alignment.center,
             decoration: BoxDecoration(
@@ -251,7 +238,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
         Container(
             color: Colors.red.withOpacity(0),
             child: const Image(
-              image: AssetImage("images/game/goldcyclebomb.gif"),
+              image: AssetImage("images/game/smogbomb.gif"),
               fit: BoxFit.contain,
             )),
       ]);
@@ -318,9 +305,10 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
                   .value,
               left: x,
               child: Container(
+                  // decoration: ,
                   color: Colors.red.withOpacity(0),
                   width: screenWidth * 0.25,
-                  height: screenHeight,
+                  height: screenHeight * 0.3,
                   padding: const EdgeInsets.fromLTRB(8, 5, 8, 5),
                   child: _UpdatePic(t, d, e)));
         });
