@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:get/utils.dart';
 import 'dart:async';
 import 'dart:math';
+import '../routers/routers.dart';
 import '../services/screeenAdapter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/localStorage.dart';
@@ -235,7 +236,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
             color: Colors.red.withOpacity(0),
             child: const Image(
                 alignment: Alignment.topCenter,
-                image: AssetImage("images/game/3baloon.png"))),
+                image: AssetImage("images/game/3balloon.png"))),
         Container(
             alignment: Alignment.center,
             decoration: BoxDecoration(

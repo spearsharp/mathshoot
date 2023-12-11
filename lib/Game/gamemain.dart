@@ -4,6 +4,8 @@ import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:get/utils.dart';
 import '../services/screeenAdapter.dart';
 import '../routers/routers.dart';
+import '../Game/gamelvl1.dart';
+import '../Game/gamelvl2.dart';
 import 'package:flutter/material.dart';
 
 class GameMain extends StatefulWidget {
@@ -74,8 +76,8 @@ class _GameMainState extends State<GameMain> {
                               autoStart: true,
                               loopMode: LoopMode.none);
                           // rounte to level1
-                          Navigator.pushNamed(context, "/gamelvl1",
-                              arguments: {"title": "mainpage"});
+                          Navigator.pushNamed(context, "/mainlist",
+                              arguments: {"title": "mainlist"});
                         },
                         child: Container(
                             padding: EdgeInsets.fromLTRB(
@@ -86,7 +88,7 @@ class _GameMainState extends State<GameMain> {
                                   AssetImage("images/game/yellowtitlebelt.png"),
                             )),
                             child: const Text(
-                              "Level 1",
+                              "Start",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 36.0,
@@ -106,7 +108,7 @@ class _GameMainState extends State<GameMain> {
                               autoStart: true,
                               loopMode: LoopMode.none);
                           //route to exit
-                          Navigator.pushNamed(context, "/gamelvl1",
+                          Navigator.pushNamed(context, "/gamelvl2",
                               arguments: {"title": "mainpage"});
                         },
                         child: Container(
@@ -138,7 +140,7 @@ class _GameMainState extends State<GameMain> {
                               autoStart: true,
                               loopMode: LoopMode.none);
                           //route to setting page
-                          Navigator.pushNamed(context, "/gamelvl1",
+                          Navigator.pushNamed(context, "/setting",
                               arguments: {"title": "mainpage"});
                         },
                         child: Container(

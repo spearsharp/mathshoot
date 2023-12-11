@@ -7,6 +7,7 @@ import 'package:get/route_manager.dart';
 import 'package:get/utils.dart';
 import 'dart:async';
 import 'dart:math';
+import '../routers/routers.dart';
 import '../Game/gamelvl2.dart';
 import '../services/screeenAdapter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -24,7 +25,7 @@ class GameLvl1 extends StatefulWidget {
 
 class _GameLvl1State extends State<GameLvl1> {
   late bool levelup;
-  bool levelkeep = true;
+  bool levelkeep = true, gamestart = false;
   int currentlevel = 0;
   // final player = AudioPlayer();
   AudioPlayer audioPlayer = AudioPlayer();
@@ -42,8 +43,12 @@ class _GameLvl1State extends State<GameLvl1> {
 
   @override
   void initState() {
+    //setting background picture and popup message
+
     super.initState();
     print(widget.arguments);
+
+    void gamekickoff() {}
 
     _assetAudioPlay.open(
       // local audio play , assetsaudioplayer
@@ -109,10 +114,13 @@ class _GameLvl1State extends State<GameLvl1> {
                     child: Wrap(
                       alignment: WrapAlignment.spaceBetween,
                       children: [
-                        Text("您的得分： $score"),
-                        Text(
-                          "关卡： $level",
-                        )
+                        Text("score： $score"),
+                        SizedBox(
+                          width: 20,
+                        ),
+                        // Text(
+                        //   "level： $level",
+                        // )
                       ],
                     ));
               }),
@@ -131,15 +139,73 @@ class _GameLvl1State extends State<GameLvl1> {
                 ...List.generate(10, (index) {
                   print("durationTime:: $durationTime");
                   // generate numbers of baloon
-                  return Game(
+                  if (gamestart) {
+                    return Game(
                       screenHeight: screenHeight,
                       screenWidth: screenWidth,
                       inputController: _inputController,
                       scoreController: _scoreController,
-                      levelController: _levelController);
+                      levelController: _levelController,
+                    );
+                  } else {
+                    return Text("");
+                  }
                 }),
                 // localStorage.removeData("levelName"),
-                KeyPad(inputController: _inputController)
+                KeyPad(inputController: _inputController),
+                //tap to kickoff game, level1
+                Stack(
+                  alignment: Alignment.bottomCenter,
+                  children: [
+                    Column(
+                      children: [
+                        Container(
+                          decoration: const BoxDecoration(
+                            image: DecorationImage(
+                                image: AssetImage(
+                                    "images/game/animated6balloontitleformpic.gif")),
+                          ),
+                          child: const Text(
+                            "level 1",
+                            style: TextStyle(
+                              fontSize: 36.0,
+                              color: Color.fromARGB(255, 92, 51, 1),
+                              decorationStyle: TextDecorationStyle.dashed,
+                              letterSpacing: 5.0,
+                              fontFamily: 'Balloony',
+                            ),
+                          ),
+                        ),
+                        InkWell(
+                          onTap: () {
+                            setState(() {
+                              gamestart = true;
+                            });
+                          },
+                          child: const Image(
+                              image: AssetImage(
+                                  "images/game/animatednextpic.gif")),
+                        )
+                      ],
+                    )
+                  ],
+                ),
+                Positioned(
+                  top: screenHeight * 0.01,
+                  right: screenWidth * 0.01,
+                  child: Container(
+                    child: Row(
+                      children: [
+                        IconButton(
+                            onPressed: () {},
+                            icon: const Icon(Icons
+                                .golf_course_outlined)), // iconbutton to topup money, pending topup function
+                        const Text(
+                            "123"), // topup money and coin amounts, pending topup balance function
+                      ],
+                    ),
+                  ),
+                )
               ],
             )));
   }
@@ -152,13 +218,14 @@ class Game extends StatefulWidget {
   final StreamController<int> inputController;
   final StreamController<int> scoreController;
   final StreamController<int> levelController;
-  const Game(
-      {super.key,
-      required this.screenHeight,
-      required this.screenWidth,
-      required this.inputController,
-      required this.scoreController,
-      required this.levelController});
+  const Game({
+    super.key,
+    required this.screenHeight,
+    required this.screenWidth,
+    required this.inputController,
+    required this.scoreController,
+    required this.levelController,
+  });
   @override
   State<Game> createState() => _GameState();
 }
@@ -172,6 +239,8 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
   String m = '()';
   String n = '/';
   late AnimationController _animationController;
+
+//game level started
 
 //game restart
   reset(screenWidth) {
@@ -187,6 +256,8 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
   //   int speed = (5000 + 5000 / 2 * level) as int;
   //   return speed;
   // }
+
+//level up and awearded
 
   //score update
   score(t) {
@@ -223,7 +294,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
       return ListView(children: [
         Container(
             color: Colors.red.withOpacity(0),
-            child: Image(image: AssetImage("images/game/1baloon.png"))),
+            child: const Image(image: AssetImage("images/game/1balloon.png"))),
         Container(
             alignment: Alignment.center,
             decoration: BoxDecoration(
@@ -246,8 +317,6 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
     }
   }
 
-//level up and awearded
-
   @override
   void initState() {
     a = Random().nextInt(99);
@@ -257,8 +326,9 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
     netscore = 0;
     super.initState();
 
+    // game started
     reset(widget.screenWidth); //first round to play
-    // TODO: implement initState
+
     _animationController = AnimationController(
         vsync: this, duration: Duration(milliseconds: durationTime));
     _animationController.forward();
@@ -290,6 +360,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
       }
       //get inputController data,and monitorring
     });
+    //game complete
   }
 
   @override
@@ -332,6 +403,7 @@ class KeyPad extends StatelessWidget {
         crossAxisCount: 5,
         childAspectRatio: 5 / 4,
         children: List.generate(10, (index) {
+          // Delete key add
           return TextButton(
               style: ButtonStyle(
                   shape:
