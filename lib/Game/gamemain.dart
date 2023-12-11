@@ -1,9 +1,9 @@
 import 'dart:ui';
 
-import 'package:arithg/routers/routers.dart';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:get/utils.dart';
 import '../services/screeenAdapter.dart';
+import '../routers/routers.dart';
 import 'package:flutter/material.dart';
 
 class GameMain extends StatefulWidget {
@@ -14,7 +14,9 @@ class GameMain extends StatefulWidget {
 }
 
 class _GameMainState extends State<GameMain> {
-  var _assetAudioPlayer = AssetsAudioPlayer();
+  final _assetAudioPlayer = AssetsAudioPlayer();
+  final _keyAudioPlayer = AssetsAudioPlayer();
+
   @override
   void initState() {
     super.initState();
@@ -37,6 +39,7 @@ class _GameMainState extends State<GameMain> {
     MediaQueryData queryData = MediaQuery.of(context);
     double screenHeight = queryData.size.height;
     double screenWidth = queryData.size.width;
+
     return Scaffold(
       backgroundColor: Colors.transparent,
       // appBar: AppBar(),
@@ -53,18 +56,24 @@ class _GameMainState extends State<GameMain> {
                 alignment: Alignment.bottomCenter,
                 child: ListView(
                   children: [
-                    SizedBox(height: screenHeight * 0.35),
+                    SizedBox(height: screenHeight * 0.40),
                     SizedBox(
                       height: screenHeight * 0.2,
-                      child: Image(
+                      child: const Image(
                           image:
                               AssetImage("images/game/animatedmathsign.gif")),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     InkWell(
                         onTap: () {
+                          //press key sound
+                          _keyAudioPlayer.open(
+                              Audio('audios/pressmobilekeyBGM.wav'),
+                              autoStart: true,
+                              loopMode: LoopMode.none);
+                          // rounte to level1
                           Navigator.pushNamed(context, "/gamelvl1",
                               arguments: {"title": "mainpage"});
                         },
@@ -77,15 +86,14 @@ class _GameMainState extends State<GameMain> {
                                   AssetImage("images/game/yellowtitlebelt.png"),
                             )),
                             child: const Text(
-                              "Start",
+                              "Level 1",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 36.0,
-                                color: Color.fromARGB(255, 28, 16, 1),
+                                color: Color.fromARGB(255, 92, 51, 1),
                                 decorationStyle: TextDecorationStyle.dashed,
                                 letterSpacing: 5.0,
-                                decorationColor: Colors.white,
-                                fontFamily: 'MagicBaloon',
+                                fontFamily: 'Balloony',
                               ),
                             ))),
                     SizedBox(
@@ -93,6 +101,11 @@ class _GameMainState extends State<GameMain> {
                     ),
                     InkWell(
                         onTap: () {
+                          _keyAudioPlayer.open(
+                              Audio('audios/pressmobilekeyBGM.wav'),
+                              autoStart: true,
+                              loopMode: LoopMode.none);
+                          //route to exit
                           Navigator.pushNamed(context, "/gamelvl1",
                               arguments: {"title": "mainpage"});
                         },
@@ -109,11 +122,10 @@ class _GameMainState extends State<GameMain> {
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 36.0,
-                                color: Color.fromARGB(255, 28, 16, 1),
+                                color: Color.fromARGB(255, 92, 51, 1),
                                 decorationStyle: TextDecorationStyle.dashed,
                                 letterSpacing: 5.0,
-                                decorationColor: Colors.white,
-                                fontFamily: 'MagicBaloon',
+                                fontFamily: 'Balloony',
                               ),
                             ))),
                     SizedBox(
@@ -121,6 +133,11 @@ class _GameMainState extends State<GameMain> {
                     ),
                     InkWell(
                         onTap: () {
+                          _keyAudioPlayer.open(
+                              Audio('audios/pressmobilekeyBGM.wav'),
+                              autoStart: true,
+                              loopMode: LoopMode.none);
+                          //route to setting page
                           Navigator.pushNamed(context, "/gamelvl1",
                               arguments: {"title": "mainpage"});
                         },
@@ -136,11 +153,10 @@ class _GameMainState extends State<GameMain> {
                                 textAlign: TextAlign.center,
                                 style: TextStyle(
                                   fontSize: 36.0,
-                                  color: Color.fromARGB(255, 28, 16, 1),
+                                  color: Color.fromARGB(255, 92, 51, 1),
                                   decorationStyle: TextDecorationStyle.dashed,
                                   letterSpacing: 5.0,
-                                  decorationColor: Colors.white,
-                                  fontFamily: 'MagicBaloon',
+                                  fontFamily: 'Balloony',
                                 ))))
                   ],
                 ))

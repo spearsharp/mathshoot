@@ -43,6 +43,7 @@ class _GameLvl1State extends State<GameLvl1> {
   @override
   void initState() {
     super.initState();
+    print(widget.arguments);
 
     _assetAudioPlay.open(
       // local audio play , assetsaudioplayer
