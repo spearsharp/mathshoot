@@ -127,19 +127,10 @@ class _MainlistState extends State<Mainlist> {
     final _ScreenAdapter = MediaQuery.of(context).size;
     return Scaffold(
       extendBodyBehindAppBar: true,
-      // endDrawer: Drawer(
-      //     child: IconButton(
-      //   onPressed: () {},
-      //   icon: Icon(Icons.money_off_rounded),
-      // )),
       drawer: Drawer(
         child: mainlistleftdrawer(),
       ),
-      // endDrawer: Drawer(
-      //   child: Positioned(
-      //     child: Text("123"),
-      //   ),
-      // ),
+
       appBar: AppBar(
         title: const Text("Math Balloon"),
         centerTitle: true,
@@ -177,7 +168,8 @@ class _MainlistState extends State<Mainlist> {
                           )),
                       Expanded(
                         flex: 4,
-                        child: Text("123",
+                        child: Text(
+                            "123", // pending on topup fuunction, show the balancef
                             style: TextStyle(
                                 fontSize: 20,
                                 fontFamily: 'MotleyForces',
