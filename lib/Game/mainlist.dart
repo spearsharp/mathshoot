@@ -1,8 +1,10 @@
 import 'package:arithg/services/screeenAdapter.dart';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
+import 'package:get/route_manager.dart';
 import '../Game/gamelvl1.dart';
 import '../Game/gamelvl2.dart';
+import '../services/iconUtil.dart';
 
 class Mainlist extends StatefulWidget {
   final Map arguments;
@@ -102,7 +104,7 @@ class _MainlistState extends State<Mainlist> {
                       // ignore: prefer_interpolation_to_compose_strings
                       Text("Level:" + _arguments[i]['levelname'],
                           // Text("Level:1",
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontFamily: 'CreamCake',
                             fontSize: 35,
                           ),
@@ -114,21 +116,30 @@ class _MainlistState extends State<Mainlist> {
         ),
       );
     }
+    // tmplist.add(
+    //   Positioned(child: TextButton)
+    // )
     return tmplist;
   }
 
   @override
   Widget build(BuildContext context) {
+    final _ScreenAdapter = MediaQuery.of(context).size;
     return Scaffold(
       extendBodyBehindAppBar: true,
-      endDrawer: Drawer(
-          child: IconButton(
-        onPressed: () {},
-        icon: Icon(Icons.money_off_rounded),
-      )),
+      // endDrawer: Drawer(
+      //     child: IconButton(
+      //   onPressed: () {},
+      //   icon: Icon(Icons.money_off_rounded),
+      // )),
       drawer: Drawer(
         child: mainlistleftdrawer(),
       ),
+      // endDrawer: Drawer(
+      //   child: Positioned(
+      //     child: Text("123"),
+      //   ),
+      // ),
       appBar: AppBar(
         title: const Text("Math Balloon"),
         centerTitle: true,
@@ -137,28 +148,67 @@ class _MainlistState extends State<Mainlist> {
         elevation: 0,
       ),
       body: Container(
-        alignment: Alignment.center,
-        decoration: const BoxDecoration(
-            image: DecorationImage(
-                fit: BoxFit.cover,
-                image: AssetImage("images/game/blackboardbkgpic.jpg"))),
-        child: ListView(
-          children: _inkwelllvltitle(),
+          child: Stack(children: [
+        Container(
+          alignment: Alignment.center,
+          decoration: const BoxDecoration(
+              image: DecorationImage(
+                  fit: BoxFit.cover,
+                  image: AssetImage("images/game/blackboardbkgpic.jpg"))),
+          child: ListView(
+            children: _inkwelllvltitle(),
+          ),
         ),
-      ),
+        Positioned(
+            top: _ScreenAdapter.height * 0.055,
+            right: -30,
+            child: InkWell(
+                onTap: () {
+                  print("topup money");
+                },
+                child: Container(
+                  width: 100,
+                  child: const Row(
+                    children: [
+                      Expanded(
+                          flex: 1,
+                          child: Image(
+                            image: AssetImage("images/game/icon/goldcoin.png"),
+                          )),
+                      Expanded(
+                        flex: 4,
+                        child: Text("123",
+                            style: TextStyle(
+                                fontSize: 20,
+                                fontFamily: 'MotleyForces',
+                                color: Colors.blueGrey)),
+                      )
+                    ],
+                  ),
+                ))),
+      ])),
+      // floatingActionButton: ElevatedButton.icon(
+      //     onPressed: () {
+      //       print("topup money");
+      //     },
+      //     icon: Icon(Icons.attach_money_outlined),
+      //     label: Text("18")),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
     );
   }
 }
 
 mainlistleftdrawer() {
   return Container(
-    child: Center(
-      child: IconButton(
-          onPressed: () {},
-          icon: const Icon(
-            Icons.delete_sweep_rounded,
-            size: 80,
-          )),
-    ),
+    child: const Center(
+        child: Image(image: AssetImage("images/game/icon/goldcoin.png"))
+
+        // IconButton(
+        //     onPressed: () {},
+        //     icon: const Icon(
+        //       IconsPool.goldcoin,
+        //       size: 100,
+        //     )),
+        ),
   );
 }
