@@ -10,6 +10,8 @@ import 'dart:async';
 import 'dart:math';
 import '../Game/gamemain.dart';
 import '../Game/gamelvl1.dart';
+import '../Game/mainlist.dart';
+import '../Game/setting.dart';
 import '../services/screeenAdapter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/localStorage.dart';
@@ -18,8 +20,8 @@ import 'package:audioplayers/audioplayers.dart';
 
 final Map<String, Function> routes = {
   "/": () => const GameMain(),
-  "/level1": (context, {arguments}) => GameLvl1(arguments: arguments),
-  "/level2": (context, {arguments}) => GameLvl2(arguments: arguments),
+  "/gamelvl1": (context, {arguments}) => GameLvl1(arguments: arguments),
+  "/gamelvl2": (context, {arguments}) => GameLvl2(arguments: arguments),
   // "/level3": (context, {arguments}) => GameLvl3(arguments: arguments),
   // "/level4": (context, {arguments}) => GameLvl4(arguments: arguments),
   // "/level5": (context, {arguments}) => GameLvl5(arguments: arguments),
@@ -31,7 +33,8 @@ final Map<String, Function> routes = {
   // "/level11": (context, {arguments}) => GameLvl11(arguments: arguments),
   // "/level12": (context, {arguments}) => GameLvl12(arguments: arguments),
   // "/level13": (context, {arguments}) => GameLvl13(arguments: arguments),
-  // "/level14": (context, {arguments}) => GameLvl14(arguments: arguments),
+  "/setting": (context, {arguments}) => Setting(arguments: arguments),
+  "/mainlist": (context, {arguments}) => Mainlist(arguments: arguments),
 };
 
 var onGernerateRoute = (RouteSettings settings) {
