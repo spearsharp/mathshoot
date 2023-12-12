@@ -41,6 +41,10 @@ dependencies:
   ftoast: ^2.0.0
   audioplayers: ^5.2.1
   assets_audio_player: ^3.1.1
+  awesome_select: ^6.0.0
+  flutter_switch: ^0.3.2
+  icons_plus: ^4.0.0
+  auto_size_text: ^3.0.0
 
 dev_dependencies:
   flutter_test:
@@ -65,8 +69,9 @@ flutter:
 
   # To add assets to your application, add an assets section, like this:
   assets:
-    # - images/a_dot_burr.jpeg
-    # - images/a_dot_ham.jpeg
+    # - icons
+    - images/game/icon/goldcoin.png
+    #images
     - images/flutter_pers.jpg
     - images/portrait.jpg
     - images/game/bgpic1.jpeg
@@ -77,16 +82,27 @@ flutter:
     - images/game/firesmogbomb.gif
     - images/game/goldcyclebomb.gif
     - images/game/popbombcelebrate.gif
+    - images/game/blackboardbkgpic.jpg
     - images/game/smogbomb.gif
     - images/game/mainlevel.png
+    - images/game/unlockedbluepic.png
+    - images/game/dollarsignpic.png
+    - images/game/lockedbluepic.png
     - images/game/animatedballonbackgroumdpic.gif
     - images/game/yellowtitlebelt.png
+    - images/game/animatedHahapic.gif
+    - images/game/letgopic.gif
+    - images/game/animatednextpic.gif
+    - images/game/pinktitlebele.png
+    - images/game/animatedmathsign.gif
     - audios/mainenteranceBGM.wav
     - audios/level1_BGM.mp3
     - audios/level2_BGM.MP3
     - audios/switherBGM.wav
     - audios/presskeyBGM.wav
+    - audios/pressmobilekeyBGM.wav
     - audios/endingBGM.mp3
+    - audios/mainlistBGM.wav
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
@@ -105,10 +121,26 @@ flutter:
         - asset: fonts/iconfont.ttf
         # - asset: fonts/MagicBaloonDemoRegular.ttf
     # - asset: fonts/Schyler-Italic.ttf
-    - family: MagicBaloon
+    - family: PWBalloon
       fonts:
-        - asset: fonts/MagicBaloonDemoRegular.ttf
+        - asset: fonts/PWBalloon.ttf
           weight: 900
+    - family: Balloony
+      fonts:
+        - asset: fonts/Balloony.ttf
+          weight: 900
+    - family: CreamCake
+      fonts:
+        - asset: fonts/CreamCake.otf
+          weight: 900
+    - family: MotleyForces
+      fonts:
+        - asset: fonts/MotleyForces.ttf
+          weight: 900
+    - family: myIconAli
+      fonts:
+        - asset: fonts/iconfont1.ttf
+  #
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages

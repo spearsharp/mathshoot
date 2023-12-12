@@ -191,21 +191,34 @@ class _GameLvl1State extends State<GameLvl1> {
                   ],
                 ),
                 Positioned(
-                  top: screenHeight * 0.01,
-                  right: screenWidth * 0.01,
-                  child: Container(
-                    child: Row(
-                      children: [
-                        IconButton(
-                            onPressed: () {},
-                            icon: const Icon(Icons
-                                .golf_course_outlined)), // iconbutton to topup money, pending topup function
-                        const Text(
-                            "123"), // topup money and coin amounts, pending topup balance function
-                      ],
-                    ),
-                  ),
-                )
+                    top: screenHeight * 0.055,
+                    right: -30,
+                    child: InkWell(
+                        onTap: () {
+                          print("topup money");
+                        },
+                        child: Container(
+                          width: 100,
+                          child: const Row(
+                            children: [
+                              Expanded(
+                                  flex: 1,
+                                  child: Image(
+                                    image: AssetImage(
+                                        "images/game/icon/goldcoin.png"),
+                                  )),
+                              Expanded(
+                                flex: 4,
+                                child: Text(
+                                    "123", // pending on topup fuunction, show the balancef
+                                    style: TextStyle(
+                                        fontSize: 20,
+                                        fontFamily: 'MotleyForces',
+                                        color: Colors.blueGrey)),
+                              )
+                            ],
+                          ),
+                        ))),
               ],
             )));
   }

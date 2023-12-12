@@ -5,6 +5,10 @@ import 'package:get/route_manager.dart';
 import '../Game/gamelvl1.dart';
 import '../Game/gamelvl2.dart';
 import '../services/iconUtil.dart';
+import 'package:icons_plus/icons_plus.dart';
+import 'package:auto_size_text/auto_size_text.dart';
+
+import '../services/setting.dart';
 
 class Mainlist extends StatefulWidget {
   final Map arguments;
@@ -56,7 +60,7 @@ class _MainlistState extends State<Mainlist> {
     );
   }
 
-  List<Widget> _inkwelllvltitle() {
+  List<Widget> _inkwelllvltitle(_ScreenAdapter) {
     List<Widget> tmplist = [];
     for (int i = 0; i < _arguments.length; i++) {
       print(_arguments[i]['levelname']);
@@ -70,7 +74,7 @@ class _MainlistState extends State<Mainlist> {
           },
           child: Container(
             alignment: Alignment.topCenter,
-            height: 60,
+            width: _ScreenAdapter.height * 0.1,
             decoration: const BoxDecoration(
                 image: DecorationImage(
                     fit: BoxFit.contain,
@@ -91,24 +95,28 @@ class _MainlistState extends State<Mainlist> {
                         image: _arguments[i]['gameunlockstatus'] == "unclocked"
                             ? const AssetImage("images/game/dollarsignpic.png")
                             : const AssetImage("images/game/lockedbluepic.png"),
-                        width: 40,
-                        height: 40,
+                        width: _ScreenAdapter.width * 0.07,
+                        height: _ScreenAdapter.width * 0.07,
                         alignment: Alignment.center,
                         fit: BoxFit.fill,
                       )
                     ]),
+                SizedBox(
+                  width: _ScreenAdapter.width * 0.03,
+                ),
                 Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       // ignore: prefer_interpolation_to_compose_strings
-                      Text("Level:" + _arguments[i]['levelname'],
-                          // Text("Level:1",
-                          style: const TextStyle(
-                            fontFamily: 'CreamCake',
-                            fontSize: 35,
-                          ),
-                          textAlign: TextAlign.start),
+                      AutoSizeText(
+                        "Level:" + _arguments[i]['levelname'],
+                        minFontSize: 35,
+                        maxFontSize: 45,
+                        style: const TextStyle(
+                          fontFamily: 'CreamCake',
+                        ),
+                      ),
                     ])
               ],
             ),
@@ -132,7 +140,38 @@ class _MainlistState extends State<Mainlist> {
       ),
 
       appBar: AppBar(
-        title: const Text("Math Balloon"),
+        title: Row(children: [
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 20.0),
+            child: AutoSizeText(
+              "Math Balloon",
+              minFontSize: 25,
+              maxFontSize: 30,
+              overflow: TextOverflow.ellipsis,
+              style: TextStyle(fontFamily: 'Balloony', color: Colors.white70),
+            ),
+          ),
+          Align(
+              alignment: Alignment.centerRight,
+              child: InkWell(
+                  onTap: () {
+                    print("1111111111"); // pending topup function
+                  },
+                  child: const Row(
+                    children: [
+                      Image(
+                        image: AssetImage('images/game/icon/goldcoin.png'),
+                        width: 20,
+                      ),
+                      AutoSizeText('111111',
+                          minFontSize: 18,
+                          maxFontSize: 25,
+                          overflow: TextOverflow.ellipsis,
+                          style: TextStyle(
+                              fontFamily: 'CreamCake', color: Colors.white70)),
+                    ],
+                  ))),
+        ]),
         centerTitle: true,
         shadowColor: Colors.transparent,
         backgroundColor: Colors.transparent,
@@ -147,37 +186,37 @@ class _MainlistState extends State<Mainlist> {
                   fit: BoxFit.cover,
                   image: AssetImage("images/game/blackboardbkgpic.jpg"))),
           child: ListView(
-            children: _inkwelllvltitle(),
+            children: _inkwelllvltitle(_ScreenAdapter),
           ),
         ),
-        Positioned(
-            top: _ScreenAdapter.height * 0.055,
-            right: -30,
-            child: InkWell(
-                onTap: () {
-                  print("topup money");
-                },
-                child: Container(
-                  width: 100,
-                  child: const Row(
-                    children: [
-                      Expanded(
-                          flex: 1,
-                          child: Image(
-                            image: AssetImage("images/game/icon/goldcoin.png"),
-                          )),
-                      Expanded(
-                        flex: 4,
-                        child: Text(
-                            "123", // pending on topup fuunction, show the balancef
-                            style: TextStyle(
-                                fontSize: 20,
-                                fontFamily: 'MotleyForces',
-                                color: Colors.blueGrey)),
-                      )
-                    ],
-                  ),
-                ))),
+        // Positioned(
+        //     top: _ScreenAdapter.height * 0.055,
+        //     right: -30,
+        //     child: InkWell(
+        //         onTap: () {
+        //           print("topup money");
+        //         },
+        //         child: Container(
+        //           width: 100,
+        //           child: const Row(
+        //             children: [
+        //               Expanded(
+        //                   flex: 1,
+        //                   child: Image(
+        //                     image: AssetImage("images/game/icon/goldcoin.png"),
+        //                   )),
+        //               Expanded(
+        //                 flex: 4,
+        //                 child: Text(
+        //                     "123", // pending on topup fuunction, show the balancef
+        //                     style: TextStyle(
+        //                         fontSize: 20,
+        //                         fontFamily: 'MotleyForces',
+        //                         color: Colors.blueGrey)),
+        //               )
+        //             ],
+        //           ),
+        //         ))),
       ])),
       // floatingActionButton: ElevatedButton.icon(
       //     onPressed: () {
@@ -192,15 +231,17 @@ class _MainlistState extends State<Mainlist> {
 
 mainlistleftdrawer() {
   return Container(
-    child: const Center(
-        child: Image(image: AssetImage("images/game/icon/goldcoin.png"))
+    child: Setting(
+      arguments: {'title': 'title'},
+    ),
+    // child: const Center(
+    //     child: Image(image: AssetImage("images/game/icon/goldcoin.png"))
 
-        // IconButton(
-        //     onPressed: () {},
-        //     icon: const Icon(
-        //       IconsPool.goldcoin,
-        //       size: 100,
-        //     )),
-        ),
+    // IconButton(
+    //     onPressed: () {},
+    //     icon: const Icon(
+    //       IconsPool.goldcoin,
+    //       size: 100,
+    //     )),
   );
 }
