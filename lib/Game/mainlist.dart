@@ -1,3 +1,4 @@
+import 'package:arithg/GamePluginModel/mainlistleftdrawer.dart';
 import 'package:arithg/services/screeenAdapter.dart';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
@@ -135,10 +136,11 @@ class _MainlistState extends State<Mainlist> {
     final _ScreenAdapter = MediaQuery.of(context).size;
     return Scaffold(
       extendBodyBehindAppBar: true,
-      drawer: Drawer(
-        child: mainlistleftdrawer(),
+      drawer: const Drawer(
+        child: _mainlistleftdrawer(
+          arguments: {'title': "title"},
+        ),
       ),
-
       appBar: AppBar(
         title: Row(children: [
           const Padding(
@@ -189,59 +191,29 @@ class _MainlistState extends State<Mainlist> {
             children: _inkwelllvltitle(_ScreenAdapter),
           ),
         ),
-        // Positioned(
-        //     top: _ScreenAdapter.height * 0.055,
-        //     right: -30,
-        //     child: InkWell(
-        //         onTap: () {
-        //           print("topup money");
-        //         },
-        //         child: Container(
-        //           width: 100,
-        //           child: const Row(
-        //             children: [
-        //               Expanded(
-        //                   flex: 1,
-        //                   child: Image(
-        //                     image: AssetImage("images/game/icon/goldcoin.png"),
-        //                   )),
-        //               Expanded(
-        //                 flex: 4,
-        //                 child: Text(
-        //                     "123", // pending on topup fuunction, show the balancef
-        //                     style: TextStyle(
-        //                         fontSize: 20,
-        //                         fontFamily: 'MotleyForces',
-        //                         color: Colors.blueGrey)),
-        //               )
-        //             ],
-        //           ),
-        //         ))),
       ])),
-      // floatingActionButton: ElevatedButton.icon(
-      //     onPressed: () {
-      //       print("topup money");
-      //     },
-      //     icon: Icon(Icons.attach_money_outlined),
-      //     label: Text("18")),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.endTop,
     );
   }
 }
 
-mainlistleftdrawer() {
-  return Container(
-    child: Setting(
-      arguments: {'title': 'title'},
-    ),
-    // child: const Center(
-    //     child: Image(image: AssetImage("images/game/icon/goldcoin.png"))
+class _mainlistleftdrawer extends StatefulWidget {
+  final Map arguments;
+  const _mainlistleftdrawer({super.key, required this.arguments});
 
-    // IconButton(
-    //     onPressed: () {},
-    //     icon: const Icon(
-    //       IconsPool.goldcoin,
-    //       size: 100,
-    //     )),
-  );
+  @override
+  State<_mainlistleftdrawer> createState() => __mainlistleftdrawerState();
+}
+
+class __mainlistleftdrawerState extends State<_mainlistleftdrawer> {
+  @override
+  Widget build(BuildContext context) {
+    // return Center(
+    //   child: Text("left drawer"),
+    // );
+    return const Center(
+      child: Mainlistleftdrawer(
+        arguments: {'title': 'title'},
+      ),
+    );
+  }
 }
