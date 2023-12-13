@@ -39,9 +39,9 @@ class _MainlistleftdrawerState extends State<Mainlistleftdrawer> {
         child: ListView(
           children: [
             Container(
-              height: 60,
+              padding: EdgeInsets.all(15),
               child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const Text(
@@ -50,10 +50,10 @@ class _MainlistleftdrawerState extends State<Mainlistleftdrawer> {
                           fontFamily: 'Ballony',
                           fontSize: 30,
                           color: Colors.blue,
-                          fontWeight: FontWeight.w600),
+                          fontWeight: FontWeight.w800),
                     ),
                     Align(
-                        alignment: const Alignment(0, 111),
+                        alignment: Alignment.centerRight,
                         child: FlutterSwitch(
                           width: 75.0,
                           height: 35.0,
@@ -73,21 +73,21 @@ class _MainlistleftdrawerState extends State<Mainlistleftdrawer> {
                   ]),
             ),
             Container(
-              height: 60,
+              padding: EdgeInsets.all(15),
               child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const Text(
-                      "Touch Sound",
+                      "Game Sound",
                       style: TextStyle(
                           fontFamily: 'Ballony',
                           fontSize: 30,
                           color: Colors.blue,
-                          fontWeight: FontWeight.w600),
+                          fontWeight: FontWeight.w800),
                     ),
                     Align(
-                        alignment: const Alignment(0, 111),
+                        alignment: Alignment.centerRight,
                         child: FlutterSwitch(
                           width: 75.0,
                           height: 35.0,
@@ -107,21 +107,21 @@ class _MainlistleftdrawerState extends State<Mainlistleftdrawer> {
                   ]),
             ),
             Container(
-              height: 60,
+              padding: EdgeInsets.all(15),
               child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     const Text(
-                      "Touch Sound",
+                      "Background Sound",
                       style: TextStyle(
                           fontFamily: 'Ballony',
                           fontSize: 30,
                           color: Colors.blue,
-                          fontWeight: FontWeight.w600),
+                          fontWeight: FontWeight.w800),
                     ),
                     Align(
-                        alignment: const Alignment(0, 111),
+                        alignment: Alignment.centerRight,
                         child: FlutterSwitch(
                           width: 75.0,
                           height: 35.0,
