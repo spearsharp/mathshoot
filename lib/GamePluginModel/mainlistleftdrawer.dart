@@ -48,7 +48,7 @@ class _MainlistleftdrawerState extends State<Mainlistleftdrawer> {
                       "Touch Sound",
                       style: TextStyle(
                           fontFamily: 'Ballony',
-                          fontSize: 30,
+                          fontSize: 25,
                           color: Colors.blue,
                           fontWeight: FontWeight.w800),
                     ),
@@ -82,7 +82,7 @@ class _MainlistleftdrawerState extends State<Mainlistleftdrawer> {
                       "Game Sound",
                       style: TextStyle(
                           fontFamily: 'Ballony',
-                          fontSize: 30,
+                          fontSize: 25,
                           color: Colors.blue,
                           fontWeight: FontWeight.w800),
                     ),
@@ -116,7 +116,7 @@ class _MainlistleftdrawerState extends State<Mainlistleftdrawer> {
                       "Background Sound",
                       style: TextStyle(
                           fontFamily: 'Ballony',
-                          fontSize: 30,
+                          fontSize: 25,
                           color: Colors.blue,
                           fontWeight: FontWeight.w800),
                     ),
