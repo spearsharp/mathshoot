@@ -286,6 +286,10 @@ class _MainlistState extends State<Mainlist> {
             children: _inkwelllvltitle(_ScreenAdapter),
           ),
         ),
+        Positioned(
+            child: Container(
+          child: Text("adv"), // pending advertisment
+        ))
       ])),
     );
   }

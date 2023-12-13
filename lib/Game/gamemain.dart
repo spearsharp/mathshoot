@@ -159,7 +159,12 @@ class _GameMainState extends State<GameMain> {
                                   decorationStyle: TextDecorationStyle.dashed,
                                   letterSpacing: 5.0,
                                   fontFamily: 'Balloony',
-                                ))))
+                                )))),
+                    Positioned(
+                        child: Container(
+                      alignment: Alignment.bottomCenter,
+                      child: Text("adv"), // pending advertisment
+                    ))
                   ],
                 ))
           ])),
