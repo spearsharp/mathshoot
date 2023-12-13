@@ -75,7 +75,7 @@ class _MainlistState extends State<Mainlist> {
           },
           child: Container(
             alignment: Alignment.topCenter,
-            width: _ScreenAdapter.height * 0.1,
+            width: _ScreenAdapter.width * 0.7,
             decoration: const BoxDecoration(
                 image: DecorationImage(
                     fit: BoxFit.contain,
@@ -136,9 +136,104 @@ class _MainlistState extends State<Mainlist> {
     final _ScreenAdapter = MediaQuery.of(context).size;
     return Scaffold(
       extendBodyBehindAppBar: true,
-      drawer: const Drawer(
-        child: _mainlistleftdrawer(
-          arguments: {'title': "title"},
+      drawer: Drawer(
+        backgroundColor: Colors.white60,
+        child: Column(
+          children: [
+            const Row(
+              children: [
+                Expanded(
+                    flex: 1,
+                    child: UserAccountsDrawerHeader(
+                      accountName:
+                          Text("Goldman Fuks"), //pending on Players Name
+                      accountEmail: Text(
+                          "spear.yao@goldmanfuks.com"), // Pending on Players contack info
+                      // ],
+                      currentAccountPicture: CircleAvatar(
+                          backgroundImage:
+                              AssetImage('images/game/portrait/man2.png')),
+                      decoration: BoxDecoration(
+                          image: DecorationImage(
+                              fit: BoxFit.cover,
+                              image: AssetImage(
+                                  "images/game/agrorithbkgpic2.jpg"))),
+                    ))
+              ],
+            ),
+            InkWell(
+              onTap: () {
+                print(
+                    "route to Players record page"); // pending on route to Records page
+              },
+              child: const ListTile(
+                leading: CircleAvatar(
+                  child: Icon(Icons.people),
+                ),
+                title: Text(
+                  "Top Players",
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontFamily: 'MotleyForces',
+                      color: Colors.black54),
+                ),
+              ),
+            ),
+            const Divider(),
+            InkWell(
+                onTap: () {
+                  print("route to Profile page"); // pending on route to Profile
+                },
+                child: ListTile(
+                  leading: CircleAvatar(
+                    child: Icon(Icons.portrait),
+                  ),
+                  title: Text(
+                    "Profile",
+                    style: TextStyle(
+                        fontSize: 20,
+                        fontFamily: 'MotleyForces',
+                        color: Colors.black54),
+                  ),
+                )),
+            Divider(),
+            InkWell(
+              onTap: () {
+                print(
+                    "rout to setting page"); // pending on route too setting page
+              },
+              child: const ListTile(
+                leading: CircleAvatar(
+                  child: Icon(Icons.settings),
+                ),
+                title: Text(
+                  "Setting",
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontFamily: 'MotleyForces',
+                      color: Colors.black54),
+                ),
+              ),
+            ),
+            Divider(),
+            InkWell(
+              onTap: () {
+                print("rout to Topup page");
+              },
+              child: const ListTile(
+                leading: CircleAvatar(
+                  child: Icon(Icons.attach_money),
+                ),
+                title: Text(
+                  "Topup",
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontFamily: 'MotleyForces',
+                      color: Colors.black54),
+                ),
+              ),
+            )
+          ],
         ),
       ),
       appBar: AppBar(
@@ -207,10 +302,8 @@ class _mainlistleftdrawer extends StatefulWidget {
 class __mainlistleftdrawerState extends State<_mainlistleftdrawer> {
   @override
   Widget build(BuildContext context) {
-    // return Center(
-    //   child: Text("left drawer"),
-    // );
-    return const Center(
+    return Container(
+      decoration: BoxDecoration(color: Colors.grey[50]),
       child: Mainlistleftdrawer(
         arguments: {'title': 'title'},
       ),
