@@ -34,7 +34,8 @@ class _MainlistleftdrawerState extends State<Mainlistleftdrawer> {
         decoration: const BoxDecoration(
             image: DecorationImage(
                 fit: BoxFit.cover,
-                image: AssetImage("images/game/agrorithbkgpic2.jpg"))),
+                opacity: 0.5,
+                image: AssetImage("images/game/agrorithbkgpic.jpg"))),
         child: ListView(
           children: [
             Container(
@@ -47,7 +48,7 @@ class _MainlistleftdrawerState extends State<Mainlistleftdrawer> {
                       "Touch Sound",
                       style: TextStyle(
                           fontFamily: 'Ballony',
-                          fontSize: 20,
+                          fontSize: 30,
                           color: Colors.blue,
                           fontWeight: FontWeight.w600),
                     ),
@@ -81,7 +82,7 @@ class _MainlistleftdrawerState extends State<Mainlistleftdrawer> {
                       "Touch Sound",
                       style: TextStyle(
                           fontFamily: 'Ballony',
-                          fontSize: 20,
+                          fontSize: 30,
                           color: Colors.blue,
                           fontWeight: FontWeight.w600),
                     ),
@@ -115,7 +116,7 @@ class _MainlistleftdrawerState extends State<Mainlistleftdrawer> {
                       "Touch Sound",
                       style: TextStyle(
                           fontFamily: 'Ballony',
-                          fontSize: 20,
+                          fontSize: 30,
                           color: Colors.blue,
                           fontWeight: FontWeight.w600),
                     ),
@@ -145,7 +146,7 @@ class _MainlistleftdrawerState extends State<Mainlistleftdrawer> {
               height: 2,
             ),
             Container(
-              height: _screenAdapter.height * 0.1,
+              padding: EdgeInsets.all(20),
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   crossAxisAlignment: CrossAxisAlignment.center,
@@ -157,10 +158,12 @@ class _MainlistleftdrawerState extends State<Mainlistleftdrawer> {
                         child: Text(
                           "Personal Records",
                           style: TextStyle(
+                              backgroundColor:
+                                  Color.fromRGBO(242, 239, 239, 0.4),
                               fontFamily: 'PWBalloon',
-                              fontSize: 30,
+                              fontSize: 35,
                               color: Colors.green,
-                              fontWeight: FontWeight.w600),
+                              fontWeight: FontWeight.w800),
                         ))
                   ]),
             ),

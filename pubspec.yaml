@@ -71,6 +71,7 @@ flutter:
   assets:
     # - icons
     - images/game/icon/goldcoin.png
+    - images/game/icon/bomb.png
     # portraits
     - images/game/portrait/man1.png
     - images/game/portrait/man2.png

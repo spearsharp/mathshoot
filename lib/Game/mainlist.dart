@@ -137,7 +137,7 @@ class _MainlistState extends State<Mainlist> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       drawer: Drawer(
-        backgroundColor: Colors.white60,
+        backgroundColor: Colors.transparent,
         child: Column(
           children: [
             const Row(
@@ -175,7 +175,7 @@ class _MainlistState extends State<Mainlist> {
                   style: TextStyle(
                       fontSize: 20,
                       fontFamily: 'MotleyForces',
-                      color: Colors.black54),
+                      color: Colors.white70),
                 ),
               ),
             ),
@@ -193,7 +193,7 @@ class _MainlistState extends State<Mainlist> {
                     style: TextStyle(
                         fontSize: 20,
                         fontFamily: 'MotleyForces',
-                        color: Colors.black54),
+                        color: Colors.white70),
                   ),
                 )),
             Divider(),
@@ -211,7 +211,7 @@ class _MainlistState extends State<Mainlist> {
                   style: TextStyle(
                       fontSize: 20,
                       fontFamily: 'MotleyForces',
-                      color: Colors.black54),
+                      color: Colors.white70),
                 ),
               ),
             ),
@@ -229,7 +229,7 @@ class _MainlistState extends State<Mainlist> {
                   style: TextStyle(
                       fontSize: 20,
                       fontFamily: 'MotleyForces',
-                      color: Colors.black54),
+                      color: Colors.white70),
                 ),
               ),
             )
@@ -252,7 +252,7 @@ class _MainlistState extends State<Mainlist> {
               alignment: Alignment.centerRight,
               child: InkWell(
                   onTap: () {
-                    print("1111111111"); // pending topup function
+                    print("top up function"); // pending to topup function
                   },
                   child: const Row(
                     children: [
