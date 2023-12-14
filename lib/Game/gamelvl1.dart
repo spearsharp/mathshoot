@@ -244,6 +244,8 @@ class Game extends StatefulWidget {
 }
 
 class _GameState extends State<Game> with SingleTickerProviderStateMixin {
+  //call arith module
+
   late double x;
   late int a, b, c, d, e, f, g, netscore, levelevent;
   late Color color;

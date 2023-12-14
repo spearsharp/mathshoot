@@ -31,6 +31,7 @@ class _MainlistleftdrawerState extends State<Mainlistleftdrawer> {
     var _screenAdapter = MediaQuery.of(context).size;
     return Container(
         alignment: Alignment.topCenter,
+        height: _screenAdapter.height,
         decoration: const BoxDecoration(
             image: DecorationImage(
                 fit: BoxFit.cover,
@@ -167,6 +168,12 @@ class _MainlistleftdrawerState extends State<Mainlistleftdrawer> {
                         ))
                   ]),
             ),
+            Align(
+              alignment: Alignment.bottomCenter,
+              child: Container(
+                child: Text("advertisment"), // pending advertisment
+              ),
+            )
           ],
         ));
   }

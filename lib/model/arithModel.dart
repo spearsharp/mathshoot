@@ -1,8 +1,8 @@
-// import 'package:flutter/material.dart';
+import 'dart:ffi';
 
-
-// class arithModel{
-//   static ArithM(arithtence v)(
-//     return v.dynamic;
-//   )
-// }
+class arithModel {
+  late final String key;
+  late final Int level;
+  late final Int calcnum;
+  late final String? arithquote;
+}

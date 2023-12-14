@@ -257,7 +257,7 @@ class _MainlistState extends State<Mainlist> {
                   child: const Row(
                     children: [
                       Image(
-                        image: AssetImage('images/game/icon/goldcoin.png'),
+                        image: AssetImage('images/game/icon/goldcoinpic.png'),
                         width: 20,
                       ),
                       AutoSizeText('111111',
@@ -286,10 +286,11 @@ class _MainlistState extends State<Mainlist> {
             children: _inkwelllvltitle(_ScreenAdapter),
           ),
         ),
-        Positioned(
+        Align(
+            alignment: Alignment.bottomCenter,
             child: Container(
-          child: Text("adv"), // pending advertisment
-        ))
+              child: Text("adv"), // pending advertisment
+            ))
       ])),
     );
   }
