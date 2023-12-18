@@ -23,6 +23,9 @@ late Map<String, Object> arithquote;
 const List calcsymbol = ['+', '-', '×', '÷', '()'];
 
 void main() {
+  // for (int i = 0; i < 5000000; i++) {
+  //   print(i);
+  // }
   var result = arith().getArith("1", 1, 3, "test");
 
   var result1 = arith().calcModule(1, 3, "+");
@@ -31,7 +34,7 @@ void main() {
 }
 
 class arith {
-  // calc the minimum
+  // calc the minimum equation
   int calcModule(int aa, int bb, String t) {
     switch (t) {
       case "+":
@@ -48,7 +51,7 @@ class arith {
     return answer1;
   }
 
-  Future<Map<String, Object>> arithgene(
+  Map<String, Object> arithgene(
     key,
     level,
   ) {

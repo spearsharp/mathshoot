@@ -93,6 +93,7 @@ flutter:
     - images/game/firesmogbomb.gif
     - images/game/goldcyclebomb.gif
     - images/game/popbombcelebrate.gif
+    - images/game/animatedcountdown.gif
     - images/game/blackboardbkgpic.jpg
     - images/game/smogbomb.gif
     - images/game/mainlevel.png
@@ -100,6 +101,7 @@ flutter:
     - images/game/dollarsignpic.png
     - images/game/lockedbluepic.png
     - images/game/animatedballonbackgroumdpic.gif
+    - images/game/animated6balloontitleformpic.gif
     - images/game/yellowtitlebelt.png
     - images/game/agrorithbkgpic.jpg
     - images/game/agrorithbkgpic2.jpg

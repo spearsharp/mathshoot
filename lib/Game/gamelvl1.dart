@@ -25,7 +25,7 @@ class GameLvl1 extends StatefulWidget {
 
 class _GameLvl1State extends State<GameLvl1> {
   late bool levelup;
-  bool levelkeep = true, gamestart = false;
+  bool levelkeep = true, gamestart = false, counddown = false;
   int currentlevel = 0;
   // final player = AudioPlayer();
   AudioPlayer audioPlayer = AudioPlayer();
@@ -87,16 +87,16 @@ class _GameLvl1State extends State<GameLvl1> {
                 if (snapshot.hasData) {
                   if (score >= 0) {
                     score += snapshot.data as int;
-                    if (score > 20) {
-                      print("level up");
-                      audioStop();
-                      Navigator.of(context)
-                          .push(MaterialPageRoute(builder: (context) {
-                        return GameLvl2(
-                          arguments: {score: score},
-                        );
-                      }));
-                    }
+                    // if (score > 20) {  / route to game level 2
+                    //   print("level up");
+                    //   audioStop();
+                    //   Navigator.of(context)
+                    //       .push(MaterialPageRoute(builder: (context) {
+                    //     return GameLvl2(
+                    //       arguments: {score: score},
+                    //     );
+                    //   }));
+                    // }
                     if (score < 0) {
                       score = 0;
                       print("Game Over");
@@ -110,13 +110,17 @@ class _GameLvl1State extends State<GameLvl1> {
                   return Text("Error: ${snapshot.error}");
                 }
                 return Padding(
-                    padding: const EdgeInsets.all(10),
+                    padding: const EdgeInsets.fromLTRB(30, 10, 10, 10),
                     child: Wrap(
                       alignment: WrapAlignment.spaceBetween,
                       children: [
-                        Text("score： $score"),
+                        Text("score： $score",
+                            style: const TextStyle(
+                                fontFamily: 'PWBalloon',
+                                color: Colors.black87,
+                                fontWeight: FontWeight.bold)),
                         SizedBox(
-                          width: 20,
+                          width: screenWidth,
                         ),
                         // Text(
                         //   "level： $level",
@@ -154,42 +158,60 @@ class _GameLvl1State extends State<GameLvl1> {
                 // localStorage.removeData("levelName"),
                 KeyPad(inputController: _inputController),
                 //tap to kickoff game, level1
-                Stack(
-                  alignment: Alignment.bottomCenter,
-                  children: [
-                    Column(
-                      children: [
-                        Container(
-                          decoration: const BoxDecoration(
-                            image: DecorationImage(
-                                image: AssetImage(
-                                    "images/game/animated6balloontitleformpic.gif")),
-                          ),
-                          child: const Text(
-                            "level 1",
-                            style: TextStyle(
-                              fontSize: 36.0,
-                              color: Color.fromARGB(255, 92, 51, 1),
-                              decorationStyle: TextDecorationStyle.dashed,
-                              letterSpacing: 5.0,
-                              fontFamily: 'Balloony',
-                            ),
-                          ),
-                        ),
-                        InkWell(
-                          onTap: () {
-                            setState(() {
-                              gamestart = true;
-                            });
-                          },
-                          child: const Image(
-                              image: AssetImage(
-                                  "images/game/animatednextpic.gif")),
-                        )
-                      ],
-                    )
-                  ],
-                ),
+                gamestart
+                    ? const Text("")
+                    : Stack(
+                        alignment: Alignment.bottomCenter,
+                        children: [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.center,
+                            children: [
+                              Stack(
+                                alignment: Alignment.center,
+                                children: [
+                                  Container(
+                                      height: screenHeight * 0.4,
+                                      decoration: const BoxDecoration(
+                                        image: DecorationImage(
+                                            alignment: Alignment.topCenter,
+                                            image: AssetImage(
+                                                "images/game/animated6balloontitleformpic.gif")),
+                                      ),
+                                      child: const Align(
+                                          alignment: Alignment(0, 0.85),
+                                          child: Text(
+                                            "level 1",
+                                            style: TextStyle(
+                                              fontSize: 36.0,
+                                              color: Color.fromARGB(
+                                                  255, 92, 51, 1),
+                                              decorationStyle:
+                                                  TextDecorationStyle.dashed,
+                                              letterSpacing: 5.0,
+                                              fontFamily: 'Balloony',
+                                            ),
+                                          ))),
+                                ],
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    counddown = true;
+                                    gamestart = true;
+                                  });
+                                },
+                                child: const Image(
+                                    width: 280,
+                                    height: 80,
+                                    image: AssetImage(
+                                      "images/game/animatednextpic.gif",
+                                    )),
+                              )
+                            ],
+                          )
+                        ],
+                      ),
                 Positioned(
                     top: screenHeight * 0.055,
                     right: -30,
