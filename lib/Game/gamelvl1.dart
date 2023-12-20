@@ -34,7 +34,7 @@ class _GameLvl1State extends State<GameLvl1> {
   final StreamController<int> _inputController =
       StreamController.broadcast(); //multiple listener
   final StreamController<int> _scoreController = StreamController.broadcast();
-  final StreamController<int> _levelController = StreamController.broadcast();
+  // final StreamController<int> _levelController = StreamController.broadcast();
   var _assetAudioPlay = AssetsAudioPlayer.newPlayer();
   int score = 0;
   int level = 1;
@@ -149,7 +149,7 @@ class _GameLvl1State extends State<GameLvl1> {
                       screenWidth: screenWidth,
                       inputController: _inputController,
                       scoreController: _scoreController,
-                      levelController: _levelController,
+                      // levelController: _levelController,
                     );
                   } else {
                     return Text("");
@@ -252,14 +252,14 @@ class Game extends StatefulWidget {
   final double screenWidth;
   final StreamController<int> inputController;
   final StreamController<int> scoreController;
-  final StreamController<int> levelController;
+  // final StreamController<int> levelController;
   const Game({
     super.key,
     required this.screenHeight,
     required this.screenWidth,
     required this.inputController,
     required this.scoreController,
-    required this.levelController,
+    // required this.levelController,
   });
   @override
   State<Game> createState() => _GameState();
@@ -315,14 +315,14 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
     }
   }
 
-  level(bool l) {
-    // print("levelevent : ${levelevent}");
-    if (l == true) {
-      widget.levelController.add(1);
-    } else if (l == false && levelevent > 1) {
-      widget.levelController.add(-1);
-    }
-  }
+  // level(bool l) {
+  //   // print("levelevent : ${levelevent}");
+  //   if (l == true) {
+  //     widget.levelController.add(1);
+  //   } else if (l == false && levelevent > 1) {
+  //     widget.levelController.add(-1);
+  //   }
+  // }
 
   // ignore: non_constant_identifier_names
   ListView _UpdatePic(t, d, e) {
@@ -378,7 +378,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
       if (total == event) {
         t = false;
         score(t);
-        level(l);
+        // level(l);
         setState(() {
           _UpdatePic(t, d, e);
           reset(widget.screenWidth);
@@ -430,7 +430,7 @@ class KeyPad extends StatelessWidget {
   const KeyPad({super.key, required this.inputController});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context) {2
     return Align(
       alignment: Alignment.bottomCenter,
       child: Container(

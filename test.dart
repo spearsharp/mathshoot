@@ -85,7 +85,7 @@ class arith {
         calcSymbolNum = 1; //
         calcparentheis = 0;
     }
-    ;
+
     List calcSymbolPriority = [
       ['()'],
       ['×', '÷'],
@@ -110,6 +110,14 @@ class arith {
     }
     print("numArray:$numArray"); // print number list
 
+    //get number involved into calc
+
+    //get calc simbol involved into calc
+    //get () simbol involved into calc
+
+    //compose and calc the answer   1. when abstract to negative , then switch the position , when divided into decimal, use 1,2,3,5,7 to binarray tree tract get an abandom figure
+
+// Previous section
     // for (int i = 0; i < calcSymbolNum; i++) {
     //   if (calcSymbolNum == 1) {
     //     num radomNumOfCalcSymbol = Random(0).nextInt(3);
