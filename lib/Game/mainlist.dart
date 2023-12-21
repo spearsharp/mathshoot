@@ -184,7 +184,7 @@ class _MainlistState extends State<Mainlist> {
                 onTap: () {
                   print("route to Profile page"); // pending on route to Profile
                 },
-                child: ListTile(
+                child: const ListTile(
                   leading: CircleAvatar(
                     child: Icon(Icons.portrait),
                   ),

@@ -120,7 +120,7 @@ class _GameMainState extends State<GameMain> {
                                   AssetImage("images/game/yellowtitlebelt.png"),
                             )),
                             child: const Text(
-                              "Exit",
+                              "Guide",
                               textAlign: TextAlign.center,
                               style: TextStyle(
                                 fontSize: 36.0,

@@ -1,6 +1,7 @@
 // import 'dart:ffi';
 // import 'dart:io';
 // import 'dart:js_util';
+import 'dart:convert';
 import 'dart:math';
 
 // import 'package:flutter/material.dart';
@@ -13,72 +14,135 @@ late int a,
     calcNumAmt,
     calcSymbolNum,
     answer,
+    rangNum,
     answer1,
     answer2,
     radomNumOfCalcSymbol,
     calcparentheis;
-late String str1, str2, str3, str4, str5, str6, str7, str8, str9, str10;
+late String arithstring,
+    str1,
+    str2,
+    str3,
+    str4,
+    str5,
+    str6,
+    str7,
+    str8,
+    str9,
+    str10;
 String questionMark = '?';
-late Map<String, Object> arithquote;
+late num answertmp;
+bool calcend = false;
+late Map<String, String> arithquote;
+const List uniqNum = [1, 2, 3, 5, 7, 11, 13, 17, 19, 23, 29];
 const List calcsymbol = ['+', '-', '×', '÷', '()'];
 
-void main() {
-  // for (int i = 0; i < 5000000; i++) {
-  //   print(i);
+Future<void> main() async {
+  // for (int i = 0; i < 5000; i++) {
+  //   // print(i);
+  //   print(Random().nextInt(10));
   // }
-  var result = arith().getArith("1", 1, 3, "test");
+  for (int q = 0; q < 100; q++) {
+    var result = await arith().getArith("1", 1, 3, "test");
+    var jsonresult = jsonEncode(result);
+    print("result:$q+$jsonresult");
+  }
 
-  var result1 = arith().calcModule(1, 3, "+");
-  print("result:$result");
-  print("result1:$result1");
+  //  for (int q = 0; q < 100; q++) {
+  //   num aa = Random().nextInt(100);
+  //   num bb = Random().nextInt(100);
+  //   late num cc;
+
+  //   cc = aa % bb;
+  //   print("$aa'/'$bb'=' $cc");
+  // }
+  // print("result1:$result1");
 }
 
 class arith {
   // calc the minimum equation
-  int calcModule(int aa, int bb, String t) {
+  Map<String, int> calcModule(num aa, num bb, String t, bool calcend) {
     switch (t) {
       case "+":
-        answer1 = aa + bb;
+        answertmp = aa + bb;
       case "-":
-        answer1 = aa - bb;
+        answertmp = aa - bb;
       case "×":
-        answer1 = aa * bb;
+        answertmp = aa * bb;
       case "÷":
-        answer1 = (aa / bb) as int;
-      default:
-        answer1 = 0;
+        if (bb == 0) {
+          bb = 1;
+        }
+        if (aa % bb != 0) {
+          int tmpcountdivide = aa.toInt(); //temp using
+          int tmpcount = 0;
+          List tmpcmmdivide = []; //temp using
+          for (int r = tmpcountdivide; r > 0; r--) {
+            if (aa % tmpcountdivide == 0) {
+              tmpcmmdivide.add(r);
+              tmpcount++;
+              print("tmpcount:$tmpcount");
+              print("tmpcountdivide:$tmpcountdivide");
+            }
+          }
+          tmpcountdivide >= 2
+              ? bb = tmpcmmdivide[Random().nextInt(tmpcount)]
+              : bb = tmpcmmdivide[0];
+          print("tmpcmmdivide:$tmpcmmdivide");
+          print("tmpcount:$tmpcount");
+          print("tempmutiple:$bb");
+          answertmp = (aa / bb);
+        } else {
+          try {
+            answertmp = (aa / bb);
+          } on Exception catch (e) {
+            print("Error:$e");
+          }
+        }
     }
-    return answer1;
+    a = aa.toInt();
+    b = bb.toInt();
+    c = answertmp.toInt();
+    Map<String, int> tempcalcret = {"a": a, "b": b, "calresult": c};
+    return tempcalcret;
   }
 
-  Map<String, Object> arithgene(
+  Map<String, String> arithgene(
     key,
     level,
   ) {
+    print("generate arithquote");
+    print("key:$key");
+    print("level:$level");
     switch (level ~/ 3) {
       case 0:
         calcNumAmt = 2;
         calcSymbolNum = calcNumAmt - 1; // must haven't ()  , symbol without ()
         calcparentheis = 0;
+        rangNum = 10;
       case 1:
         calcNumAmt = 3; //2-3 pick numbers of number
         calcSymbolNum = calcNumAmt -
             1; // can have ()  symbol without () ,must with nums of num minius 1.
         calcparentheis = calcNumAmt ~/ 2; // 1-calcNumAmt~/2 random number of ()
+        rangNum = 25;
       case 2:
         calcNumAmt = 3;
         calcSymbolNum = calcNumAmt - 1; //2-(calcNumAmt-1)
         calcparentheis = calcNumAmt ~/ 2; // 0-calcNumAmt~/2 random number of ()
+        rangNum = 50;
       case 3:
         calcNumAmt = 4;
         calcSymbolNum = calcNumAmt - 1; //2-(calcNumAmt-1)
         calcparentheis = calcNumAmt ~/ 2; // 0-calcNumAmt~/2 random number of ()
+        rangNum = 75;
       case 3:
       case 4:
         calcNumAmt = 4;
         calcSymbolNum = calcNumAmt - 1; //2-(calcNumAmt-1)
         calcparentheis = calcNumAmt ~/
             2; // 1-calcNumAmt~/2 random number of (),when there are two () , need two more symbol included
+        rangNum = 100;
       case 3:
       default:
         calcNumAmt = 2;
@@ -93,27 +157,43 @@ class arith {
     ];
 
     List numArray = [];
-    List symbolArray = [];
-
-    if (calcNumAmt == 2) {
-      a = Random(0).nextInt(10);
-      b = Random(0).nextInt(10);
-      var result = calcModule(a, b, calcsymbol[Random(0).nextInt(3)]);
-      print("result:$result");
-    } else {}
-
-    for (int i = 0; i < calcNumAmt; i++) {
-      num calcsNum = Random(0).nextInt(10);
-      print("get random number of calc");
-      numArray.add(calcsNum);
-      print("calcnum:$calcsNum");
-    }
-    print("numArray:$numArray"); // print number list
+    List calcsymbolArray = [];
 
     //get number involved into calc
+    print("calcNumAmt$calcNumAmt");
+    print("rangNum:$rangNum");
+    for (int i = 0; i < calcNumAmt; i++) {
+      numArray.add(Random().nextInt(rangNum));
+      print("totalNum:$numArray");
+    }
 
     //get calc simbol involved into calc
+    print("calcSymbolNum$calcSymbolNum");
+    for (int i = 0; i < calcSymbolNum; i++) {
+      calcsymbolArray.add(calcsymbol[Random().nextInt(4)]);
+      print("allCalcSimbol:$calcsymbolArray");
+    }
+
     //get () simbol involved into calc
+    print("Num of calcparentheis:$calcparentheis");
+    if (calcNumAmt <= 2) {
+      print("calcNun less than 2");
+      a = Random().nextInt(rangNum);
+      b = Random().nextInt(rangNum);
+      str1 = calcsymbolArray[calcSymbolNum - 1];
+      Map<String, int> calresult = calcModule(a, b, str1, calcend);
+      if (calresult["calresult"]! >= 0) {
+        arithstring = a.toString() + str1 + b.toString() + "=" + "?";
+      } else {
+        print("result is negative");
+        arithstring = b.toString() + str1 + a.toString() + "=" + "?";
+        calresult["calresult"] = -calresult["calresult"]!;
+      }
+      ;
+      print("result:$calresult");
+      print("arithstring:$arithstring");
+      arithquote = {"result": calresult.toString(), "level1": arithstring};
+    } else {}
 
     //compose and calc the answer   1. when abstract to negative , then switch the position , when divided into decimal, use 1,2,3,5,7 to binarray tree tract get an abandom figure
 
@@ -163,85 +243,77 @@ class arith {
     //   } else {}
     // }
 
-    print("generate arithquote");
-    print("key:$key");
-    print("level:$level");
-
-    // String arithsentence = str1 + str2;
-    arithquote = {"level1": answer1};
-
     return arithquote;
   }
 
-  Future<Map<String, Object>> getArith(
+  Future<Map<String, String>> getArith(
       String key, int? level, int calcnum, String? arithquote) async {
     print("arithquote:$arithquote");
-
-    int calcsRandomCat =
-        Random(2).nextInt(calcnum); //generate calc compliation , 1-calcnum
+    // int calcsRandomCat =
+    //     Random(2).nextInt(calcnum); //generate calc compliation , 1-calcnum
 
     late String get_Random_symbol; // = calcsymbol[Random(0).nextInt(4)];
 
-    final Map<String, Object> arithmodule =
+    final Map<String, String> arithmodule =
         arithgene(key, level); // call a subroutine
     return arithmodule;
   }
 }
 
 //Test new function for learning
-class _DartTypeState {
-  void call() {
-    dynamicDemo();
+// class _DartTypeState {
+//   void call() {
+//     dynamicDemo();
 
-    varDemo();
+//     varDemo();
 
-    objectDemo();
-  }
+//     objectDemo();
+//   }
 
-  dynamicDemo() {
-    dynamic d = "CSDN";
+//   dynamicDemo() {
+//     dynamic d = "CSDN";
 
-    // 打印 dynamic 变量的运行时类型
-    print(d.runtimeType);
-    // 打印 dynamic 变量值
-    print(d);
+//     // 打印 dynamic 变量的运行时类型
+//     print(d.runtimeType);
+//     // 打印 dynamic 变量值
+//     print(d);
 
-    // 调用 dynamic 变量的方法, 静态编译时无法检查其中的错误, 运行时会报错
-    //d.getName();
+//     // 调用 dynamic 变量的方法, 静态编译时无法检查其中的错误, 运行时会报错
+//     //d.getName();
 
-    // 为 dynamic 变量赋值 int 数据
-    d = 666;
-    // 打印 dynamic 变量的运行时类型
-    print(d.runtimeType);
-    // 打印 dynamic 变量值
-    print(d);
-  }
+//     // 为 dynamic 变量赋值 int 数据
+//     d = 666;
+//     // 打印 dynamic 变量的运行时类型
+//     print(d.runtimeType);
+//     // 打印 dynamic 变量值
+//     print(d);
+//   }
 
-  varDemo() {
-    // 声明 var 变量
-    var d = "CSDN";
+//   varDemo() {
+//     // 声明 var 变量
+//     var d = "CSDN";
 
-    // 打印 var 变量的运行时类型
-    print(d.runtimeType);
-    // 打印 var 变量值
-    print(d);
+//     // 打印 var 变量的运行时类型
+//     print(d.runtimeType);
+//     // 打印 var 变量值
+//     print(d);
 
-    // 将已经被自动推测为 String 类型的 d 变量赋值一个 int 类型值
-    // 此时就会在编译时报错
-    //d = 666;
-  }
+//     // 将已经被自动推测为 String 类型的 d 变量赋值一个 int 类型值
+//     // 此时就会在编译时报错
+//     //d = 666;
+//   }
 
-  objectDemo() {
-    // 定义 Object 类型变量
-    Object d = "CSDN";
+//   objectDemo() {
+//     // 定义 Object 类型变量
+//     Object d = "CSDN";
 
-    // 调用 Object 对象的方法
-    // 打印 var 变量的运行时类型
-    print(d.runtimeType);
-    // 打印 var 变量值
-    print(d);
+//     // 调用 Object 对象的方法
+//     // 打印 var 变量的运行时类型
+//     print(d.runtimeType);
+//     // 打印 var 变量值
+//     print(d);
 
-    // 调用 Object 不存在的方法就会报错
-    //d.getName()
-  }
-}
+//     // 调用 Object 不存在的方法就会报错
+//     //d.getName()
+//   }
+// }

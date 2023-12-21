@@ -430,7 +430,7 @@ class KeyPad extends StatelessWidget {
   const KeyPad({super.key, required this.inputController});
 
   @override
-  Widget build(BuildContext context) {2
+  Widget build(BuildContext context) {
     return Align(
       alignment: Alignment.bottomCenter,
       child: Container(
