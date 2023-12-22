@@ -26,16 +26,21 @@ bool calcend = false;
 late Map<String, String> arithquote;
 const List uniqNum = [1, 2, 3, 5, 7, 11, 13, 17, 19, 23, 29];
 const List calcsymbol = ['+', '-', '×', '÷', '()'];
+List calcSymbolPriority = [
+  ["("],
+  ['×', '÷'],
+  ['+', '-'],
+];
 
 Future<void> main() async {
   // for (int i = 0; i < 100; i++) {
   //   // print(i);
-  //   print(Random().nextInt(10));
+  //   print(getEvebGen(10, 111));
   //   print((randomGen(1, 9)));
   // }
 
-  for (int q = 0; q < 10; q++) {
-    var result = await arith().getArith("1", 5, 9, "test");
+  for (int q = 0; q < 100; q++) {
+    var result = await arith().getArith("1", 15, 9, "test");
     var jsonresult = jsonEncode(result);
     print("result:$q+$jsonresult");
   }
@@ -60,9 +65,14 @@ randomGen(min, max) {
 }
 
 getEvebGen(min, max) {
-  var x = Random().nextInt(max) + min;
+  int aaa = min;
+  int bbb = max;
+  int u = max - min;
+  // print("aaa:$aaa,,,bbb:$bbb,,,u:$u");
+  var x = Random().nextInt(u == 0 ? 1 : u) + min;
   var y = x ~/ 2;
   var z = y * 2;
+  // print(",,x:$x,,,,y:$y,,,,z:$z");
   return z;
 }
 
@@ -121,7 +131,7 @@ class arith {
           }
         }
       case "(":
-      case ")":
+      case "<":
     }
     a = aa.toInt();
     b = bb.toInt();
@@ -161,28 +171,29 @@ class arith {
         calcNumAmt = 3;
         calcSymbolNum = calcNumAmt - 1; //2-(calcNumAmt-1)
         calcparentheis = calcNumAmt ~/ 2; // 0-calcNumAmt~/2 random number of ()
-        rangNum = 50;
+        rangNum = 20;
       case 3:
         calcNumAmt = 4;
         calcSymbolNum = calcNumAmt - 1; //2-(calcNumAmt-1)
         calcparentheis = calcNumAmt ~/ 2; // 0-calcNumAmt~/2 random number of ()
-        rangNum = 75;
+        rangNum = 30;
       case 4:
         calcNumAmt = 4;
         calcSymbolNum = calcNumAmt - 1; //2-(calcNumAmt-1)
         calcparentheis = calcNumAmt ~/
             2; // 1-calcNumAmt~/2 random number of (),when there are two () , need two more symbol included
-        rangNum = 100;
+        rangNum = 40;
+      case 5:
+        calcNumAmt = 5;
+        calcSymbolNum = calcNumAmt - 1; //2-(calcNumAmt-1)
+        calcparentheis = calcNumAmt ~/
+            2; // 1-calcNumAmt~/2 random number of (),when there are two () , need two more symbol included
+        rangNum = 50;
       default:
         calcNumAmt = 2;
         calcSymbolNum = 1; //
         calcparentheis = 0;
     }
-
-    List calcSymbolPriority = [
-      ['×', '÷'],
-      ['+', '-'],
-    ];
 
     List numArray = [];
     List calcsymbolArray = [];
@@ -215,9 +226,13 @@ class arith {
       print("result:$calresult");
       print("arithstring:$arithstring");
       arithquote = {"result": calresult.toString(), "level1": arithstring};
+
+      //calc the number and get the actual equation
+
+      //calc end
     } else {
       print(
-          "calcNun more than 2 : $calcNumAmt,() calcparentheis is less then calcNum-1: $calcparentheis");
+          "calcNum more than 2 : $calcNumAmt,() calcparentheis is less than calcNum-1: $calcparentheis");
       List composedEquation = [];
       for (int k = 0; k < numArray.length; k++) {
         composedEquation.add(numArray[k]);
@@ -237,6 +252,10 @@ class arith {
             arithstring += composedEquation[l].toString();
           }
         }
+
+        //calc the number and get the actual equation
+
+        //calc end
       } else {
         List pthpairs = ["(", ")"];
         int cmplth = composedEquation.length;
@@ -247,16 +266,18 @@ class arith {
         int tmpnum = 0;
 
         print("composedEquation:$composedEquation");
-        late int p;
         if (tempPNI == 2 && tempPNR == 0) {
-          for (p = 0; p < 2; p++) {
+          for (int p = 0; p < 2; p++) {
             for (int i = 0; i < cmplth; i++) {
               composedEquation.insert(pthposit, pthpairs[p]);
             }
           }
         } else {
           //compose the equation begin
+          // pthposit = 0;
+          print("pthposit_init:$pthposit");
           for (int o = 1; o <= calcpthNum; o++) {
+            int p = 0;
             print(
                 "calcNumAmt:$calcNumAmt,,calcpthNum:$calcpthNum,,tempPNI:$tempPNI,,tempPNR:$tempPNR");
             tmpnum++;
@@ -264,32 +285,41 @@ class arith {
             for (p = 0; p < 2; p++) {
               if (p == 0) {
                 // pthposit = (pthposit + (Random().nextInt(tempPNI + tempPNR - 1)));
-                tmp = tempPNI + tempPNR;
-                pthposit = getEvebGen(0, tmp);
+                tmp = (calcNumAmt + calcSymbolNum - 1) -
+                    (3 * (calcpthNum - o) + (calcpthNum - o));
+                print("tmp_before:$tmp");
+                pthposit == 0
+                    ? pthposit = getEvebGen(0, tmp)
+                    : pthposit = pthposit + 2;
                 print("pthposit1:$pthposit,,tmp:$tmp");
                 composedEquation.insert(pthposit, pthpairs[p]);
               } else {
-                int tmp4 = composedEquation.length;
-                print("tmp4:$tmp4");
-
-                if (tmp == 0) {
-                  pthposit = 4;
-                }
-                if (tmp == 2) {
-                  pthposit = 6;
-                }
-
-                print("pthposit2:$pthposit");
-                if (pthposit < tmp4) {
-                  composedEquation.insert(pthposit, pthpairs[p]);
+                int tmplength = composedEquation.length;
+                int tmp4 =
+                    tmplength - (3 * (calcpthNum - o) + (calcpthNum - o));
+                print("tmplength:$tmplength,,,pthposit:$pthposit,,,tmp4:$tmp4");
+                if (tmp4 < (pthposit + 3)) {
+                  print("the ) is wrongly ahead of next () ");
                 } else {
-                  composedEquation.add(pthpairs[p]);
+                  print("pthposit_before:$pthposit");
+                  int tmp5 = pthposit + 4;
+                  print("tmp5_before:$tmp5,,,tmp4_before:$tmp4");
+                  pthposit = getEvebGen(tmp5, tmp4);
+                  print("pthposit_tmp5:$pthposit,,tmp4:$tmp4");
+                  if (pthposit < tmplength) {
+                    composedEquation.insert(pthposit, pthpairs[p]);
+                  } else {
+                    composedEquation.add(pthpairs[p]);
+                  }
                 }
               }
               print("tmpnum:$tmpnum");
               print("composedEquation$composedEquation");
             }
           }
+          //calc the number and get the actual equation
+
+          //calc end
         }
         //************ compose the equation end **************/
         for (int p = 0; p <= composedEquation.length; p++) {
@@ -321,61 +351,3 @@ class arith {
     return arithmodule;
   }
 }
-
-//Test new function for learning
-// class _DartTypeState {
-//   void call() {
-//     dynamicDemo();
-
-//     varDemo();
-
-//     objectDemo();
-//   }
-
-//   dynamicDemo() {
-//     dynamic d = "CSDN";
-
-//     // 打印 dynamic 变量的运行时类型
-//     print(d.runtimeType);
-//     // 打印 dynamic 变量值
-//     print(d);
-
-//     // 调用 dynamic 变量的方法, 静态编译时无法检查其中的错误, 运行时会报错
-//     //d.getName();
-
-//     // 为 dynamic 变量赋值 int 数据
-//     d = 666;
-//     // 打印 dynamic 变量的运行时类型
-//     print(d.runtimeType);
-//     // 打印 dynamic 变量值
-//     print(d);
-//   }
-
-//   varDemo() {
-//     // 声明 var 变量
-//     var d = "CSDN";
-
-//     // 打印 var 变量的运行时类型
-//     print(d.runtimeType);
-//     // 打印 var 变量值
-//     print(d);
-
-//     // 将已经被自动推测为 String 类型的 d 变量赋值一个 int 类型值
-//     // 此时就会在编译时报错
-//     //d = 666;
-//   }
-
-//   objectDemo() {
-//     // 定义 Object 类型变量
-//     Object d = "CSDN";
-
-//     // 调用 Object 对象的方法
-//     // 打印 var 变量的运行时类型
-//     print(d.runtimeType);
-//     // 打印 var 变量值
-//     print(d);
-
-//     // 调用 Object 不存在的方法就会报错
-//     //d.getName()
-//   }
-// }
