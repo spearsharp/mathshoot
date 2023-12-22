@@ -4,13 +4,13 @@
 import 'dart:convert';
 import 'dart:math';
 
+// import 'package:get/get.dart';
+
 // import 'package:flutter/material.dart';
 
 late int a,
     b,
     c,
-    d,
-    e,
     calcNumAmt,
     calcSymbolNum,
     answer,
@@ -19,17 +19,7 @@ late int a,
     answer2,
     radomNumOfCalcSymbol,
     calcparentheis;
-late String arithstring,
-    str1,
-    str2,
-    str3,
-    str4,
-    str5,
-    str6,
-    str7,
-    str8,
-    str9,
-    str10;
+late String arithstring, str1, str2, str3;
 String questionMark = '?';
 late num answertmp;
 bool calcend = false;
@@ -38,25 +28,49 @@ const List uniqNum = [1, 2, 3, 5, 7, 11, 13, 17, 19, 23, 29];
 const List calcsymbol = ['+', '-', '×', '÷', '()'];
 
 Future<void> main() async {
-  // for (int i = 0; i < 5000; i++) {
+  // for (int i = 0; i < 100; i++) {
   //   // print(i);
   //   print(Random().nextInt(10));
+  //   print((randomGen(1, 9)));
   // }
-  for (int q = 0; q < 100; q++) {
-    var result = await arith().getArith("1", 1, 3, "test");
+
+  for (int q = 0; q < 10; q++) {
+    var result = await arith().getArith("1", 5, 9, "test");
     var jsonresult = jsonEncode(result);
     print("result:$q+$jsonresult");
   }
 
-  //  for (int q = 0; q < 100; q++) {
-  //   num aa = Random().nextInt(100);
-  //   num bb = Random().nextInt(100);
+  // for (int q = 0; q < 100; q++) {
+  //   num aa = Random().nextInt(20);
+  //   num bb = 9;
   //   late num cc;
 
-  //   cc = aa % bb;
+  //   cc = aa ~/ bb;
   //   print("$aa'/'$bb'=' $cc");
   // }
   // print("result1:$result1");
+}
+
+//until
+randomGen(min, max) {
+  //nextInt 方法生成一个从 0（包括）到 max（不包括）的非负随机整数
+  var x = Random().nextInt(max) + min;
+  //如果您不想返回整数，只需删除 floor() 方法
+  return x.floor();
+}
+
+getEvebGen(min, max) {
+  var x = Random().nextInt(max) + min;
+  var y = x ~/ 2;
+  var z = y * 2;
+  return z;
+}
+
+getOddGen(min, max) {
+  var x = Random().nextInt(max) + min;
+  var y = x ~/ 2;
+  var z = y * 2 + 1;
+  return z;
 }
 
 class arith {
@@ -67,6 +81,13 @@ class arith {
         answertmp = aa + bb;
       case "-":
         answertmp = aa - bb;
+        if (answertmp < 0) {
+          print("abstract answer is nagetive");
+          num aatmp = aa;
+          aa = bb;
+          bb = aatmp;
+          answertmp = -answertmp;
+        }
       case "×":
         answertmp = aa * bb;
       case "÷":
@@ -99,6 +120,8 @@ class arith {
             print("Error:$e");
           }
         }
+      case "(":
+      case ")":
     }
     a = aa.toInt();
     b = bb.toInt();
@@ -107,13 +130,21 @@ class arith {
     return tempcalcret;
   }
 
+//segement composing and computing
+  Map<dynamic, dynamic> calcComposeModule(String a, String b, String c) {
+    Map<String, String> composedEquotion = {"a": a, "b": b, "c": c};
+    return composedEquotion;
+  }
+
   Map<String, String> arithgene(
     key,
     level,
   ) {
+    int t = level ~/ 3;
     print("generate arithquote");
     print("key:$key");
-    print("level:$level");
+    print("level:$level and case:$t");
+
     switch (level ~/ 3) {
       case 0:
         calcNumAmt = 2;
@@ -125,7 +156,7 @@ class arith {
         calcSymbolNum = calcNumAmt -
             1; // can have ()  symbol without () ,must with nums of num minius 1.
         calcparentheis = calcNumAmt ~/ 2; // 1-calcNumAmt~/2 random number of ()
-        rangNum = 25;
+        rangNum = 10;
       case 2:
         calcNumAmt = 3;
         calcSymbolNum = calcNumAmt - 1; //2-(calcNumAmt-1)
@@ -136,14 +167,12 @@ class arith {
         calcSymbolNum = calcNumAmt - 1; //2-(calcNumAmt-1)
         calcparentheis = calcNumAmt ~/ 2; // 0-calcNumAmt~/2 random number of ()
         rangNum = 75;
-      case 3:
       case 4:
         calcNumAmt = 4;
         calcSymbolNum = calcNumAmt - 1; //2-(calcNumAmt-1)
         calcparentheis = calcNumAmt ~/
             2; // 1-calcNumAmt~/2 random number of (),when there are two () , need two more symbol included
         rangNum = 100;
-      case 3:
       default:
         calcNumAmt = 2;
         calcSymbolNum = 1; //
@@ -151,7 +180,6 @@ class arith {
     }
 
     List calcSymbolPriority = [
-      ['()'],
       ['×', '÷'],
       ['+', '-'],
     ];
@@ -182,67 +210,101 @@ class arith {
       b = Random().nextInt(rangNum);
       str1 = calcsymbolArray[calcSymbolNum - 1];
       Map<String, int> calresult = calcModule(a, b, str1, calcend);
-      if (calresult["calresult"]! >= 0) {
-        arithstring = a.toString() + str1 + b.toString() + "=" + "?";
-      } else {
-        print("result is negative");
-        arithstring = b.toString() + str1 + a.toString() + "=" + "?";
-        calresult["calresult"] = -calresult["calresult"]!;
-      }
-      ;
+      arithstring = "$a$str1$b=?";
+
       print("result:$calresult");
       print("arithstring:$arithstring");
       arithquote = {"result": calresult.toString(), "level1": arithstring};
-    } else {}
+    } else {
+      print(
+          "calcNun more than 2 : $calcNumAmt,() calcparentheis is less then calcNum-1: $calcparentheis");
+      List composedEquation = [];
+      for (int k = 0; k < numArray.length; k++) {
+        composedEquation.add(numArray[k]);
+        if (k < calcsymbolArray.length) {
+          composedEquation.add(calcsymbolArray[k]);
+        }
+      }
+      //compose the equation
 
-    //compose and calc the answer   1. when abstract to negative , then switch the position , when divided into decimal, use 1,2,3,5,7 to binarray tree tract get an abandom figure
+      if (calcparentheis == 0 || Random().nextInt(calcparentheis + 1) == 0) {
+        for (int l = 0; l <= composedEquation.length; l++) {
+          if (l == 0) {
+            arithstring = composedEquation[0].toString();
+          } else if (l == composedEquation.length) {
+            arithstring = "$arithstring=?";
+          } else {
+            arithstring += composedEquation[l].toString();
+          }
+        }
+      } else {
+        List pthpairs = ["(", ")"];
+        int cmplth = composedEquation.length;
+        int calcpthNum = randomGen(1, calcparentheis);
+        int pthposit = 0;
+        int tempPNI = calcNumAmt ~/ calcpthNum;
+        int tempPNR = calcNumAmt % calcpthNum;
+        int tmpnum = 0;
 
-// Previous section
-    // for (int i = 0; i < calcSymbolNum; i++) {
-    //   if (calcSymbolNum == 1) {
-    //     num radomNumOfCalcSymbol = Random(0).nextInt(3);
-    //   } else {
-    //     num radomNumOfCalcSymbol = Random(0).nextInt(4);
-    //   }
+        print("composedEquation:$composedEquation");
+        late int p;
+        if (tempPNI == 2 && tempPNR == 0) {
+          for (p = 0; p < 2; p++) {
+            for (int i = 0; i < cmplth; i++) {
+              composedEquation.insert(pthposit, pthpairs[p]);
+            }
+          }
+        } else {
+          //compose the equation begin
+          for (int o = 1; o <= calcpthNum; o++) {
+            print(
+                "calcNumAmt:$calcNumAmt,,calcpthNum:$calcpthNum,,tempPNI:$tempPNI,,tempPNR:$tempPNR");
+            tmpnum++;
+            late int tmp;
+            for (p = 0; p < 2; p++) {
+              if (p == 0) {
+                // pthposit = (pthposit + (Random().nextInt(tempPNI + tempPNR - 1)));
+                tmp = tempPNI + tempPNR;
+                pthposit = getEvebGen(0, tmp);
+                print("pthposit1:$pthposit,,tmp:$tmp");
+                composedEquation.insert(pthposit, pthpairs[p]);
+              } else {
+                int tmp4 = composedEquation.length;
+                print("tmp4:$tmp4");
 
-    //   print("get random number of calc");
-    //   for (int j = 0; j < radomNumOfCalcSymbol; j++) {
-    //     symbolArray.add(calcsymbol[Random(0).nextInt(radomNumOfCalcSymbol)]);
-    //     print("radomNumOfCalcSymbol:$radomNumOfCalcSymbol");
-    //   }
-    // }
-    // ;
-    // print("symbolArray:$symbolArray"); // print all symbol list
+                if (tmp == 0) {
+                  pthposit = 4;
+                }
+                if (tmp == 2) {
+                  pthposit = 6;
+                }
 
-    // List arithQuoteSentence = []; // compose arith sentence
-    // for (int k = 0; k < numArray.length + symbolArray.length; k++) {
-    //   arithQuoteSentence.add(numArray[k]);
-    //   if (symbolArray[k] == null) {
-    //     continue;
-    //   } else if (symbolArray[k] == '()') {
-    //     bool parenthesesOne = false;
-    //     bool parenthesesPair = false;
-    //     if (k == 0 || k == 2 || k == 4) {
-    //       arithQuoteSentence.add("(");
-    //       parenthesesOne = true;
-    //     }
-    //   } else {
-    //     arithQuoteSentence.add(symbolArray[k]);
-    //   }
-    // }
-
-    // print(
-    //     "arithQuoteSentence:$arithQuoteSentence"); // compose arithQuoteSentence
-
-    // if (symbolArray.contains("()")) {
-    // } else {}
-
-    // if (calcNumAmt == 2) {
-    // } else {
-    //   if (symbolArray.contains("()")) {
-    //   } else {}
-    // }
-
+                print("pthposit2:$pthposit");
+                if (pthposit < tmp4) {
+                  composedEquation.insert(pthposit, pthpairs[p]);
+                } else {
+                  composedEquation.add(pthpairs[p]);
+                }
+              }
+              print("tmpnum:$tmpnum");
+              print("composedEquation$composedEquation");
+            }
+          }
+        }
+        //************ compose the equation end **************/
+        for (int p = 0; p <= composedEquation.length; p++) {
+          if (p == 0) {
+            arithstring = composedEquation[0].toString();
+          } else if (p == composedEquation.length) {
+            arithstring = "$arithstring=?";
+          } else {
+            arithstring += composedEquation[p].toString();
+          }
+        }
+      }
+      int calresult = 0; //temp fixing
+      arithquote = {"result": calresult.toString(), "level1": arithstring};
+    }
     return arithquote;
   }
 
