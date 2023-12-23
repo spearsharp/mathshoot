@@ -25,13 +25,10 @@ String questionMark = '?';
 late num answertmp;
 bool calcend = false;
 late Map<String, String> arithquote;
+late Map<String, int> calresult;
+
 const List uniqNum = [1, 2, 3, 5, 7, 11, 13, 17, 19, 23, 29];
 const List calcsymbol = ['+', '-', '×', '÷', '()'];
-List calcSymbolPriority = [
-  ["("],
-  ['×', '÷'],
-  ['+', '-'],
-];
 
 Future<void> main() async {
   // for (int i = 0; i < 100; i++) {
@@ -41,7 +38,7 @@ Future<void> main() async {
   // }
 
   for (int q = 0; q < 50; q++) {
-    var result = await arith().getArith("1", 10, 9, "test");
+    var result = await arith().getArith("1", 15, 9, "test");
     var jsonresult = jsonEncode(result);
     print("result:$q+$jsonresult");
   }
@@ -64,16 +61,6 @@ randomGen(min, max) {
   //如果您不想返回整数，只需删除 floor() 方法
   return x.floor();
 }
-
-// randomEvebGen(min, max) {
-//   int aaa = min;
-//   int bbb = max;
-//   int u = max - min;
-//   var x = Random().nextInt(u == 0 ? 1 : u) + min;
-//   var y = x ~/ 2;
-//   var z = y * 2;
-//   return z;
-// }
 
 randomEvebGen(min, max) {
   List tmp = [];
@@ -105,6 +92,8 @@ randomOddGen(min, max) {
   return z;
 }
 
+//util end
+
 class arith {
   // calc the minimum equation
   Map<String, int> calcModule(num aa, num bb, String t, bool calcend) {
@@ -113,13 +102,13 @@ class arith {
         answertmp = aa + bb;
       case "-":
         answertmp = aa - bb;
-        if (answertmp < 0) {
-          print("abstract answer is nagetive");
-          num aatmp = aa;
-          aa = bb;
-          bb = aatmp;
-          answertmp = -answertmp;
-        }
+      // if (answertmp < 0) {
+      //   print("abstract answer is nagetive");
+      //   num aatmp = aa;
+      //   aa = bb;
+      //   bb = aatmp;
+      //   answertmp = -answertmp;
+      // }
       case "×":
         answertmp = aa * bb;
       case "÷":
@@ -223,16 +212,8 @@ class arith {
       a = Random().nextInt(rangNum);
       b = Random().nextInt(rangNum);
       str1 = calcsymbolArray[calcSymbolNum - 1];
-      Map<String, int> calresult = calcModule(a, b, str1, calcend);
-      arithstring = "$a$str1$b=?";
-
-      print("result:$calresult");
-      print("arithstring:$arithstring");
-      arithquote = {"result": calresult.toString(), "level1": arithstring};
-
-      //calc the number and get the actual equation
-
-      //calc end
+      calresult = calcModule(a, b, str1, calcend);
+      arithstring = "";
     } else {
       print(
           "calcNum more than 2 : $calcNumAmt,() calcparentheis is less than calcNum-1: $calcparentheis");
@@ -266,13 +247,6 @@ class arith {
         int tmpnum = 0;
 
         print("composedEquation:$composedEquation");
-        // if (tempPNI == 2 && tempPNR == 0) {
-        //   for (int p = 0; p < 2; p++) {
-        //     for (int i = 0; i < cmplth; i++) {
-        //       composedEquation.insert(pthposit, pthpairs[p]);
-        //     }
-        //   }
-        // } else {
         //compose the equation begin
         pthposit = 0;
         print("pthposit_init:$pthposit");
@@ -321,9 +295,6 @@ class arith {
             print("composedEquation$composedEquation");
           }
         }
-        //calc the number and get the actual equation
-
-        //calc end
       }
       //************ compose the equation end **************/
       for (int p = 0; p <= composedEquation.length; p++) {
@@ -336,10 +307,28 @@ class arith {
           arithstring += composedEquation[p].toString();
         }
       }
+      calresult = {"calresult": 0};
     }
-    arithstring = "$arithstring=?";
-    int calresult = 0; //temp fixing
-    arithquote = {"result": calresult.toString(), "level1": arithstring};
+    arithstring.isEmpty
+        ? arithstring = "$a$str1$b=?"
+        : arithstring = "$arithstring=?";
+    //calc the number and get the actual equation
+    print("final arithstring:$arithstring");
+    //finding (
+    List tmp = [];
+
+    for (int i = 0; i < arithstring.length; i++) {
+      if (arithstring[i] == "(") {}
+    }
+
+    //calc end
+    if (calresult['calresult'].toString() == "") {
+      Map<String, int> calresult = {"calresult": 0};
+    }
+    arithquote = {
+      "result": calresult["calresult"].toString(),
+      "level1": arithstring
+    };
     // }
     return arithquote;
   }
