@@ -18,6 +18,7 @@ late int a,
     answer1,
     answer2,
     radomNumOfCalcSymbol,
+    simbolcat,
     calcparentheis;
 late String arithstring, str1, str2, str3;
 String questionMark = '?';
@@ -35,12 +36,12 @@ List calcSymbolPriority = [
 Future<void> main() async {
   // for (int i = 0; i < 100; i++) {
   //   // print(i);
-  //   print(getEvebGen(10, 111));
-  //   print((randomGen(1, 9)));
+  //   print(getEvebGen(6, 8));
+  //   // print((randomGen(1, 9)));
   // }
 
-  for (int q = 0; q < 100; q++) {
-    var result = await arith().getArith("1", 15, 9, "test");
+  for (int q = 0; q < 50; q++) {
+    var result = await arith().getArith("1", 10, 9, "test");
     var jsonresult = jsonEncode(result);
     print("result:$q+$jsonresult");
   }
@@ -64,22 +65,43 @@ randomGen(min, max) {
   return x.floor();
 }
 
-getEvebGen(min, max) {
-  int aaa = min;
-  int bbb = max;
-  int u = max - min;
-  // print("aaa:$aaa,,,bbb:$bbb,,,u:$u");
-  var x = Random().nextInt(u == 0 ? 1 : u) + min;
-  var y = x ~/ 2;
-  var z = y * 2;
-  // print(",,x:$x,,,,y:$y,,,,z:$z");
+// randomEvebGen(min, max) {
+//   int aaa = min;
+//   int bbb = max;
+//   int u = max - min;
+//   var x = Random().nextInt(u == 0 ? 1 : u) + min;
+//   var y = x ~/ 2;
+//   var z = y * 2;
+//   return z;
+// }
+
+randomEvebGen(min, max) {
+  List tmp = [];
+  int u = 0;
+  // print("aaa:$min,,,bbb:$max,,,u:$u");
+  for (int i = min; i <= max; i++) {
+    if (i.isEven) {
+      tmp.add(i);
+      u++;
+    }
+  }
+  var z = tmp[Random().nextInt(u)];
+  // print("z:$z");
   return z;
 }
 
-getOddGen(min, max) {
-  var x = Random().nextInt(max) + min;
-  var y = x ~/ 2;
-  var z = y * 2 + 1;
+randomOddGen(min, max) {
+  List tmp = [];
+  int u = 0;
+  // print("aaa:$min,,,bbb:$max,,,u:$u");
+  for (int i = min; i <= max; i++) {
+    if (i.isOdd) {
+      tmp.add(i);
+      u++;
+    }
+  }
+  var z = tmp[Random().nextInt(u)];
+  // print("z:$z");
   return z;
 }
 
@@ -104,32 +126,7 @@ class arith {
         if (bb == 0) {
           bb = 1;
         }
-        if (aa % bb != 0) {
-          int tmpcountdivide = aa.toInt(); //temp using
-          int tmpcount = 0;
-          List tmpcmmdivide = []; //temp using
-          for (int r = tmpcountdivide; r > 0; r--) {
-            if (aa % tmpcountdivide == 0) {
-              tmpcmmdivide.add(r);
-              tmpcount++;
-              print("tmpcount:$tmpcount");
-              print("tmpcountdivide:$tmpcountdivide");
-            }
-          }
-          tmpcountdivide >= 2
-              ? bb = tmpcmmdivide[Random().nextInt(tmpcount)]
-              : bb = tmpcmmdivide[0];
-          print("tmpcmmdivide:$tmpcmmdivide");
-          print("tmpcount:$tmpcount");
-          print("tempmutiple:$bb");
-          answertmp = (aa / bb);
-        } else {
-          try {
-            answertmp = (aa / bb);
-          } on Exception catch (e) {
-            print("Error:$e");
-          }
-        }
+        answertmp = (aa ~/ bb);
       case "(":
       case "<":
     }
@@ -160,35 +157,41 @@ class arith {
         calcNumAmt = 2;
         calcSymbolNum = calcNumAmt - 1; // must haven't ()  , symbol without ()
         calcparentheis = 0;
+        simbolcat = 2;
         rangNum = 10;
       case 1:
         calcNumAmt = 3; //2-3 pick numbers of number
         calcSymbolNum = calcNumAmt -
             1; // can have ()  symbol without () ,must with nums of num minius 1.
         calcparentheis = calcNumAmt ~/ 2; // 1-calcNumAmt~/2 random number of ()
+        simbolcat = 3;
         rangNum = 10;
       case 2:
         calcNumAmt = 3;
         calcSymbolNum = calcNumAmt - 1; //2-(calcNumAmt-1)
         calcparentheis = calcNumAmt ~/ 2; // 0-calcNumAmt~/2 random number of ()
-        rangNum = 20;
+        simbolcat = 3;
+        rangNum = 10;
       case 3:
         calcNumAmt = 4;
         calcSymbolNum = calcNumAmt - 1; //2-(calcNumAmt-1)
         calcparentheis = calcNumAmt ~/ 2; // 0-calcNumAmt~/2 random number of ()
-        rangNum = 30;
+        simbolcat = 4;
+        rangNum = 10;
       case 4:
         calcNumAmt = 4;
         calcSymbolNum = calcNumAmt - 1; //2-(calcNumAmt-1)
         calcparentheis = calcNumAmt ~/
             2; // 1-calcNumAmt~/2 random number of (),when there are two () , need two more symbol included
-        rangNum = 40;
+        simbolcat = 4;
+        rangNum = 15;
       case 5:
         calcNumAmt = 5;
         calcSymbolNum = calcNumAmt - 1; //2-(calcNumAmt-1)
         calcparentheis = calcNumAmt ~/
             2; // 1-calcNumAmt~/2 random number of (),when there are two () , need two more symbol included
-        rangNum = 50;
+        simbolcat = 4;
+        rangNum = 15;
       default:
         calcNumAmt = 2;
         calcSymbolNum = 1; //
@@ -209,7 +212,7 @@ class arith {
     //get calc simbol involved into calc
     print("calcSymbolNum$calcSymbolNum");
     for (int i = 0; i < calcSymbolNum; i++) {
-      calcsymbolArray.add(calcsymbol[Random().nextInt(4)]);
+      calcsymbolArray.add(calcsymbol[Random().nextInt(simbolcat)]);
       print("allCalcSimbol:$calcsymbolArray");
     }
 
@@ -247,15 +250,12 @@ class arith {
           if (l == 0) {
             arithstring = composedEquation[0].toString();
           } else if (l == composedEquation.length) {
-            arithstring = "$arithstring=?";
+            print("equation composed");
           } else {
             arithstring += composedEquation[l].toString();
           }
         }
-
-        //calc the number and get the actual equation
-
-        //calc end
+        print("level1:$arithstring");
       } else {
         List pthpairs = ["(", ")"];
         int cmplth = composedEquation.length;
@@ -266,75 +266,81 @@ class arith {
         int tmpnum = 0;
 
         print("composedEquation:$composedEquation");
-        if (tempPNI == 2 && tempPNR == 0) {
-          for (int p = 0; p < 2; p++) {
-            for (int i = 0; i < cmplth; i++) {
-              composedEquation.insert(pthposit, pthpairs[p]);
-            }
-          }
-        } else {
-          //compose the equation begin
-          // pthposit = 0;
-          print("pthposit_init:$pthposit");
-          for (int o = 1; o <= calcpthNum; o++) {
-            int p = 0;
-            print(
-                "calcNumAmt:$calcNumAmt,,calcpthNum:$calcpthNum,,tempPNI:$tempPNI,,tempPNR:$tempPNR");
-            tmpnum++;
-            late int tmp;
-            for (p = 0; p < 2; p++) {
-              if (p == 0) {
-                // pthposit = (pthposit + (Random().nextInt(tempPNI + tempPNR - 1)));
-                tmp = (calcNumAmt + calcSymbolNum - 1) -
-                    (3 * (calcpthNum - o) + (calcpthNum - o));
-                print("tmp_before:$tmp");
-                pthposit == 0
-                    ? pthposit = getEvebGen(0, tmp)
-                    : pthposit = pthposit + 2;
-                print("pthposit1:$pthposit,,tmp:$tmp");
-                composedEquation.insert(pthposit, pthpairs[p]);
+        // if (tempPNI == 2 && tempPNR == 0) {
+        //   for (int p = 0; p < 2; p++) {
+        //     for (int i = 0; i < cmplth; i++) {
+        //       composedEquation.insert(pthposit, pthpairs[p]);
+        //     }
+        //   }
+        // } else {
+        //compose the equation begin
+        pthposit = 0;
+        print("pthposit_init:$pthposit");
+        for (int o = 1; o <= calcpthNum; o++) {
+          int p = 0;
+          print(
+              "calcNumAmt:$calcNumAmt,,calcpthNum:$calcpthNum,,tempPNI:$tempPNI,,tempPNR:$tempPNR");
+          tmpnum++;
+          late int tmp;
+          for (p = 0; p < 2; p++) {
+            if (p == 0) {
+              // pthposit = (pthposit + (Random().nextInt(tempPNI + tempPNR - 1)));
+              tmp = (calcNumAmt + calcSymbolNum - 1) -
+                  (3 * (calcpthNum - o) + (calcpthNum - o));
+
+              print("tmp_before:$tmp");
+              if (tempPNI == 2 && tempPNR == 0 && o == 1) {
+                pthposit = 0;
               } else {
-                int tmplength = composedEquation.length;
-                int tmp4 =
-                    tmplength - (3 * (calcpthNum - o) + (calcpthNum - o));
-                print("tmplength:$tmplength,,,pthposit:$pthposit,,,tmp4:$tmp4");
-                if (tmp4 < (pthposit + 3)) {
-                  print("the ) is wrongly ahead of next () ");
+                pthposit == 0
+                    ? pthposit = randomEvebGen(0, tmp - 2)
+                    : pthposit = pthposit + 2;
+              }
+              print("pthposit1:$pthposit,,tmp:$tmp");
+              composedEquation.insert(pthposit, pthpairs[p]);
+            } else {
+              int tmplength = composedEquation.length;
+              int tmp4 = tmplength - (3 * (calcpthNum - o) + (calcpthNum - o));
+              print("tmplength:$tmplength,,,pthposit:$pthposit,,,tmp4:$tmp4");
+              if (tmp4 < (pthposit + 3)) {
+                print("the ) is wrongly ahead of next () ");
+              } else {
+                print("pthposit_before:$pthposit");
+                int tmp5 = pthposit + 4;
+                print("tmp5_before:$tmp5,,,tmp4_before:$tmp4");
+                pthposit = randomEvebGen(tmp5, tmp4);
+                print("pthposit_tmp5:$pthposit,,tmp4:$tmp4");
+                if (pthposit < tmplength) {
+                  composedEquation.insert(pthposit, pthpairs[p]);
                 } else {
-                  print("pthposit_before:$pthposit");
-                  int tmp5 = pthposit + 4;
-                  print("tmp5_before:$tmp5,,,tmp4_before:$tmp4");
-                  pthposit = getEvebGen(tmp5, tmp4);
-                  print("pthposit_tmp5:$pthposit,,tmp4:$tmp4");
-                  if (pthposit < tmplength) {
-                    composedEquation.insert(pthposit, pthpairs[p]);
-                  } else {
-                    composedEquation.add(pthpairs[p]);
-                  }
+                  composedEquation.add(pthpairs[p]);
                 }
               }
-              print("tmpnum:$tmpnum");
-              print("composedEquation$composedEquation");
             }
+            print("tmpnum:$tmpnum");
+            print("composedEquation$composedEquation");
           }
-          //calc the number and get the actual equation
-
-          //calc end
         }
-        //************ compose the equation end **************/
-        for (int p = 0; p <= composedEquation.length; p++) {
-          if (p == 0) {
-            arithstring = composedEquation[0].toString();
-          } else if (p == composedEquation.length) {
-            arithstring = "$arithstring=?";
-          } else {
-            arithstring += composedEquation[p].toString();
-          }
+        //calc the number and get the actual equation
+
+        //calc end
+      }
+      //************ compose the equation end **************/
+      for (int p = 0; p <= composedEquation.length; p++) {
+        if (p == 0) {
+          arithstring = composedEquation[0].toString();
+        } else if (p == composedEquation.length) {
+          print("equation composed done");
+          // arithstring = "$arithstring=?";
+        } else {
+          arithstring += composedEquation[p].toString();
         }
       }
-      int calresult = 0; //temp fixing
-      arithquote = {"result": calresult.toString(), "level1": arithstring};
     }
+    arithstring = "$arithstring=?";
+    int calresult = 0; //temp fixing
+    arithquote = {"result": calresult.toString(), "level1": arithstring};
+    // }
     return arithquote;
   }
 
