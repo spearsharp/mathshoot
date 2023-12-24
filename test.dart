@@ -26,8 +26,8 @@ late num answertmp;
 bool calcend = false;
 late Map<String, String> arithquote;
 late Map<String, int> calresult;
+late List composedEquation;
 
-const List uniqNum = [1, 2, 3, 5, 7, 11, 13, 17, 19, 23, 29];
 const List calcsymbol = ['+', '-', '×', '÷', '()'];
 
 Future<void> main() async {
@@ -217,7 +217,7 @@ class arith {
     } else {
       print(
           "calcNum more than 2 : $calcNumAmt,() calcparentheis is less than calcNum-1: $calcparentheis");
-      List composedEquation = [];
+      composedEquation = [];
       for (int k = 0; k < numArray.length; k++) {
         composedEquation.add(numArray[k]);
         if (k < calcsymbolArray.length) {
@@ -315,11 +315,99 @@ class arith {
     //calc the number and get the actual equation
     print("final arithstring:$arithstring");
     //finding (
-    List tmp = [];
+    List tmpCalcNumAll = [];
+    List tmpCalcSimbolAll = [];
+    List tmpCalc = [];
+    List calcResult = [];
+    List calcWIP = [];
+    bool calcPthend = false, firstSimbolX = false;
+    int calcpath = 0, j = 0, k = 0, kk = 0, count = 0, tmpret = 0;
+    late int d; // string split to int
+    for (int i = 0; i < composedEquation.length; i++) {
+      if (composedEquation[i] == "(") {
+        // get first (
+        for (j = 1; j < composedEquation.length - i; j++) {
+          if (composedEquation[i + j] != ")") {
+            tmpCalc.add(composedEquation[i + j]);
+          } else {
+            i = i + j;
+            print("iii_ii:$i");
+            // call calc
+            print("calcPthend:$calcPthend");
+            if (calcPthend == false) {
+              // call '+', '-', '×', '÷' calc and add into list
+              print("tmpCalc:$tmpCalc");
+              for (d = 0; d < tmpCalc.length; d++) {
+                var tt = tmpCalc[d];
+                print("tmpCalc[d]:$tt");
+                if (tmpCalc[d] == "×" || tmpCalc[d] == "÷") {
+                  bool firstSimbolX = true;
+                  print("firstSimbolX:$firstSimbolX");
+                  if (firstSimbolX == true) {
+                    Map<String, int> tmpresult1 = calcModule(
+                        tmpCalc[d - 1], tmpCalc[d + 1], tmpCalc[d], false);
+                    print("tmpresult1:$tmpresult1");
+                    firstSimbolX = false;
+                    int? tmpret = tmpresult1["calresult"];
+                    print("tmpret:$tmpret");
+                  } else {
+                    Map<String, int> tmpresult1 =
+                        calcModule(tmpret, tmpCalc[d + 1], tmpCalc[d], false);
+                    print("tmpresult1:$tmpresult1");
+                    tmpret = tmpresult1["calresult"]!;
+                    print("tmpret:$tmpret");
+                  }
+                  calcWIP.remove(d - 1);
+                  calcWIP.add(tmpret); // add into List for next calc cycle
+                  count++;
+                  d = d + 2;
+                } else {
+                  calcWIP.add(tmpCalc[d]); // add into List for next calc cycle
+                  print("calcWIP:$calcWIP");
+                } //
+// completed ×÷ compose +- list ,wait for calc on +-    --- fixing here
+                int tmpres2 = 0;
+                late int tmpcalc2;
+                for (int i = 0; i < calcWIP.length; i++) {
+                  if (i == 0) {
+                    tmpcalc2 = calcWIP[i];
+                  } else {
+                    tmpcalc2 = tmpres2;
+                  }
+                  Map<String, int> tmpresult2 = calcModule(tmpcalc2.toInt(),
+                      calcWIP[i + 2].toInt(), calcWIP[i + 1], false);
+                  tmpres2 = tmpresult2["calresult"]!;
+                  print("tmpresult2:$tmpresult2");
+                }
+                int tmpcalcResult = tmpres2;
+                print("tmpres2:$tmpres2");
+                calcResult.add(tmpcalcResult);
+              }
+              break;
+            }
+          }
 
-    for (int i = 0; i < arithstring.length; i++) {
-      if (arithstring[i] == "(") {}
+          tmpCalcSimbolAll.add(tmpCalc);
+          calcpath++; // get () list donee
+        }
+
+        print("iiiii:$i");
+        tmpCalcNumAll.add(composedEquation[i]);
+      }
     }
+    print("tmpCalcNumAll_before:$tmpCalcNumAll");
+    //New List with all nums started
+    for (int i = 0; i < tmpCalcNumAll.length; i++) {
+      if (tmpCalcNumAll[i] == ")") {
+        if (calcResult[kk] != "") {
+          tmpCalcNumAll[i] = calcResult[kk];
+          kk++;
+        }
+      }
+    }
+
+    print("tmpCalcAll:$tmpCalcSimbolAll");
+    print("tmpCalcNumAll:$tmpCalcNumAll");
 
     //calc end
     if (calresult['calresult'].toString() == "") {
