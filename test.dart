@@ -96,19 +96,14 @@ randomOddGen(min, max) {
 
 class arith {
   // calc the minimum equation
-  Map<String, int> calcModule(num aa, num bb, String t, bool calcend) {
+  Map<String, int> calcModule(
+      num aa, num bb, String t, bool calcend, int index) {
     switch (t) {
       case "+":
         answertmp = aa + bb;
       case "-":
         answertmp = aa - bb;
-      // if (answertmp < 0) {
-      //   print("abstract answer is nagetive");
-      //   num aatmp = aa;
-      //   aa = bb;
-      //   bb = aatmp;
-      //   answertmp = -answertmp;
-      // }
+
       case "×":
         answertmp = aa * bb;
       case "÷":
@@ -195,14 +190,14 @@ class arith {
     print("rangNum:$rangNum");
     for (int i = 0; i < calcNumAmt; i++) {
       numArray.add(Random().nextInt(rangNum));
-      print("totalNum:$numArray");
+      // print("totalNum:$numArray");
     }
 
     //get calc simbol involved into calc
     print("calcSymbolNum$calcSymbolNum");
     for (int i = 0; i < calcSymbolNum; i++) {
       calcsymbolArray.add(calcsymbol[Random().nextInt(simbolcat)]);
-      print("allCalcSimbol:$calcsymbolArray");
+      // print("allCalcSimbol:$calcsymbolArray");
     }
 
     //get () simbol involved into calc
@@ -212,7 +207,7 @@ class arith {
       a = Random().nextInt(rangNum);
       b = Random().nextInt(rangNum);
       str1 = calcsymbolArray[calcSymbolNum - 1];
-      calresult = calcModule(a, b, str1, calcend);
+      calresult = calcModule(a, b, str1, calcend, 1);
       arithstring = "";
     } else {
       print(
@@ -296,7 +291,7 @@ class arith {
           }
         }
       }
-      //************ compose the equation end **************/
+      //************ compose the equation from list to string end**************/
       for (int p = 0; p <= composedEquation.length; p++) {
         if (p == 0) {
           arithstring = composedEquation[0].toString();
@@ -309,94 +304,231 @@ class arith {
       }
       calresult = {"calresult": 0};
     }
+
+    //************ compose the equation end wiith =? **************/
     arithstring.isEmpty
         ? arithstring = "$a$str1$b=?"
         : arithstring = "$arithstring=?";
-    //calc the number and get the actual equation
+
+    //************ calc the number and get the actual equation start ****************
     print("final arithstring:$arithstring");
     //finding (
     List tmpCalcNumAll = [];
     List tmpCalcSimbolAll = [];
-    List tmpCalc = [];
+
     List calcResult = [];
-    List calcWIP = [];
-    bool calcPthend = false, firstSimbolX = false;
-    int calcpath = 0, j = 0, k = 0, kk = 0, count = 0, tmpret = 0;
-    late int d; // string split to int
+    List calcWIPd = [];
+    bool calcPthend = false, calcPthInitend = false, firstSimbolX = true;
+    int calcpath = 0,
+        j = 0,
+        k = 0,
+        kk = 0,
+        count = 0,
+        countpth = 0,
+        tmpret = 0,
+        tmpres2 = 0,
+        tmpcalcResult = 0;
+    late int d, tempcalcdd;
+    print("composedEquation:$composedEquation");
     for (int i = 0; i < composedEquation.length; i++) {
       if (composedEquation[i] == "(") {
-        // get first (
+        count = i;
+        calcPthend = false;
+        List calcWIP = [];
+        List tmpCalc = []; // initialized tmpCalc
+        // get the first (
         for (j = 1; j < composedEquation.length - i; j++) {
           if (composedEquation[i + j] != ")") {
+            // get the ) and add all into list btw ()
             tmpCalc.add(composedEquation[i + j]);
+            print("tmpCalc_):$tmpCalc");
           } else {
+            // after get ) then switch to next () and add next the equation into list
             i = i + j;
-            print("iii_ii:$i");
-            // call calc
-            print("calcPthend:$calcPthend");
+            print("i+j:$i");
+            //******** start the cycle () calc ********
             if (calcPthend == false) {
-              // call '+', '-', '×', '÷' calc and add into list
-              print("tmpCalc:$tmpCalc");
+              // call '+', '-', '×', '÷' calc and add into list within ()
               for (d = 0; d < tmpCalc.length; d++) {
-                var tt = tmpCalc[d];
-                print("tmpCalc[d]:$tt");
+                var tmppp = tmpCalc[d];
+                print("ddd:$d,,,,,tmppp:$tmppp");
+                //call '×', '÷' and add into new list
                 if (tmpCalc[d] == "×" || tmpCalc[d] == "÷") {
-                  bool firstSimbolX = true;
-                  print("firstSimbolX:$firstSimbolX");
                   if (firstSimbolX == true) {
+                    if (tmpCalc[d] == "÷" && tmpCalc[d + 1] == 0) {
+                      tmpCalc[d + 1] = 1;
+                      print("d:::$d,,,i:::$i,,,");
+                      composedEquation[count + d + 1] =
+                          1; // change inner cycle denominator from 0 to 1
+                    }
                     Map<String, int> tmpresult1 = calcModule(
-                        tmpCalc[d - 1], tmpCalc[d + 1], tmpCalc[d], false);
-                    print("tmpresult1:$tmpresult1");
+                        tmpCalc[d - 1], tmpCalc[d + 1], tmpCalc[d], false, 1);
                     firstSimbolX = false;
                     int? tmpret = tmpresult1["calresult"];
-                    print("tmpret:$tmpret");
+                    print("tmpret_bfr:$tmpret");
+                    calcWIP.remove(d - 1);
+                    print("1sttmpret_bfr_rmvD:$calcWIP");
+                    calcWIP.add(tmpret);
+                    calcPthInitend = true;
+
+                    print("1sttmpret_after_add:$calcWIP");
                   } else {
-                    Map<String, int> tmpresult1 =
-                        calcModule(tmpret, tmpCalc[d + 1], tmpCalc[d], false);
-                    print("tmpresult1:$tmpresult1");
+                    if (tmpCalc[d] == "÷" && tmpCalc[d + 1] == 0) {
+                      tmpCalc[d + 1] = 1;
+                      composedEquation[count + d + 1] =
+                          1; // change inner cycle denominator from 0 to 1
+                    }
+                    Map<String, int> tmpresult1 = calcModule(
+                        tmpret, tmpCalc[d + 1], tmpCalc[d], false, 1);
                     tmpret = tmpresult1["calresult"]!;
-                    print("tmpret:$tmpret");
+                    print("tmpret_bfr:$tmpret");
+                    calcWIP.remove(d - 1);
+                    print("tmpret_bfr_rmvD:$calcWIP");
+                    calcWIP
+                        .add(tmpret); // need to check and review all the calcs
+                    calcPthInitend = true;
+
+                    print("tmpret_after_add:$calcWIP");
                   }
-                  calcWIP.remove(d - 1);
-                  calcWIP.add(tmpret); // add into List for next calc cycle
-                  count++;
-                  d = d + 2;
+// add into List for next calc cycle
+                  countpth++;
+                  print("calcWIP_y:$calcWIP");
                 } else {
-                  calcWIP.add(tmpCalc[d]); // add into List for next calc cycle
-                  print("calcWIP:$calcWIP");
+                  var tmpp = tmpCalc[d];
+                  countpth++;
+                  print(calcPthInitend);
+                  print("dd:$d,,,,,tmpp:$tmpp");
+                  if (calcPthInitend == true) {
+                    calcWIP.add(tmpCalc[d]);
+                    print("calcWIP-af-add:$calcWIP");
+                  } else {
+                    calcWIP.add(tmpCalc[d]);
+                    print("calcWIP-aft-add:$calcWIP");
+                  }
+                  print(
+                      "tmpCalc[d]:$tmpCalc"); // add into List for next calc cycle
+                  print("calcWIP_n:$calcWIP");
                 } //
-// completed ×÷ compose +- list ,wait for calc on +-    --- fixing here
-                int tmpres2 = 0;
-                late int tmpcalc2;
-                for (int i = 0; i < calcWIP.length; i++) {
-                  if (i == 0) {
-                    tmpcalc2 = calcWIP[i];
+              }
+              // completed '×', '÷' calc within new list and start '+', '-' calc come out a new single answer within ()
+              int tmpres2 = 0, tmpcalc2 = 0;
+              print("calcWIP_+-before:$calcWIP");
+              for (int dd = 1; dd < calcWIP.length; dd++) {
+                print(calcWIP.length);
+                print("dd_begin:$dd");
+                if (calcWIP[dd] == "+" || calcWIP[dd] == "-") {
+                  if (dd == 1) {
+                    int tmpcalc2 = calcWIP[dd - 1];
+                    Map<String, int> tmpresult2 = calcModule(
+                        tmpcalc2,
+                        calcWIP[dd + 1].toInt(),
+                        calcWIP[dd].toString(),
+                        true,
+                        1);
+                    tmpres2 = tmpresult2["calresult"]!;
+                    print("tmpcalc2_1st:$tmpres2");
                   } else {
                     tmpcalc2 = tmpres2;
+                    Map<String, int> tmpresult2 = calcModule(
+                        tmpcalc2,
+                        calcWIP[dd + 1].toInt(),
+                        calcWIP[dd].toString(),
+                        true,
+                        1);
+                    tmpres2 = tmpresult2["calresult"]!;
+                    print("tmpcalc2_later:$tmpres2");
                   }
-                  Map<String, int> tmpresult2 = calcModule(tmpcalc2.toInt(),
-                      calcWIP[i + 2].toInt(), calcWIP[i + 1], false);
-                  tmpres2 = tmpresult2["calresult"]!;
-                  print("tmpresult2:$tmpresult2");
+                  print("tmpcalc2_later_complete:$tmpres2");
+                  print("dd_complete:$dd");
                 }
-                int tmpcalcResult = tmpres2;
-                print("tmpres2:$tmpres2");
-                calcResult.add(tmpcalcResult);
+                print("calcWIP_final:$calcWIP");
               }
-              break;
+              int tmpcalcResult = tmpres2;
+              calcPthend = true;
+              tmpCalcNumAll.add(tmpcalcResult);
+              print("tmpCalcNumAll-after+-:$tmpCalcNumAll");
+              // calcPthend = true;
+              print("tmpres2:$tmpres2");
+              //*********** complete the cycle () equation calc ************
             }
+            if (calcPthend == true) {
+              tmpCalcSimbolAll.add(tmpCalc);
+              print("tmpCalcSimbolAll:$tmpCalcSimbolAll");
+            } // add all () equation into all list , pending on review to remove
+            break; // escape inner compose and calc loop
           }
-
-          tmpCalcSimbolAll.add(tmpCalc);
           calcpath++; // get () list donee
         }
-
+      } else {
         print("iiiii:$i");
-        tmpCalcNumAll.add(composedEquation[i]);
+        print("tmpCalcNumAll-t-):$tmpCalcNumAll");
+        if (composedEquation[i] == ")") {
+          tmpCalcNumAll.add(composedEquation[i + 1]);
+          print("tmpCalcNumAll-f-):$tmpCalcNumAll");
+        } else {
+          tmpCalcNumAll.add(composedEquation[i]);
+          print("tmpCalcNumAll-f-0:$tmpCalcNumAll");
+        }
+// add the each elements with nums only within composedEquation into new list
+      }
+      print("tmpCalcNumAll:$tmpCalcNumAll");
+
+      //*************** end complete calc numbers **********************/
+    }
+    //+++++++++++++++ start to calc all numbers ++++++++++++++++++++++ (9÷7)÷(10÷1)-8=?
+    List tmpCalc = []; // initialized tmpCalc
+    tempcalcdd = 0;
+    for (int ii = 0; ii < tmpCalcNumAll.length; ii++) {
+      if (tmpCalcNumAll[ii] == "×" || tmpCalcNumAll[ii] == "÷") {
+        if (tmpCalcNumAll[ii] == "÷" && tmpCalcNumAll[ii + 1] == 0) {
+          // tmpCalc[ii + 1] = 1;
+          print("Error exception on Calc - dominator is 0");
+          // go to new generator please.. ***
+        }
+        if (ii == 1) {
+          Map<String, int> tmpresult1 = calcModule(tmpCalcNumAll[ii - 1],
+              tmpCalcNumAll[ii + 1], tmpCalcNumAll[ii], false, 1);
+          tempcalcdd = tmpresult1['calresult']!;
+          tmpCalc.add(tempcalcdd);
+        } else {
+          Map<String, int> tmpresult1 = calcModule(
+              tempcalcdd, tmpCalcNumAll[ii + 1], tmpCalcNumAll[ii], false, 1);
+          tempcalcdd = tmpresult1['calresult']!;
+          tmpCalc.add(tempcalcdd);
+        }
+        ii = ii + 2;
+      } else {
+        tmpCalc.add(tmpCalcNumAll[ii]);
       }
     }
-    print("tmpCalcNumAll_before:$tmpCalcNumAll");
-    //New List with all nums started
+    print("tmpCalc-dd_×÷:$tmpCalc");
+//calc all number +-
+    for (int jj = 0; jj < tmpCalc.length; jj++) {
+      if (tmpCalc[jj] == "+" || tmpCalc[jj] == "-") {
+        Map<String, int> tmpresult1 =
+            calcModule(tmpCalc[jj - 1], tmpCalc[jj + 1], tmpCalc[jj], false, 1);
+        int? tempcalcdd = tmpresult1['calresult'];
+        if (jj == 1) {
+          Map<String, int> tmpresult1 = calcModule(
+              tmpCalc[jj - 1], tmpCalc[jj + 1], tmpCalc[jj], false, 1);
+          tempcalcdd = tmpresult1['calresult']!;
+        } else {
+          Map<String, int> tmpresult1 =
+              calcModule(tempcalcdd!, tmpCalc[jj + 1], tmpCalc[jj], false, 1);
+          tempcalcdd = tmpresult1['calresult']!;
+        }
+        jj = jj + 2;
+      } else {
+        var tttt = tmpCalc[jj];
+        print("error msg:$tttt");
+      }
+    }
+    print("tmpCalc-dd_+-_final:$tempcalcdd");
+
+    //**************** complete full calc  *********************/
+
+    //*************    New List with all nums started, outer cycle calc started  ***************
+
     for (int i = 0; i < tmpCalcNumAll.length; i++) {
       if (tmpCalcNumAll[i] == ")") {
         if (calcResult[kk] != "") {
@@ -410,8 +542,9 @@ class arith {
     print("tmpCalcNumAll:$tmpCalcNumAll");
 
     //calc end
+    print("tempcalcdd:$tempcalcdd");
     if (calresult['calresult'].toString() == "") {
-      Map<String, int> calresult = {"calresult": 0};
+      Map<String, int> calresult = {"calresult": tempcalcdd};
     }
     arithquote = {
       "result": calresult["calresult"].toString(),
