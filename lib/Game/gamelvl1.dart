@@ -13,6 +13,7 @@ import '../services/screeenAdapter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/localStorage.dart';
 import 'package:audioplayers/audioplayers.dart';
+import '../model/keyPad.dart';
 // import 'services/arith.dart';
 
 class GameLvl1 extends StatefulWidget {
@@ -87,16 +88,6 @@ class _GameLvl1State extends State<GameLvl1> {
                 if (snapshot.hasData) {
                   if (score >= 0) {
                     score += snapshot.data as int;
-                    // if (score > 20) {  / route to game level 2
-                    //   print("level up");
-                    //   audioStop();
-                    //   Navigator.of(context)
-                    //       .push(MaterialPageRoute(builder: (context) {
-                    //     return GameLvl2(
-                    //       arguments: {score: score},
-                    //     );
-                    //   }));
-                    // }
                     if (score < 0) {
                       score = 0;
                       print("Game Over");
@@ -118,7 +109,8 @@ class _GameLvl1State extends State<GameLvl1> {
                             style: const TextStyle(
                                 fontFamily: 'PWBalloon',
                                 color: Colors.black87,
-                                fontWeight: FontWeight.bold)),
+                                fontWeight: FontWeight.bold,
+                                fontSize: 28)),
                         SizedBox(
                           width: screenWidth,
                         ),
@@ -156,7 +148,11 @@ class _GameLvl1State extends State<GameLvl1> {
                   }
                 }),
                 // localStorage.removeData("levelName"),
-                KeyPad(inputController: _inputController),
+                gamestart
+                    ? KeyPad(
+                        inputController: _inputController,
+                        screenWidth: screenWidth)
+                    : const Text(""),
                 //tap to kickoff game, level1
                 gamestart
                     ? const Text("")
@@ -315,15 +311,6 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
     }
   }
 
-  // level(bool l) {
-  //   // print("levelevent : ${levelevent}");
-  //   if (l == true) {
-  //     widget.levelController.add(1);
-  //   } else if (l == false && levelevent > 1) {
-  //     widget.levelController.add(-1);
-  //   }
-  // }
-
   // ignore: non_constant_identifier_names
   ListView _UpdatePic(t, d, e) {
     if (t) {
@@ -425,36 +412,59 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
 }
 
 //keypad monitorring
-class KeyPad extends StatelessWidget {
+
+class KeyPad extends StatefulWidget {
   final StreamController<int> inputController;
-  const KeyPad({super.key, required this.inputController});
+  final double screenWidth;
+  const KeyPad(
+      {super.key, required this.inputController, required this.screenWidth});
+
+  @override
+  State<KeyPad> createState() => _KeyPadState();
+}
+
+class _KeyPadState extends State<KeyPad> {
+  List<Widget> keyBoard(double t, int v) {
+    List Keypad = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "+/-", "Del"];
+    List<Widget> tmplist = [];
+    for (var i = 0; i < 12; i++) {
+      var keytext = Keypad[i];
+      tmplist.add(TextButton(
+          style: ButtonStyle(
+              shape: MaterialStateProperty.all(const RoundedRectangleBorder()),
+              backgroundColor:
+                  MaterialStateProperty.all(Colors.primaries[i][300]),
+              foregroundColor: MaterialStateProperty.all(Colors.black45)),
+          onPressed: () {
+            widget.inputController.add(Keypad[i] as int);
+          },
+          child: Text("$keytext",
+              style: TextStyle(
+                  fontFamily: "MotleyForces",
+                  fontSize: widget.screenWidth * 0.08))));
+    }
+    return tmplist;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+  }
 
   @override
   Widget build(BuildContext context) {
+    MediaQueryData queryData = MediaQuery.of(context);
+    double screenHeight = queryData.size.height;
+    double screenWidth = queryData.size.width;
     return Align(
-      alignment: Alignment.bottomCenter,
-      child: Container(
+        alignment: Alignment.bottomCenter,
+        child: Container(
           // color: Colors.red,
           child: GridView.count(
-        shrinkWrap: true,
-        crossAxisCount: 5,
-        childAspectRatio: 5 / 4,
-        children: List.generate(10, (index) {
-          // Delete key add
-          return TextButton(
-              style: ButtonStyle(
-                  shape:
-                      MaterialStateProperty.all(const RoundedRectangleBorder()),
-                  backgroundColor:
-                      MaterialStateProperty.all(Colors.primaries[index][300]),
-                  foregroundColor: MaterialStateProperty.all(Colors.black45)),
-              onPressed: () {
-                inputController.add(index);
-              },
-              child: Text("$index",
-                  style: Theme.of(context).textTheme.headlineMedium));
-        }),
-      )),
-    );
+              shrinkWrap: true,
+              crossAxisCount: 4,
+              childAspectRatio: 2 / 1,
+              children: keyBoard(screenWidth, 1)),
+        ));
   }
 }

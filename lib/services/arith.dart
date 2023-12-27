@@ -8,8 +8,6 @@ late int a,
     calcSymbolNum,
     answer,
     rangNum,
-    answer1,
-    answer2,
     radomNumOfCalcSymbol,
     simbolcat,
     calcparentheis;
@@ -507,7 +505,10 @@ class arith {
               // tmpCalc[ii + 1] = 1;
               print(
                   "Error exception on Calc - dominator is 0"); // return and regenerate the arith .
+
               // go to new generator please.. ***
+              Map<String, String> arithquote = {"Errormsg": "Err-DomiZero"};
+              return arithquote;
             }
             if (count3 == 0) {
               print("tempcalcdd_inner1-bfr:$tempcalcdd");
