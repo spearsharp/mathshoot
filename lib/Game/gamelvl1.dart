@@ -209,6 +209,7 @@ class _GameLvl1State extends State<GameLvl1> {
                         ],
                       ),
                 Positioned(
+                    // full screen with topup money
                     top: screenHeight * 0.055,
                     right: -30,
                     child: InkWell(
@@ -237,6 +238,26 @@ class _GameLvl1State extends State<GameLvl1> {
                             ],
                           ),
                         ))),
+                Positioned(
+                    left: 0.3 * screenWidth,
+                    right: 0.3 * screenWidth,
+                    top: 0.5 * screenHeight,
+                    child: Container(
+                      alignment: Alignment.center,
+                      padding: const EdgeInsets.fromLTRB(3, 2, 2, 3),
+                      decoration: BoxDecoration(
+                        color: Colors.white10,
+                        borderRadius: BorderRadius.circular(28),
+                      ),
+                      child: Text(
+                        "1231213",
+                        style: TextStyle(
+                            fontSize: screenWidth * 0.1,
+                            color: Colors.white38,
+                            fontFamily: "MotleyForces",
+                            fontWeight: FontWeight.w800),
+                      ),
+                    ))
               ],
             )));
   }
@@ -425,10 +446,24 @@ class KeyPad extends StatefulWidget {
 
 class _KeyPadState extends State<KeyPad> {
   List<Widget> keyBoard(double t, int v) {
-    List Keypad = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, "+/-", "Del"];
+    List Keypad = [
+      {"name": "0", "value": 0},
+      {"name": "1", "value": 1},
+      {"name": "2", "value": 2},
+      {"name": "3", "value": 3},
+      {"name": "4", "value": 4},
+      {"name": "5", "value": 5},
+      {"name": "6", "value": 6},
+      {"name": "7", "value": 7},
+      {"name": "8", "value": 8},
+      {"name": "9", "value": 9},
+      {"name": "+/-", "value": 10},
+      {"name": "Del", "value": 11},
+    ];
     List<Widget> tmplist = [];
     for (var i = 0; i < 12; i++) {
-      var keytext = Keypad[i];
+      var keytext = Keypad[i]["name"];
+      var keyvalue = Keypad[i]["value"];
       tmplist.add(TextButton(
           style: ButtonStyle(
               shape: MaterialStateProperty.all(const RoundedRectangleBorder()),
@@ -436,7 +471,7 @@ class _KeyPadState extends State<KeyPad> {
                   MaterialStateProperty.all(Colors.primaries[i][300]),
               foregroundColor: MaterialStateProperty.all(Colors.black45)),
           onPressed: () {
-            widget.inputController.add(Keypad[i] as int);
+            widget.inputController.add(keyvalue);
           },
           child: Text("$keytext",
               style: TextStyle(
@@ -459,12 +494,29 @@ class _KeyPadState extends State<KeyPad> {
     return Align(
         alignment: Alignment.bottomCenter,
         child: Container(
-          // color: Colors.red,
-          child: GridView.count(
-              shrinkWrap: true,
-              crossAxisCount: 4,
-              childAspectRatio: 2 / 1,
-              children: keyBoard(screenWidth, 1)),
-        ));
+            height: 0.3 * screenHeight,
+            width: screenWidth,
+            child: Stack(
+              children: [
+                Align(
+                  alignment: Alignment(screenWidth * 0.5, -0.8 * screenHeight),
+                  child: Text("123"),
+                ),
+                Align(
+                  alignment: Alignment(screenWidth * 0.5, -0.3),
+                  child: Text("456"),
+                ),
+                Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Container(
+                      // color: Colors.red,
+                      child: GridView.count(
+                          shrinkWrap: true,
+                          crossAxisCount: 4,
+                          childAspectRatio: 2 / 1,
+                          children: keyBoard(screenWidth, 1)),
+                    ))
+              ],
+            )));
   }
 }
