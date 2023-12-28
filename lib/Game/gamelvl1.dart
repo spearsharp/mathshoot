@@ -29,8 +29,8 @@ class _GameLvl1State extends State<GameLvl1> {
   bool levelkeep = true, gamestart = false, counddown = false;
   int currentlevel = 0;
   // final player = AudioPlayer();
-  AudioPlayer audioPlayer = AudioPlayer();
-  AudioCache audiocache = AudioCache(); //and this
+  final _assetAudioPlayer = AssetsAudioPlayer();
+  final _keyAudioPlayer = AssetsAudioPlayer();
 
   final StreamController<int> _inputController =
       StreamController.broadcast(); //multiple listener
@@ -42,22 +42,25 @@ class _GameLvl1State extends State<GameLvl1> {
   int baloonAmt = 1;
   int durationTime = Random().nextInt(5000) + 5800;
 
+  keypresssound() async {
+    _keyAudioPlayer.open(Audio('audios/pressmobilekeyBGM.wav'),
+        autoStart: true, loopMode: LoopMode.none);
+  }
+
   @override
   void initState() {
-    //setting background picture and popup message
+    //setting background picture and popup message and BGM
+    _assetAudioPlay.open(
+      Audio("audios/level1_BGM.mp3"),
+      autoStart: true,
+      showNotification: true,
+      loopMode: LoopMode.single,
+    );
 
     super.initState();
     print(widget.arguments);
 
     void gamekickoff() {}
-
-    _assetAudioPlay.open(
-      // local audio play , assetsaudioplayer
-      Audio("audios/9346.wav"),
-      autoStart: true,
-      showNotification: true,
-      loopMode: LoopMode.single,
-    );
   }
 
   void audioStop() {
@@ -67,6 +70,8 @@ class _GameLvl1State extends State<GameLvl1> {
   @override
   void dispose() {
     super.dispose();
+    _assetAudioPlay.stop();
+    _keyAudioPlayer.stop();
   }
 
   @override
@@ -425,6 +430,7 @@ class KeyPad extends StatefulWidget {
   State<KeyPad> createState() => _KeyPadState();
 }
 
+//keypad function , pending on substract independently
 class _KeyPadState extends State<KeyPad> {
   List<Widget> keyBoard(double t, int v) {
     List Keypad = [
@@ -496,25 +502,45 @@ class _KeyPadState extends State<KeyPad> {
       Align(
           alignment: Alignment.bottomCenter,
           child: Container(
-              height: 0.45 * screenHeight,
+              height: 0.35 * screenHeight,
               width: screenWidth,
               child: Stack(
                 children: [
                   Align(
-                    alignment:
-                        Alignment(screenWidth * 0.5, -0.8 * screenHeight),
+                    // align with arrow, the canon fire function
+                    alignment: Alignment.topRight,
                     child: Text(
                       "123",
                       style: TextStyle(fontSize: 50),
                     ),
                   ),
                   Align(
-                    alignment: Alignment(screenWidth * 0.5, 0.3 * screenHeight),
-                    child: Text(
-                      "456",
-                      style: TextStyle(fontSize: 50, color: Colors.black87),
-                    ),
-                  ),
+                      // alignment: Alignment(screenWidth * 0.5, 0.3 * screenHeight),
+                      alignment: Alignment.topLeft,
+                      child: Stack(
+                        children: [
+                          AnimatedContainer(
+                              //if it can not realized the function, AnimationBuilder needed
+                              transform: Matrix4.rotationX(
+                                  0.3), // pending on varaible injection and posture
+                              child: Image(image: AssetImage("assetName")),
+                              duration: Duration(milliseconds: 3000)),
+                          AnimatedPositioned(
+                            // pending on variable injection via balloon position
+                            left: 0.25,
+                            bottom: 0.35,
+                            // arrow pic moving
+                            curve: Curves.linear,
+                            duration: Duration(milliseconds: 3000),
+                            child: Image(image: AssetImage("assetName")),
+                          )
+                        ],
+                      )
+                      // Text(
+                      //   "456",
+                      //   style: TextStyle(fontSize: 50, color: Colors.black87),
+                      // ),
+                      ),
                   Align(
                       alignment: Alignment.bottomCenter,
                       child: Container(

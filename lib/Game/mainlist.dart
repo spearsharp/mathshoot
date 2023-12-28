@@ -22,11 +22,13 @@ class Mainlist extends StatefulWidget {
 class _MainlistState extends State<Mainlist> {
   int num = 14;
 
-  //map arguments
-  // final List routepath = [
-  //   ' gamelvl1',
-  //   ' gamelvl2',
-  // ];
+  final _assetAudioPlayer = AssetsAudioPlayer();
+  final _keyAudioPlayer = AssetsAudioPlayer();
+  keypresssound() async {
+    _keyAudioPlayer.open(Audio('audios/pressmobilekeyBGM.wav'),
+        autoStart: true, loopMode: LoopMode.none);
+  }
+
   final List _arguments = [
     {
       'levelname': '1',
@@ -42,23 +44,23 @@ class _MainlistState extends State<Mainlist> {
     },
   ];
 
-  // final List levelname = [
-  //   ' 1',
-  //   ' 2',
-  // ];
-
   @override
   void initState() {
     // TODO: implement initState
-    super.initState();
     //play BGM
-    var _assertAudioPlayer = AssetsAudioPlayer();
-    _assertAudioPlayer.open(
+    _assetAudioPlayer.open(
       Audio("audios/mainlistBGM.wav"),
       autoStart: true,
       showNotification: true,
       loopMode: LoopMode.single,
     );
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+    _assetAudioPlayer.stop();
+    _keyAudioPlayer.stop();
   }
 
   List<Widget> _inkwelllvltitle(_ScreenAdapter) {
@@ -70,6 +72,8 @@ class _MainlistState extends State<Mainlist> {
       tmplist.add(
         InkWell(
           onTap: () {
+            _assetAudioPlayer.stop;
+            keypresssound();
             Navigator.pushNamed(context, _arguments[i]['routepath'],
                 arguments: _arguments[i]);
           },
@@ -145,8 +149,7 @@ class _MainlistState extends State<Mainlist> {
                 Expanded(
                     flex: 1,
                     child: UserAccountsDrawerHeader(
-                      accountName:
-                          Text("Goldman Fuks"), //pending on Players Name
+                      accountName: Text("Spear Yao"), //pending on Players Name
                       accountEmail: Text(
                           "spear.yao@goldmanfuks.com"), // Pending on Players contack info
                       // ],
@@ -163,6 +166,7 @@ class _MainlistState extends State<Mainlist> {
             ),
             InkWell(
               onTap: () {
+                keypresssound();
                 print(
                     "route to Players record page"); // pending on route to Records page
               },
@@ -182,6 +186,7 @@ class _MainlistState extends State<Mainlist> {
             const Divider(),
             InkWell(
                 onTap: () {
+                  keypresssound();
                   print("route to Profile page"); // pending on route to Profile
                 },
                 child: const ListTile(
@@ -199,6 +204,7 @@ class _MainlistState extends State<Mainlist> {
             Divider(),
             InkWell(
               onTap: () {
+                keypresssound();
                 print(
                     "rout to setting page"); // pending on route too setting page
               },
@@ -218,6 +224,7 @@ class _MainlistState extends State<Mainlist> {
             Divider(),
             InkWell(
               onTap: () {
+                keypresssound();
                 print("rout to Topup page");
               },
               child: const ListTile(
@@ -252,6 +259,7 @@ class _MainlistState extends State<Mainlist> {
               alignment: Alignment.centerRight,
               child: InkWell(
                   onTap: () {
+                    keypresssound();
                     print("top up function"); // pending to topup function
                   },
                   child: const Row(

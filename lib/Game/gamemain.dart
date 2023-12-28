@@ -28,12 +28,15 @@ class _GameMainState extends State<GameMain> {
       showNotification: true,
       loopMode: LoopMode.single,
     );
+    var tttt = _assetAudioPlayer.playerState;
+    print("_assetAudioPlayer:$tttt");
   }
 
   @override
   void dispose() {
     super.dispose();
     _assetAudioPlayer.stop();
+    _keyAudioPlayer.stop();
   }
 
   @override
@@ -70,6 +73,9 @@ class _GameMainState extends State<GameMain> {
                     ),
                     InkWell(
                         onTap: () {
+                          _assetAudioPlayer.stop();
+                          var tttt = _assetAudioPlayer.playerState;
+                          print("_assetAudioPlayer:$tttt");
                           //press key sound
                           _keyAudioPlayer.open(
                               Audio('audios/pressmobilekeyBGM.wav'),
@@ -103,6 +109,7 @@ class _GameMainState extends State<GameMain> {
                     ),
                     InkWell(
                         onTap: () {
+                          _assetAudioPlayer.stop;
                           _keyAudioPlayer.open(
                               Audio('audios/pressmobilekeyBGM.wav'),
                               autoStart: true,
@@ -135,6 +142,8 @@ class _GameMainState extends State<GameMain> {
                     ),
                     InkWell(
                         onTap: () {
+                          _assetAudioPlayer.stop;
+                          _assetAudioPlayer.dispose();
                           _keyAudioPlayer.open(
                               Audio('audios/pressmobilekeyBGM.wav'),
                               autoStart: true,
@@ -160,8 +169,8 @@ class _GameMainState extends State<GameMain> {
                                   letterSpacing: 5.0,
                                   fontFamily: 'Balloony',
                                 )))),
-                    Positioned(
-                        child: Container(
+                    const Positioned(
+                        child: Align(
                       alignment: Alignment.bottomCenter,
                       child: Text("adv"), // pending advertisment
                     ))
