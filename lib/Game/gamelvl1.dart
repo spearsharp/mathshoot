@@ -238,26 +238,6 @@ class _GameLvl1State extends State<GameLvl1> {
                             ],
                           ),
                         ))),
-                Positioned(
-                    left: 0.3 * screenWidth,
-                    right: 0.3 * screenWidth,
-                    top: 0.5 * screenHeight,
-                    child: Container(
-                      alignment: Alignment.center,
-                      padding: const EdgeInsets.fromLTRB(3, 2, 2, 3),
-                      decoration: BoxDecoration(
-                        color: Colors.white10,
-                        borderRadius: BorderRadius.circular(28),
-                      ),
-                      child: Text(
-                        "1231213",
-                        style: TextStyle(
-                            fontSize: screenWidth * 0.1,
-                            color: Colors.white38,
-                            fontFamily: "MotleyForces",
-                            fontWeight: FontWeight.w800),
-                      ),
-                    ))
               ],
             )));
   }
@@ -378,6 +358,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
         vsync: this, duration: Duration(milliseconds: durationTime));
     _animationController.forward();
     widget.inputController.stream.listen((event) {
+      //pending update input display and flag to route.
       int total = d + e;
       print("d:: $d");
       print("e:: $e");
@@ -491,32 +472,61 @@ class _KeyPadState extends State<KeyPad> {
     MediaQueryData queryData = MediaQuery.of(context);
     double screenHeight = queryData.size.height;
     double screenWidth = queryData.size.width;
-    return Align(
-        alignment: Alignment.bottomCenter,
-        child: Container(
-            height: 0.3 * screenHeight,
-            width: screenWidth,
-            child: Stack(
-              children: [
-                Align(
-                  alignment: Alignment(screenWidth * 0.5, -0.8 * screenHeight),
-                  child: Text("123"),
-                ),
-                Align(
-                  alignment: Alignment(screenWidth * 0.5, -0.3),
-                  child: Text("456"),
-                ),
-                Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      // color: Colors.red,
-                      child: GridView.count(
-                          shrinkWrap: true,
-                          crossAxisCount: 4,
-                          childAspectRatio: 2 / 1,
-                          children: keyBoard(screenWidth, 1)),
-                    ))
-              ],
-            )));
+    return Stack(alignment: Alignment.center, children: [
+      Positioned(
+          left: 0.3 * screenWidth,
+          right: 0.3 * screenWidth,
+          top: 0.5 * screenHeight,
+          child: Container(
+            alignment: Alignment.center,
+            padding: const EdgeInsets.fromLTRB(3, 2, 2, 3),
+            decoration: BoxDecoration(
+              color: Colors.white10,
+              borderRadius: BorderRadius.circular(28),
+            ),
+            child: Text(
+              "1231213",
+              style: TextStyle(
+                  fontSize: screenWidth * 0.1,
+                  color: Colors.white38,
+                  fontFamily: "MotleyForces",
+                  fontWeight: FontWeight.w800),
+            ),
+          )),
+      Align(
+          alignment: Alignment.bottomCenter,
+          child: Container(
+              height: 0.45 * screenHeight,
+              width: screenWidth,
+              child: Stack(
+                children: [
+                  Align(
+                    alignment:
+                        Alignment(screenWidth * 0.5, -0.8 * screenHeight),
+                    child: Text(
+                      "123",
+                      style: TextStyle(fontSize: 50),
+                    ),
+                  ),
+                  Align(
+                    alignment: Alignment(screenWidth * 0.5, 0.3 * screenHeight),
+                    child: Text(
+                      "456",
+                      style: TextStyle(fontSize: 50, color: Colors.black87),
+                    ),
+                  ),
+                  Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        // color: Colors.red,
+                        child: GridView.count(
+                            shrinkWrap: true,
+                            crossAxisCount: 4,
+                            childAspectRatio: 2 / 1,
+                            children: keyBoard(screenWidth, 1)),
+                      ))
+                ],
+              )))
+    ]);
   }
 }
