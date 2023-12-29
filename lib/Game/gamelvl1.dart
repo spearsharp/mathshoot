@@ -463,8 +463,7 @@ class _KeyPadState extends State<KeyPad> {
                   MaterialStateProperty.all(Colors.primaries[i][300]),
               foregroundColor: MaterialStateProperty.all(Colors.black45)),
           onPressed: () {
-            presscount = presscount + 1;
-            if (presscount < 5) {
+            if (displayPressNum.length < 5) {
               switch (keyvalue) {
                 case 10:
                   {
@@ -495,11 +494,9 @@ class _KeyPadState extends State<KeyPad> {
               }
               //check answers correction ,get return
               if (correctanswer == true) {
-                presscount = 0;
                 displayPressNum = "";
                 print("displayPressNum:$displayPressNum");
               }
-              print("displayPressNum:$displayPressNum");
             } else {
               presscount = 0;
               displayPressNum = "";
