@@ -110,6 +110,14 @@ flutter:
     - images/game/animatednextpic.gif
     - images/game/pinktitlebele.png
     - images/game/animatedmathsign.gif
+    - images/game/arrow.png
+    - images/game/bomb_s.gif
+    - images/game/bow.png
+    - images/game/bowandarrow.png
+    - images/game/canonpic.png
+    - images/game/canonbullet.png
+    - images/game/animatedreadygo.gif
+    # audios
     - audios/mainenteranceBGM.wav
     - audios/level1_BGM.mp3
     - audios/level2_BGM.MP3

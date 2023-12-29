@@ -2,6 +2,7 @@ import 'dart:ffi';
 import 'dart:ui';
 
 import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import 'package:get/utils.dart';
@@ -42,11 +43,6 @@ class _GameLvl1State extends State<GameLvl1> {
   int baloonAmt = 1;
   int durationTime = Random().nextInt(5000) + 5800;
 
-  keypresssound() async {
-    _keyAudioPlayer.open(Audio('audios/pressmobilekeyBGM.wav'),
-        autoStart: true, loopMode: LoopMode.none);
-  }
-
   @override
   void initState() {
     //setting background picture and popup message and BGM
@@ -61,6 +57,11 @@ class _GameLvl1State extends State<GameLvl1> {
     print(widget.arguments);
 
     void gamekickoff() {}
+  }
+
+  void keypresssound() {
+    _keyAudioPlayer.open(Audio('audios/pressmobilekeyBGM.wav'),
+        autoStart: true, loopMode: LoopMode.none);
   }
 
   void audioStop() {
@@ -229,7 +230,7 @@ class _GameLvl1State extends State<GameLvl1> {
                                   flex: 1,
                                   child: Image(
                                     image: AssetImage(
-                                        "images/game/icon/goldcoin.png"),
+                                        "images/game/icon/goldcoinpic.png"),
                                   )),
                               Expanded(
                                 flex: 4,
@@ -432,6 +433,10 @@ class KeyPad extends StatefulWidget {
 
 //keypad function , pending on substract independently
 class _KeyPadState extends State<KeyPad> {
+  String displayPressNum = "";
+  late String inputNum;
+  bool sign = true, correctanswer = false;
+  int presscount = 0;
   List<Widget> keyBoard(double t, int v) {
     List Keypad = [
       {"name": "0", "value": 0},
@@ -458,12 +463,60 @@ class _KeyPadState extends State<KeyPad> {
                   MaterialStateProperty.all(Colors.primaries[i][300]),
               foregroundColor: MaterialStateProperty.all(Colors.black45)),
           onPressed: () {
+            presscount = presscount + 1;
+            if (presscount < 5) {
+              switch (keyvalue) {
+                case 10:
+                  {
+                    print("displayPressNum.substring(0, 1)");
+                    print(displayPressNum.substring(0, 1));
+                    if (displayPressNum.substring(0, 1) == "-") {
+                      displayPressNum =
+                          displayPressNum.substring(1, displayPressNum.length);
+                    } else {
+                      displayPressNum = "-" + displayPressNum;
+                    }
+
+                    print("displayPressNum:$displayPressNum");
+                    //pending on checking answer
+                  }
+                case 11:
+                  {
+                    displayPressNum = displayPressNum.substring(
+                        0, displayPressNum.length - 1);
+                    print("displayPressNum:$displayPressNum");
+                    //pending on checking answer
+                  }
+                default:
+                  {
+                    displayPressNum = displayPressNum + keyvalue.toString();
+                    //pending on checking answer
+                  }
+              }
+              //check answers correction ,get return
+              if (correctanswer == true) {
+                presscount = 0;
+                displayPressNum = "";
+                print("displayPressNum:$displayPressNum");
+              }
+              print("displayPressNum:$displayPressNum");
+            } else {
+              presscount = 0;
+              displayPressNum = "";
+            }
+            setState(() {
+              inputNum = displayPressNum;
+            });
             widget.inputController.add(keyvalue);
           },
-          child: Text("$keytext",
-              style: TextStyle(
-                  fontFamily: "MotleyForces",
-                  fontSize: widget.screenWidth * 0.08))));
+          child: AutoSizeText("$keytext",
+              textAlign: TextAlign.center,
+              overflow: TextOverflow.ellipsis,
+              minFontSize: 20,
+              maxFontSize: 100,
+              stepGranularity: 10,
+              style:
+                  const TextStyle(fontFamily: "MotleyForces", fontSize: 80))));
     }
     return tmplist;
   }
@@ -491,7 +544,7 @@ class _KeyPadState extends State<KeyPad> {
               borderRadius: BorderRadius.circular(28),
             ),
             child: Text(
-              "1231213",
+              "$displayPressNum",
               style: TextStyle(
                   fontSize: screenWidth * 0.1,
                   color: Colors.white38,
@@ -501,58 +554,88 @@ class _KeyPadState extends State<KeyPad> {
           )),
       Align(
           alignment: Alignment.bottomCenter,
-          child: Container(
-              height: 0.35 * screenHeight,
-              width: screenWidth,
-              child: Stack(
-                children: [
-                  Align(
-                    // align with arrow, the canon fire function
-                    alignment: Alignment.topRight,
-                    child: Text(
-                      "123",
-                      style: TextStyle(fontSize: 50),
-                    ),
-                  ),
-                  Align(
-                      // alignment: Alignment(screenWidth * 0.5, 0.3 * screenHeight),
-                      alignment: Alignment.topLeft,
-                      child: Stack(
-                        children: [
-                          AnimatedContainer(
-                              //if it can not realized the function, AnimationBuilder needed
-                              transform: Matrix4.rotationX(
-                                  0.3), // pending on varaible injection and posture
-                              child: Image(image: AssetImage("assetName")),
-                              duration: Duration(milliseconds: 3000)),
-                          AnimatedPositioned(
-                            // pending on variable injection via balloon position
-                            left: 0.25,
-                            bottom: 0.35,
-                            // arrow pic moving
-                            curve: Curves.linear,
-                            duration: Duration(milliseconds: 3000),
-                            child: Image(image: AssetImage("assetName")),
-                          )
-                        ],
-                      )
-                      // Text(
-                      //   "456",
-                      //   style: TextStyle(fontSize: 50, color: Colors.black87),
-                      // ),
+          child: Stack(
+            fit: StackFit.expand,
+            children: [
+              Positioned(
+                  // align with arrow, the canon fire function
+                  bottom: screenHeight * 0.15,
+                  right: 0,
+                  child: Container(
+                      margin: EdgeInsets.fromLTRB(0, screenHeight * 0.06, 0, 0),
+                      width: screenWidth * 0.14,
+                      height: screenHeight * 0.14,
+                      child: Image(
+                          image: AssetImage("images/game/canonpic.png")))),
+              Positioned(
+                  // align with arrow, the canon fire function
+                  bottom: screenHeight * 0.15,
+                  right: screenWidth * 0.15,
+                  child: Container(
+                      margin: EdgeInsets.fromLTRB(0, screenHeight * 0.06, 0, 0),
+                      width: screenWidth * 0.14,
+                      height: screenHeight * 0.14,
+                      child:
+                          Image(image: AssetImage("images/game/bomb_s.gif")))),
+              Positioned(
+                  // alignment: Alignment(screenWidth * 0.5, 0.3 * screenHeight),
+                  bottom: screenHeight * 0.15,
+                  left: 0,
+                  child: Stack(
+                    children: [
+                      AnimatedContainer(
+                          //if it can not realized the function, AnimationBuilder needed
+                          transform: Matrix4.rotationX(
+                              0.3), // pending on varaible injection and posture
+                          child: Container(
+                              width: screenWidth * 0.14,
+                              height: screenHeight * 0.14,
+                              child: Image(
+                                  image: AssetImage(
+                                      "images/game/bowandarrow.png"))),
+                          duration: Duration(milliseconds: 3000)),
+                      AnimatedPositioned(
+                        // pending on variable injection via balloon position
+                        left: 0.25,
+                        bottom: 0.35,
+                        // arrow pic moving
+                        curve: Curves.linear,
+                        duration: Duration(milliseconds: 3000),
+                        child: Container(
+                            width: screenWidth * 0.14,
+                            height: screenHeight * 0.14,
+                            child: Image(
+                                image: AssetImage("images/game/arrow.png"))),
                       ),
-                  Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Container(
-                        // color: Colors.red,
-                        child: GridView.count(
-                            shrinkWrap: true,
-                            crossAxisCount: 4,
-                            childAspectRatio: 2 / 1,
-                            children: keyBoard(screenWidth, 1)),
-                      ))
-                ],
-              )))
+                      AnimatedPositioned(
+                        // pending on variable injection via balloon position
+                        left: 0.25,
+                        bottom: 0.35,
+                        // arrow pic moving
+                        curve: Curves.linear,
+                        duration: Duration(milliseconds: 3000),
+                        child: Container(
+                            width: screenWidth * 0.14,
+                            height: screenHeight * 0.14,
+                            child: Image(
+                                image: AssetImage("images/game/bow.png"))),
+                      ),
+                    ],
+                  )),
+              Positioned(
+                  bottom: 0,
+                  left: 0,
+                  right: 0,
+                  child: Container(
+                    // color: Colors.red,
+                    child: GridView.count(
+                        shrinkWrap: true,
+                        crossAxisCount: 4,
+                        childAspectRatio: 2 / 1,
+                        children: keyBoard(screenWidth, 1)),
+                  ))
+            ],
+          ))
     ]);
   }
 }

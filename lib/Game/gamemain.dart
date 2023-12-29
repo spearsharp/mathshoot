@@ -21,15 +21,13 @@ class _GameMainState extends State<GameMain> {
 
   @override
   void initState() {
-    super.initState();
+    // super.initState();
     _assetAudioPlayer.open(
       Audio('audios/mainenteranceBGM.wav'),
       autoStart: true,
       showNotification: true,
       loopMode: LoopMode.single,
     );
-    var tttt = _assetAudioPlayer.playerState;
-    print("_assetAudioPlayer:$tttt");
   }
 
   @override

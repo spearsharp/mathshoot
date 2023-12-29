@@ -24,10 +24,6 @@ class _MainlistState extends State<Mainlist> {
 
   final _assetAudioPlayer = AssetsAudioPlayer();
   final _keyAudioPlayer = AssetsAudioPlayer();
-  keypresssound() async {
-    _keyAudioPlayer.open(Audio('audios/pressmobilekeyBGM.wav'),
-        autoStart: true, loopMode: LoopMode.none);
-  }
 
   final List _arguments = [
     {
@@ -54,6 +50,12 @@ class _MainlistState extends State<Mainlist> {
       showNotification: true,
       loopMode: LoopMode.single,
     );
+    super.initState();
+  }
+
+  void keypresssound() {
+    _keyAudioPlayer.open(Audio('audios/pressmobilekeyBGM.wav'),
+        autoStart: true, loopMode: LoopMode.none);
   }
 
   @override
