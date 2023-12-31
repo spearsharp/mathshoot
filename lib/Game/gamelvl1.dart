@@ -40,6 +40,7 @@ class _GameLvl1State extends State<GameLvl1> {
   final StreamController<int> _inputController =
       StreamController.broadcast(); //multiple listener
   final StreamController<int> _scoreController = StreamController.broadcast();
+  final StreamController<List> _arrowController = StreamController.broadcast();
   // final StreamController<int> _levelController = StreamController.broadcast();
   var _assetAudioPlay = AssetsAudioPlayer.newPlayer();
   int score = 0;
@@ -166,6 +167,7 @@ class _GameLvl1State extends State<GameLvl1> {
                       screenWidth: screenWidth,
                       inputController: _inputController,
                       scoreController: _scoreController,
+                      arrowControlloer: _arrowController,
                       // levelController: _levelController,
                     );
                   } else {
@@ -504,7 +506,7 @@ class _arrowshootState extends State<arrowshoot>
       child: Container(
           width: widget.screenWidth * 0.14,
           height: widget.screenHeight * 0.1,
-          child: const Image(image: AssetImage("images/game/arrow.png"))),
+          child:Transform.rotate(angle: 80.1, child:const Image(image: AssetImage("images/game/arrow.png"))),  // angle is changing along with animation
     );
   }
 }
@@ -670,30 +672,28 @@ class _KeyPadState extends State<KeyPad> {
                   // alignment: Alignment(screenWidth * 0.5, 0.3 * screenHeight),
                   child: Stack(
                     children: [
-                      AnimatedContainer(
-                          //if it can not realized the function, AnimationBuilder needed
-                          transform: Matrix4.rotationZ(0.9),
-                          duration: const Duration(
-                              milliseconds:
-                                  500), // pending on varaible injection and posture
-                          child: Container(
-                              width: screenWidth * 0.14,
-                              height: screenHeight * 0.1,
-                              child: const Image(
-                                  image: AssetImage(
-                                      "images/game/bowandarrow.png")))),
-                      AnimatedContainer(
+                      Container(
+                          child: Transform.rotate(
+                              angle: 80.1,
+                              child: Container(
+                                  width: screenWidth * 0.14,
+                                  height: screenHeight * 0.1,
+                                  child: const Image(
+                                      image: AssetImage(
+                                          "images/game/bowandarrow.png"))))),
+                      Container(
                         // pending on variable injection via balloon position
 
-                        transform: Matrix4.rotationZ(0.9),
-
-                        curve: Curves.linear,
-                        duration: Duration(milliseconds: 500),
-                        child: Container(
-                            width: screenWidth * 0.14,
-                            height: screenHeight * 0.1,
-                            child: const Image(
-                                image: AssetImage("images/game/bow.png"))),
+                        child: Transform.rotate(
+                            angle: 80.1,
+                            child: AnimatedContainer(
+                                duration: Duration(milliseconds: 300),
+                                // transform:
+                                //     RotatedBox(quarterTurns: quarterTurns),
+                                width: screenWidth * 0.14,
+                                height: screenHeight * 0.1,
+                                child: const Image(
+                                    image: AssetImage("images/game/bow.png")))),
                       ),
                     ],
                   )),
