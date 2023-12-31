@@ -499,15 +499,19 @@ class _arrowshootState extends State<arrowshoot>
   @override
   Widget build(BuildContext context) {
     return SlideTransition(
-      // pending on variable injection via balloon position
-      position: _arrowcontroller.drive(Tween(
-          begin: Offset(initscreenHeight, initscreenWidth),
-          end: Offset(arrowlocation[1], arrowlocation[2]))),
-      child: Container(
+        // pending on variable injection via balloon position
+        position: _arrowcontroller.drive(Tween(
+            begin: Offset(initscreenHeight, initscreenWidth),
+            end: Offset(arrowlocation[1], arrowlocation[2]))),
+        child: Container(
           width: widget.screenWidth * 0.14,
           height: widget.screenHeight * 0.1,
-          child:Transform.rotate(angle: 80.1, child:const Image(image: AssetImage("images/game/arrow.png"))),  // angle is changing along with animation
-    );
+          child: Transform.rotate(
+              angle: 80.1,
+              child: const Image(
+                  image: AssetImage(
+                      "images/game/arrow.png"))), // angle is changing along with animation
+        ));
   }
 }
 //keypad monitorring
@@ -674,7 +678,7 @@ class _KeyPadState extends State<KeyPad> {
                     children: [
                       Container(
                           child: Transform.rotate(
-                              angle: 80.1,
+                              angle: -pi / 2,
                               child: Container(
                                   width: screenWidth * 0.14,
                                   height: screenHeight * 0.1,
@@ -685,7 +689,7 @@ class _KeyPadState extends State<KeyPad> {
                         // pending on variable injection via balloon position
 
                         child: Transform.rotate(
-                            angle: 80.1,
+                            angle: -pi / 2,
                             child: AnimatedContainer(
                                 duration: Duration(milliseconds: 300),
                                 // transform:
