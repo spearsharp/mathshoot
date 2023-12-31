@@ -27,7 +27,7 @@ class GameLvl1 extends StatefulWidget {
 
 class _GameLvl1State extends State<GameLvl1> {
   late bool levelup;
-  bool levelkeep = true, gamestart = false, counddown = false;
+  bool levelkeep = true, gamestart = false, countdown = false;
   int currentlevel = 0;
   // final player = AudioPlayer();
   final _assetAudioPlayer = AssetsAudioPlayer();
@@ -73,6 +73,21 @@ class _GameLvl1State extends State<GameLvl1> {
     super.dispose();
     _assetAudioPlay.stop();
     _keyAudioPlayer.stop();
+  }
+
+  Future<bool> _loadingcountdownpic() {
+    // loading countdown animated pic
+    return Future(() => Future.delayed(const Duration(seconds: 2)));
+  }
+
+  countdownpicload() async* {
+    // set gamestart to true and kickoff the game
+    await _loadingcountdownpic()
+        .then((value) => print(value))
+        .whenComplete(() => setState(() {
+              countdown = false;
+              gamestart = true;
+            }));
   }
 
   @override
@@ -141,7 +156,7 @@ class _GameLvl1State extends State<GameLvl1> {
                 ...List.generate(10, (index) {
                   print("durationTime:: $durationTime");
                   // generate numbers of baloon
-                  if (gamestart) {
+                  if (gamestart && !countdown) {
                     return Game(
                       screenHeight: screenHeight,
                       screenWidth: screenWidth,
@@ -154,66 +169,83 @@ class _GameLvl1State extends State<GameLvl1> {
                   }
                 }),
                 // localStorage.removeData("levelName"),
+                countdown //use streambuilder to rewrite the component
+                    ? Center(
+                        child: Container(
+                            alignment: Alignment.center,
+                            height: screenHeight * 0.4,
+                            child: const Image(
+                                image: AssetImage(
+                                    "images/game/animatedreadygo.gif"))))
+                    : const Text(""),
                 gamestart
                     ? KeyPad(
                         inputController: _inputController,
                         screenWidth: screenWidth)
-                    : const Text(""),
+                    : countdown
+                        ? KeyPad(
+                            inputController: _inputController,
+                            screenWidth: screenWidth)
+                        : const Text(""),
                 //tap to kickoff game, level1
+
                 gamestart
                     ? const Text("")
-                    : Stack(
-                        alignment: Alignment.bottomCenter,
-                        children: [
-                          Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
+                    : countdown
+                        ? Text("")
+                        : Stack(
+                            alignment: Alignment.bottomCenter,
                             children: [
-                              Stack(
-                                alignment: Alignment.center,
+                              Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
                                 children: [
-                                  Container(
-                                      height: screenHeight * 0.4,
-                                      decoration: const BoxDecoration(
-                                        image: DecorationImage(
-                                            alignment: Alignment.topCenter,
-                                            image: AssetImage(
-                                                "images/game/animated6balloontitleformpic.gif")),
-                                      ),
-                                      child: const Align(
-                                          alignment: Alignment(0, 0.85),
-                                          child: Text(
-                                            "level 1",
-                                            style: TextStyle(
-                                              fontSize: 36.0,
-                                              color: Color.fromARGB(
-                                                  255, 92, 51, 1),
-                                              decorationStyle:
-                                                  TextDecorationStyle.dashed,
-                                              letterSpacing: 5.0,
-                                              fontFamily: 'Balloony',
-                                            ),
-                                          ))),
+                                  Stack(
+                                    alignment: Alignment.center,
+                                    children: [
+                                      Container(
+                                          height: screenHeight * 0.4,
+                                          decoration: const BoxDecoration(
+                                            image: DecorationImage(
+                                                alignment: Alignment.topCenter,
+                                                image: AssetImage(
+                                                    "images/game/animated6balloontitleformpic.gif")),
+                                          ),
+                                          child: const Align(
+                                              alignment: Alignment(0, 0.85),
+                                              child: Text(
+                                                "level 1",
+                                                style: TextStyle(
+                                                  fontSize: 36.0,
+                                                  color: Color.fromARGB(
+                                                      255, 92, 51, 1),
+                                                  decorationStyle:
+                                                      TextDecorationStyle
+                                                          .dashed,
+                                                  letterSpacing: 5.0,
+                                                  fontFamily: 'Balloony',
+                                                ),
+                                              ))),
+                                    ],
+                                  ),
+                                  InkWell(
+                                    onTap: () async {
+                                      setState(() {
+                                        countdown = true;
+                                        _loadingcountdownpic();
+                                      });
+                                    },
+                                    child: const Image(
+                                        width: 280,
+                                        height: 80,
+                                        image: AssetImage(
+                                          "images/game/animatednextpic.gif",
+                                        )),
+                                  )
                                 ],
-                              ),
-                              InkWell(
-                                onTap: () {
-                                  setState(() {
-                                    counddown = true;
-                                    gamestart = true;
-                                  });
-                                },
-                                child: const Image(
-                                    width: 280,
-                                    height: 80,
-                                    image: AssetImage(
-                                      "images/game/animatednextpic.gif",
-                                    )),
                               )
                             ],
-                          )
-                        ],
-                      ),
+                          ),
                 Positioned(
                     // full screen with topup money
                     top: screenHeight * 0.055,
@@ -554,20 +586,20 @@ class _KeyPadState extends State<KeyPad> {
           child: Stack(
             fit: StackFit.expand,
             children: [
+              // Positioned(
+              //     // align with arrow, the canon fire function
+              //     bottom: screenHeight * 0.15,
+              //     right: 0,
+              //     child: Container(
+              //         margin: EdgeInsets.fromLTRB(0, screenHeight * 0.06, 0, 0),
+              //         width: screenWidth * 0.14,
+              //         height: screenHeight * 0.14,
+              //         child: Image(
+              //             image: AssetImage("images/game/canonpic.png")))),
               Positioned(
                   // align with arrow, the canon fire function
                   bottom: screenHeight * 0.15,
-                  right: 0,
-                  child: Container(
-                      margin: EdgeInsets.fromLTRB(0, screenHeight * 0.06, 0, 0),
-                      width: screenWidth * 0.14,
-                      height: screenHeight * 0.14,
-                      child: Image(
-                          image: AssetImage("images/game/canonpic.png")))),
-              Positioned(
-                  // align with arrow, the canon fire function
-                  bottom: screenHeight * 0.15,
-                  right: screenWidth * 0.15,
+                  // right: screenWidth * 0.15,
                   child: Container(
                       margin: EdgeInsets.fromLTRB(0, screenHeight * 0.06, 0, 0),
                       width: screenWidth * 0.14,
