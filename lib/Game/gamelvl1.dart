@@ -28,6 +28,10 @@ class GameLvl1 extends StatefulWidget {
 class _GameLvl1State extends State<GameLvl1> {
   late bool levelup;
   bool levelkeep = true, gamestart = false, countdown = false;
+  List arrowLocation = [
+    {"x": 0.1},
+    {"Y": 0.2}
+  ];
   int currentlevel = 0;
   // final player = AudioPlayer();
   final _assetAudioPlayer = AssetsAudioPlayer();
@@ -287,6 +291,7 @@ class Game extends StatefulWidget {
   final double screenWidth;
   final StreamController<int> inputController;
   final StreamController<int> scoreController;
+  final StreamController<List> arrowControlloer;
   // final StreamController<int> levelController;
   const Game({
     super.key,
@@ -294,6 +299,7 @@ class Game extends StatefulWidget {
     required this.screenWidth,
     required this.inputController,
     required this.scoreController,
+    required this.arrowControlloer,
     // required this.levelController,
   });
   @override
@@ -306,7 +312,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
   late double x;
   late int a, b, c, d, e, f, g, netscore, levelevent;
   late Color color;
-  late bool t, l;
+  late bool t, l, accbalance;
   int durationTime = Random().nextInt(5000) + 5800;
   String m = '()';
   String n = '/';
@@ -451,6 +457,57 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
   }
 }
 
+//arrow shooting and animation
+class arrowshoot extends StatefulWidget {
+  final List arrowlocation;
+  final double screenWidth, screenHeight;
+  final StreamController<List> arrowControlloer;
+  const arrowshoot(
+      {super.key,
+      required this.arrowControlloer,
+      required this.screenWidth,
+      required this.screenHeight,
+      required this.arrowlocation});
+
+  @override
+  State<arrowshoot> createState() => _arrowshootState();
+}
+
+class _arrowshootState extends State<arrowshoot>
+    with SingleTickerProviderStateMixin {
+  late AnimationController _arrowcontroller;
+  late double initscreenHeight, initscreenWidth;
+  late List arrowlocation;
+
+  @override
+  void initState() {
+    super.initState();
+    final AnimationController _arrowcontroller = AnimationController(
+        vsync: this, duration: const Duration(milliseconds: 600));
+    initscreenHeight = widget.screenHeight * 0.18;
+    initscreenWidth = widget.screenWidth * 0.45;
+    arrowlocation = widget.arrowlocation;
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SlideTransition(
+      // pending on variable injection via balloon position
+      position: _arrowcontroller.drive(Tween(
+          begin: Offset(initscreenHeight, initscreenWidth),
+          end: Offset(arrowlocation[1], arrowlocation[2]))),
+      child: Container(
+          width: widget.screenWidth * 0.14,
+          height: widget.screenHeight * 0.1,
+          child: const Image(image: AssetImage("images/game/arrow.png"))),
+    );
+  }
+}
 //keypad monitorring
 
 class KeyPad extends StatefulWidget {
@@ -599,54 +656,43 @@ class _KeyPadState extends State<KeyPad> {
               Positioned(
                   // align with arrow, the canon fire function
                   bottom: screenHeight * 0.15,
-                  // right: screenWidth * 0.15,
+                  right: 0,
                   child: Container(
                       margin: EdgeInsets.fromLTRB(0, screenHeight * 0.06, 0, 0),
                       width: screenWidth * 0.14,
                       height: screenHeight * 0.14,
                       child:
                           Image(image: AssetImage("images/game/bomb_s.gif")))),
+
               Positioned(
+                  left: screenWidth * 0.45,
+                  bottom: screenHeight * 0.18,
                   // alignment: Alignment(screenWidth * 0.5, 0.3 * screenHeight),
-                  bottom: screenHeight * 0.15,
-                  left: 0,
                   child: Stack(
                     children: [
                       AnimatedContainer(
                           //if it can not realized the function, AnimationBuilder needed
-                          transform: Matrix4.rotationX(
-                              0.3), // pending on varaible injection and posture
+                          transform: Matrix4.rotationZ(0.9),
+                          duration: const Duration(
+                              milliseconds:
+                                  500), // pending on varaible injection and posture
                           child: Container(
                               width: screenWidth * 0.14,
-                              height: screenHeight * 0.14,
-                              child: Image(
+                              height: screenHeight * 0.1,
+                              child: const Image(
                                   image: AssetImage(
-                                      "images/game/bowandarrow.png"))),
-                          duration: Duration(milliseconds: 3000)),
-                      AnimatedPositioned(
+                                      "images/game/bowandarrow.png")))),
+                      AnimatedContainer(
                         // pending on variable injection via balloon position
-                        left: 0.25,
-                        bottom: 0.35,
-                        // arrow pic moving
+
+                        transform: Matrix4.rotationZ(0.9),
+
                         curve: Curves.linear,
-                        duration: Duration(milliseconds: 3000),
+                        duration: Duration(milliseconds: 500),
                         child: Container(
                             width: screenWidth * 0.14,
-                            height: screenHeight * 0.14,
-                            child: Image(
-                                image: AssetImage("images/game/arrow.png"))),
-                      ),
-                      AnimatedPositioned(
-                        // pending on variable injection via balloon position
-                        left: 0.25,
-                        bottom: 0.35,
-                        // arrow pic moving
-                        curve: Curves.linear,
-                        duration: Duration(milliseconds: 3000),
-                        child: Container(
-                            width: screenWidth * 0.14,
-                            height: screenHeight * 0.14,
-                            child: Image(
+                            height: screenHeight * 0.1,
+                            child: const Image(
                                 image: AssetImage("images/game/bow.png"))),
                       ),
                     ],
