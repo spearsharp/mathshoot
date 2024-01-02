@@ -5,11 +5,11 @@ import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
 import '../Game/gamelvl1.dart';
 import '../Game/gamelvl2.dart';
+import '../Game/setting.dart';
+import '../Game/profile.dart';
 import '../services/iconUtil.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:auto_size_text/auto_size_text.dart';
-
-import '../services/setting.dart';
 
 class Mainlist extends StatefulWidget {
   final Map arguments;
@@ -189,6 +189,8 @@ class _MainlistState extends State<Mainlist> {
             InkWell(
                 onTap: () {
                   keypresssound();
+                  Navigator.pushNamed(context, "/profile",
+                      arguments: {"title": "profile"});
                   print("route to Profile page"); // pending on route to Profile
                 },
                 child: const ListTile(
@@ -207,6 +209,8 @@ class _MainlistState extends State<Mainlist> {
             InkWell(
               onTap: () {
                 keypresssound();
+                Navigator.pushNamed(context, '/setting',
+                    arguments: {"title": "mainlist"});
                 print(
                     "rout to setting page"); // pending on route too setting page
               },

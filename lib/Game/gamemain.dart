@@ -113,7 +113,7 @@ class _GameMainState extends State<GameMain> {
                               autoStart: true,
                               loopMode: LoopMode.none);
                           //route to exit
-                          Navigator.pushNamed(context, "/gamelvl2",
+                          Navigator.pushNamed(context, "/guide",
                               arguments: {"title": "mainpage"});
                         },
                         child: Container(

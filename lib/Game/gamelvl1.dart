@@ -530,7 +530,7 @@ class KeyPad extends StatefulWidget {
 class _KeyPadState extends State<KeyPad> {
   String displayPressNum = "";
   late String inputNum;
-  bool sign = true, correctanswer = false;
+  bool sign = false, correctanswer = false;
   int presscount = 0;
   List<Widget> keyBoard(double t, int v) {
     List Keypad = [
@@ -562,34 +562,52 @@ class _KeyPadState extends State<KeyPad> {
               switch (keyvalue) {
                 case 10:
                   {
-                    print("displayPressNum.substring(0, 1)");
-                    print(displayPressNum.substring(0, 1));
-                    if (displayPressNum.substring(0, 1) == "-") {
-                      displayPressNum =
-                          displayPressNum.substring(1, displayPressNum.length);
+                    if (displayPressNum == "") {
+                      displayPressNum = "-";
                     } else {
-                      displayPressNum = "-" + displayPressNum;
+                      if (displayPressNum.substring(0, 1) == "-") {
+                        displayPressNum = displayPressNum.substring(
+                            1, displayPressNum.length);
+                        print("displayPressNum:$displayPressNum");
+                      } else {
+                        displayPressNum = "-$displayPressNum";
+                        print("displayPressNum:$displayPressNum");
+                      }
                     }
-
                     print("displayPressNum:$displayPressNum");
-                    //pending on checking answer
+                    //pending on checking answer ,transit tmplist into judge
+
+                    if (correctanswer == true) {
+                      displayPressNum = "";
+                      sign = true;
+                      print("displayPressNum:$displayPressNum");
+                    }
                   }
                 case 11:
                   {
-                    displayPressNum = displayPressNum.substring(
-                        0, displayPressNum.length - 1);
+                    // displayPressNum = displayPressNum.substring(
+                    //     0, displayPressNum.length - 1);
+                    displayPressNum = "";
                     print("displayPressNum:$displayPressNum");
-                    //pending on checking answer
+                    //pending on checking answer ,transit tmplist into judge
+                    if (correctanswer == true) {
+                      displayPressNum = "";
+                      sign = true;
+                      print("displayPressNum:$displayPressNum");
+                    }
                   }
                 default:
                   {
                     displayPressNum = displayPressNum + keyvalue.toString();
-                    //pending on checking answer
+                    correctanswer = false;
+                    sign = false;
+                    //pending on checking answer ,transit tmplist into judge
                   }
               }
               //check answers correction ,get return
               if (correctanswer == true) {
                 displayPressNum = "";
+                sign = true;
                 print("displayPressNum:$displayPressNum");
               }
             } else {
