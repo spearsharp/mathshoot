@@ -11,7 +11,13 @@ class Profile extends StatefulWidget {
 
 class _ProfileState extends State<Profile> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    final _ScreenAdapter = MediaQuery.of(context).size;
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
@@ -28,7 +34,8 @@ class _ProfileState extends State<Profile> {
                     alignment: Alignment.centerRight,
                     child: IconButton(
                         onPressed: () {
-                          print("123");
+                          Navigator.pushNamed(context, "/setting",
+                              arguments: {"title": "mainlist"});
                         },
                         icon: const Icon(
                           Icons.settings,
@@ -41,46 +48,63 @@ class _ProfileState extends State<Profile> {
         backgroundColor: Colors.transparent,
         elevation: 0,
       ),
-      body: Container(
-          decoration: const BoxDecoration(
-              image: DecorationImage(
-                  fit: BoxFit.cover,
-                  image: AssetImage("images/game/matchbkgpic.jpg"))),
-          child: ListView(children: [
-            Row(
-              children: [
-                Expanded(
-                    child: Container(
-                  width: ScreenAdapter.width(150),
-                  height: ScreenAdapter.height(150),
-                  decoration: BoxDecoration(
-                      color: Colors.transparent,
-                      border: Border.all(color: Colors.grey, width: 2),
-                      borderRadius: BorderRadius.circular(10)),
-                  child: InkWell(
-                      onTap: () {
-                        print(
-                            "link to local pic select"); // or bottomsheet to select .. dun use local pics
-                      },
-                      child: const Image(
-                          image: AssetImage("images/game/portrait/man4.png"))),
-                )),
-                Expanded(
-                    child: Column(
-                  children: [
-                    Expanded(
-                        child: Text(
-                      "Spear Yao",
-                      style: TextStyle(
-                          fontSize: ScreenAdapter.width(30),
-                          fontFamily: "CreamCake"),
-                    )),
-                    const Expanded(child: Text("data"))
-                  ],
-                ))
-              ],
-            ),
-            ListView(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+              width: _ScreenAdapter.width,
+              height: _ScreenAdapter.height,
+              alignment: Alignment.center,
+              decoration: const BoxDecoration(
+                  image: DecorationImage(
+                      fit: BoxFit.cover,
+                      image: AssetImage("images/game/matchbkgpic.jpg"))),
+              child: Container(
+                  margin: EdgeInsets.fromLTRB(0, 100, 0, 0),
+                  child: Column(children: [
+                    Row(
+                      children: [
+                        InkWell(
+                            onTap: () {
+                              // or bottomsheet to select .. dun use local pics
+                              print("pending on select portrait pics");
+                            },
+                            child: Expanded(
+                              flex: 1,
+                              child: Container(
+                                  height: 120,
+                                  margin: EdgeInsets.all(8),
+                                  // padding: EdgeInsets.all(2),
+                                  decoration: BoxDecoration(
+                                      color: Colors.transparent,
+                                      border: Border.all(
+                                          color: Colors.grey, width: 2),
+                                      borderRadius: BorderRadius.circular(10)),
+                                  child: const Image(
+                                      fit: BoxFit.contain,
+                                      image: AssetImage(
+                                          "images/game/portrait/man4.png"))),
+                            )),
+                        const Expanded(
+                            flex: 2,
+                            child: Row(
+                              children: [
+                                Expanded(
+                                    flex: 1,
+                                    child: Text(
+                                      "Spear Yao",
+                                      style: TextStyle(
+                                          fontSize: 30,
+                                          fontFamily: "CreamCake"),
+                                    )),
+                                Expanded(flex: 1, child: Text("data"))
+                              ],
+                            ))
+                      ],
+                    ),
+                  ]))),
+          Container(
+            child: ListView(
               children: const [
                 SizedBox(
                   child: Text("123123"),
@@ -88,8 +112,10 @@ class _ProfileState extends State<Profile> {
                 SizedBox(child: Text("123")),
                 SizedBox(child: Text("123"))
               ],
-            )
-          ])),
+            ),
+          )
+        ],
+      ),
     );
   }
 }

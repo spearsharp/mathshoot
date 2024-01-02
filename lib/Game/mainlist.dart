@@ -190,7 +190,7 @@ class _MainlistState extends State<Mainlist> {
                 onTap: () {
                   keypresssound();
                   Navigator.pushNamed(context, "/profile",
-                      arguments: {"title": "profile"});
+                      arguments: {"title": "mainlist"});
                   print("route to Profile page"); // pending on route to Profile
                 },
                 child: const ListTile(
@@ -239,6 +239,27 @@ class _MainlistState extends State<Mainlist> {
                 ),
                 title: Text(
                   "Topup",
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontFamily: 'MotleyForces',
+                      color: Colors.white70),
+                ),
+              ),
+            ),
+            Divider(),
+            InkWell(
+              onTap: () {
+                keypresssound();
+                Navigator.pushNamed(context, '/guide',
+                    arguments: {"title": "mainlist"});
+                print("rout to Topup page");
+              },
+              child: const ListTile(
+                leading: CircleAvatar(
+                  child: Icon(Icons.gamepad_sharp),
+                ),
+                title: Text(
+                  "guide",
                   style: TextStyle(
                       fontSize: 20,
                       fontFamily: 'MotleyForces',
