@@ -1,4 +1,7 @@
+import 'dart:ffi';
+
 import '../services/screeenAdapter.dart';
+import "../routers/routers.dart";
 import 'package:flutter/material.dart';
 
 class Profile extends StatefulWidget {
@@ -10,9 +13,17 @@ class Profile extends StatefulWidget {
 }
 
 class _ProfileState extends State<Profile> {
+  /// 邮箱正则
+  final String regexEmail =
+      "^\\w+([-+.]\\w+)*@\\w+([-.]\\w+)*\\.\\w+([-.]\\w+)*\$";
   @override
   void initState() {
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -21,6 +32,13 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
       extendBodyBehindAppBar: true,
       appBar: AppBar(
+        leading: IconButton(
+            onPressed: () {
+              Navigator.pushNamed(context, "/mainlist",
+                  arguments: {"title": "profile"});
+              print("1231231231231");
+            },
+            icon: Icon(Icons.chevron_left)),
         iconTheme: const IconThemeData(
           color: Colors.white70,
           // 设置返回箭头颜色为白色
@@ -60,7 +78,9 @@ class _ProfileState extends State<Profile> {
                       fit: BoxFit.cover,
                       image: AssetImage("images/game/matchbkgpic.jpg"))),
               child: Container(
-                  margin: EdgeInsets.fromLTRB(0, 100, 0, 0),
+                  padding: EdgeInsets.fromLTRB(35, 0, 35, 0),
+                  margin:
+                      EdgeInsets.fromLTRB(0, _ScreenAdapter.height * 0.1, 0, 0),
                   child: Column(children: [
                     Row(
                       children: [
@@ -78,42 +98,145 @@ class _ProfileState extends State<Profile> {
                                   decoration: BoxDecoration(
                                       color: Colors.transparent,
                                       border: Border.all(
-                                          color: Colors.grey, width: 2),
+                                          color: Colors.white70, width: 2),
                                       borderRadius: BorderRadius.circular(10)),
                                   child: const Image(
                                       fit: BoxFit.contain,
                                       image: AssetImage(
                                           "images/game/portrait/man4.png"))),
                             )),
-                        const Expanded(
-                            flex: 2,
+                        Expanded(
+                            flex: 1,
                             child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
                               children: [
+                                const Expanded(
+                                    flex: 2,
+                                    child: Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+                                        children: [
+                                          Text(
+                                            "Spear Yao",
+                                            style: TextStyle(
+                                                fontSize: 40,
+                                                color: Colors.white70,
+                                                fontFamily: "CreamCake"),
+                                          )
+                                        ])),
                                 Expanded(
                                     flex: 1,
-                                    child: Text(
-                                      "Spear Yao",
-                                      style: TextStyle(
-                                          fontSize: 30,
-                                          fontFamily: "CreamCake"),
-                                    )),
-                                Expanded(flex: 1, child: Text("data"))
+                                    child: IconButton(
+                                        alignment: Alignment.centerLeft,
+                                        onPressed: () {
+                                          print("edit name");
+                                        },
+                                        icon: const Icon(
+                                          Icons.mode,
+                                          color: Colors.white70,
+                                        )))
                               ],
                             ))
                       ],
                     ),
+                    Expanded(
+                      child: ListView(children: [
+                        Container(
+                            height: _ScreenAdapter.height * 0.1,
+                            alignment: Alignment.centerLeft,
+                            child: TextField(
+                              decoration: InputDecoration(
+                                fillColor: Colors.white70,
+                                labelStyle: TextStyle(
+                                  color: Colors.white70,
+                                ),
+                                hoverColor: Colors.white70,
+                                suffixIcon: Icon(
+                                  Icons.email,
+                                  color: Colors.white70,
+                                ),
+                                hintStyle: TextStyle(
+                                    fontFamily: "Bollony",
+                                    color: Colors.white70,
+                                    fontWeight: FontWeight.w800),
+                                hintText: "Email:",
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(40),
+                                    borderSide:
+                                        BorderSide(color: Colors.white70)),
+                              ), // hint text ontap to update,tapout to save
+                            )),
+                        Container(
+                            height: _ScreenAdapter.height * 0.1,
+                            alignment: Alignment.centerLeft,
+                            child: TextField(
+                              decoration: InputDecoration(
+                                labelStyle: TextStyle(
+                                  color: Colors.white70,
+                                ),
+                                hoverColor: Colors.white70,
+                                suffixIcon: Icon(
+                                  Icons.date_range,
+                                  color: Colors.white70,
+                                ),
+                                hintStyle: TextStyle(
+                                    fontFamily: "Bollony",
+                                    color: Colors.white70,
+                                    fontWeight: FontWeight.w800),
+                                hintText: "Age:",
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(40),
+                                    borderSide:
+                                        BorderSide(color: Colors.white70)),
+                              ), // hint text ontap to update,tapout to save
+                            )),
+                        Container(
+                            height: _ScreenAdapter.height * 0.1,
+                            alignment: Alignment.centerLeft,
+                            child: TextField(
+                              decoration: InputDecoration(
+                                labelStyle: TextStyle(
+                                  color: Colors.white70,
+                                ),
+                                hoverColor: Colors.white70,
+                                suffixIcon: Icon(
+                                  Icons.people_alt_outlined,
+                                  color: Colors.white70,
+                                ),
+                                hintStyle: TextStyle(
+                                    fontFamily: "Bollony",
+                                    color: Colors.white70,
+                                    fontWeight: FontWeight.w800),
+                                hintText: "Gender:",
+                                border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(40),
+                                    borderSide:
+                                        BorderSide(color: Colors.white70)),
+                              ), // hint text ontap to update,tapout to save
+                            )),
+                        SizedBox(
+                          height: 30,
+                        ),
+                        ElevatedButton(
+                          child: Text(
+                            "save",
+                            style: TextStyle(
+                                fontFamily: "Bollony",
+                                color: Colors.amber[800],
+                                fontSize: _ScreenAdapter.width * 0.1,
+                                fontWeight: FontWeight.bold),
+                          ),
+                          style: ButtonStyle(
+                              backgroundColor:
+                                  MaterialStateProperty.all(Colors.white30)),
+                          onPressed: () {
+                            print("save to server");
+                          },
+                        )
+                      ]),
+                    )
                   ]))),
-          Container(
-            child: ListView(
-              children: const [
-                SizedBox(
-                  child: Text("123123"),
-                ),
-                SizedBox(child: Text("123")),
-                SizedBox(child: Text("123"))
-              ],
-            ),
-          )
         ],
       ),
     );
