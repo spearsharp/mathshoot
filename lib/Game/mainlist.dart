@@ -117,12 +117,13 @@ class _MainlistState extends State<Mainlist> {
                     children: <Widget>[
                       // ignore: prefer_interpolation_to_compose_strings
                       AutoSizeText(
-                        "Level:" + _arguments[i]['levelname'],
+                        "Level " + _arguments[i]['levelname'],
                         minFontSize: 35,
-                        maxFontSize: 45,
+                        maxFontSize: 55,
                         style: const TextStyle(
-                          fontFamily: 'CreamCake',
-                        ),
+                            fontFamily: 'MotleyForces',
+                            fontSize: 30,
+                            color: Colors.black87),
                       ),
                     ])
               ],
@@ -169,6 +170,8 @@ class _MainlistState extends State<Mainlist> {
             InkWell(
               onTap: () {
                 keypresssound();
+                Navigator.pushNamed(context, "/topplayers",
+                    arguments: {"title": "mainlist"});
                 print(
                     "route to Players record page"); // pending on route to Records page
               },
@@ -231,6 +234,8 @@ class _MainlistState extends State<Mainlist> {
             InkWell(
               onTap: () {
                 keypresssound();
+                Navigator.pushNamed(context, "/topup",
+                    arguments: {"title": "mainlist"});
                 print("rout to Topup page");
               },
               child: const ListTile(
@@ -271,6 +276,7 @@ class _MainlistState extends State<Mainlist> {
         ),
       ),
       appBar: AppBar(
+        iconTheme: IconThemeData(color: Colors.white70),
         title: Row(children: [
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 20.0),
@@ -344,7 +350,7 @@ class __mainlistleftdrawerState extends State<_mainlistleftdrawer> {
   Widget build(BuildContext context) {
     return Container(
       decoration: BoxDecoration(color: Colors.grey[50]),
-      child: Mainlistleftdrawer(
+      child: const Mainlistleftdrawer(
         arguments: {'title': 'title'},
       ),
     );
