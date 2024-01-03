@@ -65,7 +65,7 @@ class _MainlistState extends State<Mainlist> {
     _keyAudioPlayer.stop();
   }
 
-  List<Widget> _inkwelllvltitle(_ScreenAdapter) {
+  List<Widget> _inkwelllvltitle(ScreenAdapter) {
     List<Widget> tmplist = [];
     for (int i = 0; i < _arguments.length; i++) {
       print(_arguments[i]['levelname']);
@@ -80,8 +80,10 @@ class _MainlistState extends State<Mainlist> {
                 arguments: _arguments[i]);
           },
           child: Container(
+            margin: EdgeInsets.fromLTRB(0, 10, 0, 10),
+            padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
             alignment: Alignment.topCenter,
-            width: _ScreenAdapter.width * 0.7,
+            width: ScreenAdapter.width * 0.7,
             decoration: const BoxDecoration(
                 image: DecorationImage(
                     fit: BoxFit.contain,
@@ -102,29 +104,32 @@ class _MainlistState extends State<Mainlist> {
                         image: _arguments[i]['gameunlockstatus'] == "unclocked"
                             ? const AssetImage("images/game/dollarsignpic.png")
                             : const AssetImage("images/game/lockedbluepic.png"),
-                        width: _ScreenAdapter.width * 0.07,
-                        height: _ScreenAdapter.width * 0.07,
+                        width: ScreenAdapter.width * 0.07,
+                        height: ScreenAdapter.width * 0.07,
                         alignment: Alignment.center,
                         fit: BoxFit.fill,
                       )
                     ]),
                 SizedBox(
-                  width: _ScreenAdapter.width * 0.03,
+                  width: ScreenAdapter.width * 0.03,
                 ),
                 Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
                       // ignore: prefer_interpolation_to_compose_strings
-                      AutoSizeText(
-                        "Level " + _arguments[i]['levelname'],
-                        minFontSize: 35,
-                        maxFontSize: 55,
-                        style: const TextStyle(
-                            fontFamily: 'MotleyForces',
-                            fontSize: 30,
-                            color: Colors.black87),
-                      ),
+                      Container(
+                        padding: EdgeInsets.fromLTRB(0, 3, 2, 3),
+                        child: AutoSizeText(
+                          "Level " + _arguments[i]['levelname'],
+                          minFontSize: 35,
+                          maxFontSize: 55,
+                          style: const TextStyle(
+                              fontFamily: 'MotleyForces',
+                              fontSize: 30,
+                              color: Colors.black87),
+                        ),
+                      )
                     ])
               ],
             ),

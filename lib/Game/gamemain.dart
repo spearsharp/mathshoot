@@ -103,7 +103,7 @@ class _GameMainState extends State<GameMain> {
                               ),
                             ))),
                     SizedBox(
-                      height: screenHeight * 0.01,
+                      height: screenHeight * 0.02,
                     ),
                     InkWell(
                         onTap: () {
