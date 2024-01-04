@@ -18,7 +18,7 @@ import '../model/keyPad.dart';
 // import 'services/arith.dart';
 
 class GameLvl1 extends StatefulWidget {
-  final Map arguments;
+  final Map arguments; // arguments transfer balance
   const GameLvl1({super.key, required this.arguments});
 
   @override
@@ -26,7 +26,8 @@ class GameLvl1 extends StatefulWidget {
 }
 
 class _GameLvl1State extends State<GameLvl1> {
-  late bool levelup;
+  late bool levelup, accbalance; // balance patch from mainpage
+
   bool levelkeep = true, gamestart = false, countdown = false;
   List arrowLocation = [
     {"x": 0.1},
@@ -60,7 +61,9 @@ class _GameLvl1State extends State<GameLvl1> {
 
     super.initState();
     print(widget.arguments);
-
+    accbalance = false;
+    // accbalance =
+    //     widget.arguments["accbalance"]; // fetch accbalance frome mainpage
     void gamekickoff() {}
   }
 
@@ -82,17 +85,19 @@ class _GameLvl1State extends State<GameLvl1> {
 
   Future<bool> _loadingcountdownpic() {
     // loading countdown animated pic
-    return Future(() => Future.delayed(const Duration(seconds: 2)));
+    return Future(() => Future.delayed(const Duration(seconds: 3)));
   }
 
-  countdownpicload() async* {
+  void countdownpicload() async {
     // set gamestart to true and kickoff the game
-    await _loadingcountdownpic()
-        .then((value) => print(value))
-        .whenComplete(() => setState(() {
-              countdown = false;
-              gamestart = true;
-            }));
+    setState(() {
+      countdown = true;
+    });
+    await Future.delayed(Duration(seconds: 5));
+    setState(() {
+      gamestart = true;
+      countdown = false;
+    });
   }
 
   @override
@@ -104,6 +109,7 @@ class _GameLvl1State extends State<GameLvl1> {
     return Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(
+          iconTheme: const IconThemeData(color: Colors.white70),
           centerTitle: true,
           shadowColor: Colors.transparent,
           backgroundColor: Colors.transparent,
@@ -161,13 +167,13 @@ class _GameLvl1State extends State<GameLvl1> {
                 ...List.generate(10, (index) {
                   print("durationTime:: $durationTime");
                   // generate numbers of baloon
-                  if (gamestart && !countdown) {
+                  if (gamestart == true && countdown == false) {
                     return Game(
                       screenHeight: screenHeight,
                       screenWidth: screenWidth,
                       inputController: _inputController,
                       scoreController: _scoreController,
-                      arrowControlloer: _arrowController,
+                      arrowController: _arrowController,
                       // levelController: _levelController,
                     );
                   } else {
@@ -183,75 +189,75 @@ class _GameLvl1State extends State<GameLvl1> {
                             child: const Image(
                                 image: AssetImage(
                                     "images/game/animatedreadygo.gif"))))
-                    : const Text(""),
-                gamestart
+                    : gamestart // 6balloon foreground pic loading
+                        ? const Text("")
+                        : countdown
+                            ? Text("")
+                            : Stack(
+                                alignment: Alignment.bottomCenter,
+                                children: [
+                                  Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.center,
+                                    children: [
+                                      Stack(
+                                        alignment: Alignment.center,
+                                        children: [
+                                          Container(
+                                              height: screenHeight * 0.4,
+                                              decoration: const BoxDecoration(
+                                                image: DecorationImage(
+                                                    alignment:
+                                                        Alignment.topCenter,
+                                                    image: AssetImage(
+                                                        "images/game/animated6balloontitleformpic.gif")),
+                                              ),
+                                              child: const Align(
+                                                  alignment: Alignment(0, 0.85),
+                                                  child: Text(
+                                                    "level 1",
+                                                    style: TextStyle(
+                                                      fontSize: 36.0,
+                                                      color: Color.fromARGB(
+                                                          255, 92, 51, 1),
+                                                      decorationStyle:
+                                                          TextDecorationStyle
+                                                              .dashed,
+                                                      letterSpacing: 5.0,
+                                                      fontFamily: 'Balloony',
+                                                    ),
+                                                  ))),
+                                        ],
+                                      ),
+                                      InkWell(
+                                        onTap: () {
+                                          countdownpicload();
+                                        },
+                                        child: const Image(
+                                            width: 280,
+                                            height: 80,
+                                            image: AssetImage(
+                                              "images/game/animatednextpic.gif",
+                                            )),
+                                      )
+                                    ],
+                                  )
+                                ],
+                              ),
+                countdown
                     ? KeyPad(
                         inputController: _inputController,
-                        screenWidth: screenWidth)
-                    : countdown
+                        screenWidth: screenWidth,
+                        accbalance: accbalance)
+                    : gamestart
                         ? KeyPad(
                             inputController: _inputController,
-                            screenWidth: screenWidth)
+                            screenWidth: screenWidth,
+                            accbalance: accbalance)
                         : const Text(""),
                 //tap to kickoff game, level1
 
-                gamestart
-                    ? const Text("")
-                    : countdown
-                        ? Text("")
-                        : Stack(
-                            alignment: Alignment.bottomCenter,
-                            children: [
-                              Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Stack(
-                                    alignment: Alignment.center,
-                                    children: [
-                                      Container(
-                                          height: screenHeight * 0.4,
-                                          decoration: const BoxDecoration(
-                                            image: DecorationImage(
-                                                alignment: Alignment.topCenter,
-                                                image: AssetImage(
-                                                    "images/game/animated6balloontitleformpic.gif")),
-                                          ),
-                                          child: const Align(
-                                              alignment: Alignment(0, 0.85),
-                                              child: Text(
-                                                "level 1",
-                                                style: TextStyle(
-                                                  fontSize: 36.0,
-                                                  color: Color.fromARGB(
-                                                      255, 92, 51, 1),
-                                                  decorationStyle:
-                                                      TextDecorationStyle
-                                                          .dashed,
-                                                  letterSpacing: 5.0,
-                                                  fontFamily: 'Balloony',
-                                                ),
-                                              ))),
-                                    ],
-                                  ),
-                                  InkWell(
-                                    onTap: () async {
-                                      setState(() {
-                                        countdown = true;
-                                        _loadingcountdownpic();
-                                      });
-                                    },
-                                    child: const Image(
-                                        width: 280,
-                                        height: 80,
-                                        image: AssetImage(
-                                          "images/game/animatednextpic.gif",
-                                        )),
-                                  )
-                                ],
-                              )
-                            ],
-                          ),
                 Positioned(
                     // full screen with topup money
                     top: screenHeight * 0.055,
@@ -293,7 +299,7 @@ class Game extends StatefulWidget {
   final double screenWidth;
   final StreamController<int> inputController;
   final StreamController<int> scoreController;
-  final StreamController<List> arrowControlloer;
+  final StreamController<List> arrowController;
   // final StreamController<int> levelController;
   const Game({
     super.key,
@@ -301,7 +307,7 @@ class Game extends StatefulWidget {
     required this.screenWidth,
     required this.inputController,
     required this.scoreController,
-    required this.arrowControlloer,
+    required this.arrowController,
     // required this.levelController,
   });
   @override
@@ -314,7 +320,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
   late double x;
   late int a, b, c, d, e, f, g, netscore, levelevent;
   late Color color;
-  late bool t, l, accbalance;
+  late bool t, l, accbalance = false;
   int durationTime = Random().nextInt(5000) + 5800;
   String m = '()';
   String n = '/';
@@ -376,6 +382,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
       ]);
     } else {
       // print("爆炸图");
+//arrow shoot , fadetransition, slidetransition
       t = true;
       return ListView(children: [
         Container(
@@ -403,7 +410,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
     _animationController = AnimationController(
         vsync: this, duration: Duration(milliseconds: durationTime));
     _animationController.forward();
-    widget.inputController.stream.listen((event) {
+    widget.inputController.stream.listen((event) async {
       //pending update input display and flag to route.
       int total = d + e;
       print("d:: $d");
@@ -411,11 +418,18 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
       print("event:: $event");
 
       if (total == event) {
+        // score correct
         t = false;
         score(t);
         // level(l);
+
         setState(() {
+          //arrow flying
+          // setState(() {
+          //   //partially rebuild
+          // });
           _UpdatePic(t, d, e);
+          Future.delayed(Duration(seconds: 1));
           reset(widget.screenWidth);
           _animationController.forward(from: 0.0);
         });
@@ -463,10 +477,10 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
 class arrowshoot extends StatefulWidget {
   final List arrowlocation;
   final double screenWidth, screenHeight;
-  final StreamController<List> arrowControlloer;
+  final StreamController<List> arrowController;
   const arrowshoot(
       {super.key,
-      required this.arrowControlloer,
+      required this.arrowController,
       required this.screenWidth,
       required this.screenHeight,
       required this.arrowlocation});
@@ -494,20 +508,29 @@ class _arrowshootState extends State<arrowshoot>
   @override
   void dispose() {
     super.dispose();
+    _arrowcontroller.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
+    // Animation x = Tween(begin: -100.0, end: 100.0)   // slidetransition
+    //     .chain(CurveTween(curve: Curves.linear))
+    //     .chain(CurveTween(curve: Interval(0.2, 0.8)))
+    //     .animate(_arrowcontroller);
     return SlideTransition(
+        // replaced with Animationbuilder
         // pending on variable injection via balloon position
         position: _arrowcontroller.drive(Tween(
             begin: Offset(initscreenHeight, initscreenWidth),
             end: Offset(arrowlocation[1], arrowlocation[2]))),
-        child: Container(
+        child: AnimatedContainer(
+          duration: Duration(milliseconds: 600),
+          transform:
+              Matrix4.translationValues(initscreenHeight, initscreenWidth, 0),
           width: widget.screenWidth * 0.14,
           height: widget.screenHeight * 0.1,
           child: Transform.rotate(
-              angle: 80.1,
+              angle: -pi / 2,
               child: const Image(
                   image: AssetImage(
                       "images/game/arrow.png"))), // angle is changing along with animation
@@ -519,8 +542,12 @@ class _arrowshootState extends State<arrowshoot>
 class KeyPad extends StatefulWidget {
   final StreamController<int> inputController;
   final double screenWidth;
+  final bool accbalance;
   const KeyPad(
-      {super.key, required this.inputController, required this.screenWidth});
+      {super.key,
+      required this.inputController,
+      required this.screenWidth,
+      required this.accbalance});
 
   @override
   State<KeyPad> createState() => _KeyPadState();
@@ -530,6 +557,7 @@ class KeyPad extends StatefulWidget {
 class _KeyPadState extends State<KeyPad> {
   String displayPressNum = "";
   late String inputNum;
+  late bool accbalance;
   bool sign = false, correctanswer = false;
   int presscount = 0;
   List<Widget> keyBoard(double t, int v) {
@@ -634,6 +662,7 @@ class _KeyPadState extends State<KeyPad> {
   @override
   void initState() {
     super.initState();
+    accbalance = widget.accbalance;
   }
 
   @override
@@ -677,16 +706,19 @@ class _KeyPadState extends State<KeyPad> {
               //         height: screenHeight * 0.14,
               //         child: Image(
               //             image: AssetImage("images/game/canonpic.png")))),
-              Positioned(
-                  // align with arrow, the canon fire function
-                  bottom: screenHeight * 0.15,
-                  right: 0,
-                  child: Container(
-                      margin: EdgeInsets.fromLTRB(0, screenHeight * 0.06, 0, 0),
-                      width: screenWidth * 0.14,
-                      height: screenHeight * 0.14,
-                      child:
-                          Image(image: AssetImage("images/game/bomb_s.gif")))),
+              accbalance == true
+                  ? Positioned(
+                      // align with arrow, the canon fire function
+                      bottom: screenHeight * 0.15,
+                      right: 0,
+                      child: Container(
+                          margin:
+                              EdgeInsets.fromLTRB(0, screenHeight * 0.06, 0, 0),
+                          width: screenWidth * 0.14,
+                          height: screenHeight * 0.14,
+                          child: Image(
+                              image: AssetImage("images/game/bomb_s.gif"))))
+                  : const Text(""),
 
               Positioned(
                   left: screenWidth * 0.45,
