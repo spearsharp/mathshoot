@@ -250,7 +250,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
       t = true;
       return ListView(children: [
         Container(
-            color: Colors.red.withOpacity(0),
+            color: Colors.transparent,
             child: const Image(
               image: AssetImage("images/game/goldcyclebomb.gif"),
               fit: BoxFit.contain,
@@ -319,7 +319,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
                   .value,
               left: x,
               child: Container(
-                  color: Colors.red.withOpacity(0),
+                  color: Colors.transparent,
                   width: screenWidth * 0.25,
                   height: screenHeight,
                   padding: const EdgeInsets.fromLTRB(8, 5, 8, 5),

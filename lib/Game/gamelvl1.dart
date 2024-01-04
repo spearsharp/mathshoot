@@ -325,13 +325,15 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
   String m = '()';
   String n = '/';
   late AnimationController _animationController;
+  late AnimationController _arrownimationController;
 
 //game level started
 
 //game restart
   reset(screenWidth) {
+    // reset to generate new arithquote
     // var arithRes = arithCalcSentence(){};   // insert arith
-    t = true;
+    t = false;
     d = Random().nextInt(5) + 1;
     e = Random().nextInt(5);
     x = Random().nextDouble() * screenWidth * 0.7;
@@ -348,17 +350,17 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
   //score update
   score(t) {
     if (t) {
-      widget.scoreController.add(-1);
-      netscore = netscore - 1;
-      if (netscore < 0) {
-        l = false;
-        netscore = 0;
-      }
-    } else {
       widget.scoreController.add(3);
       netscore = netscore + 3;
       if (netscore > 10) {
         l = true;
+        netscore = 0;
+      }
+    } else {
+      widget.scoreController.add(-1);
+      netscore = netscore - 1;
+      if (netscore < 0) {
+        l = false;
         netscore = 0;
       }
     }
@@ -367,6 +369,18 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
   // ignore: non_constant_identifier_names
   ListView _UpdatePic(t, d, e) {
     if (t) {
+// print("爆炸图");
+//arrow shoot , fadetransition, slidetransition
+      t = false;
+      return ListView(children: [
+        Container(
+            color: Colors.transparent,
+            child: const Image(
+              image: AssetImage("images/game/goldcyclebomb.gif"),
+              fit: BoxFit.contain,
+            )),
+      ]);
+    } else {
       // print("气球图");
       return ListView(children: [
         Container(
@@ -379,18 +393,6 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
               borderRadius: BorderRadius.circular(18),
             ),
             child: Text("$d+$e=?", style: const TextStyle(fontSize: 18))),
-      ]);
-    } else {
-      // print("爆炸图");
-//arrow shoot , fadetransition, slidetransition
-      t = true;
-      return ListView(children: [
-        Container(
-            color: Colors.red.withOpacity(0),
-            child: const Image(
-              image: AssetImage("images/game/smogbomb.gif"),
-              fit: BoxFit.contain,
-            )),
       ]);
     }
   }
@@ -419,17 +421,11 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
 
       if (total == event) {
         // score correct
-        t = false;
+        t = true;
         score(t);
         // level(l);
-
         setState(() {
-          //arrow flying
-          // setState(() {
-          //   //partially rebuild
-          // });
           _UpdatePic(t, d, e);
-          Future.delayed(Duration(seconds: 1));
           reset(widget.screenWidth);
           _animationController.forward(from: 0.0);
         });
@@ -513,10 +509,6 @@ class _arrowshootState extends State<arrowshoot>
 
   @override
   Widget build(BuildContext context) {
-    // Animation x = Tween(begin: -100.0, end: 100.0)   // slidetransition
-    //     .chain(CurveTween(curve: Curves.linear))
-    //     .chain(CurveTween(curve: Interval(0.2, 0.8)))
-    //     .animate(_arrowcontroller);
     return SlideTransition(
         // replaced with Animationbuilder
         // pending on variable injection via balloon position
@@ -554,9 +546,10 @@ class KeyPad extends StatefulWidget {
 }
 
 //keypad function , pending on substract independently
-class _KeyPadState extends State<KeyPad> {
+class _KeyPadState extends State<KeyPad> with SingleTickerProviderStateMixin {
   String displayPressNum = "";
   late String inputNum;
+  late StreamController<int> inputController;
   late bool accbalance;
   bool sign = false, correctanswer = false;
   int presscount = 0;
@@ -642,10 +635,8 @@ class _KeyPadState extends State<KeyPad> {
               presscount = 0;
               displayPressNum = "";
             }
-            setState(() {
-              inputNum = displayPressNum;
-            });
-            widget.inputController.add(keyvalue);
+            inputNum = displayPressNum;
+            inputController.add(keyvalue);
           },
           child: AutoSizeText("$keytext",
               textAlign: TextAlign.center,
@@ -662,6 +653,7 @@ class _KeyPadState extends State<KeyPad> {
   @override
   void initState() {
     super.initState();
+    inputController = widget.inputController;
     accbalance = widget.accbalance;
   }
 
@@ -682,30 +674,32 @@ class _KeyPadState extends State<KeyPad> {
               color: Colors.white10,
               borderRadius: BorderRadius.circular(28),
             ),
-            child: Text(
-              "$displayPressNum",
-              style: TextStyle(
-                  fontSize: screenWidth * 0.1,
-                  color: Colors.white38,
-                  fontFamily: "MotleyForces",
-                  fontWeight: FontWeight.w800),
-            ),
+            child: StreamBuilder(
+                stream: inputController.stream,
+                builder: (context, snapshot) {
+                  return Text(
+                    "$displayPressNum",
+                    style: TextStyle(
+                        fontSize: screenWidth * 0.1,
+                        color: Colors.white38,
+                        fontFamily: "MotleyForces",
+                        fontWeight: FontWeight.w800),
+                  );
+                }),
+            // child: Text(
+            //   "$displayPressNum",
+            //   style: TextStyle(
+            //       fontSize: screenWidth * 0.1,
+            //       color: Colors.white38,
+            //       fontFamily: "MotleyForces",
+            //       fontWeight: FontWeight.w800),
+            // ),
           )),
       Align(
           alignment: Alignment.bottomCenter,
           child: Stack(
             fit: StackFit.expand,
             children: [
-              // Positioned(
-              //     // align with arrow, the canon fire function
-              //     bottom: screenHeight * 0.15,
-              //     right: 0,
-              //     child: Container(
-              //         margin: EdgeInsets.fromLTRB(0, screenHeight * 0.06, 0, 0),
-              //         width: screenWidth * 0.14,
-              //         height: screenHeight * 0.14,
-              //         child: Image(
-              //             image: AssetImage("images/game/canonpic.png")))),
               accbalance == true
                   ? Positioned(
                       // align with arrow, the canon fire function
@@ -719,7 +713,6 @@ class _KeyPadState extends State<KeyPad> {
                           child: Image(
                               image: AssetImage("images/game/bomb_s.gif"))))
                   : const Text(""),
-
               Positioned(
                   left: screenWidth * 0.45,
                   bottom: screenHeight * 0.18,
@@ -761,7 +754,8 @@ class _KeyPadState extends State<KeyPad> {
                         shrinkWrap: true,
                         crossAxisCount: 4,
                         childAspectRatio: 2 / 1,
-                        children: keyBoard(screenWidth, 1)),
+                        children: keyBoard(
+                            screenWidth, 1)), // change to streambuilder
                   ))
             ],
           ))
