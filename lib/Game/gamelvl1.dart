@@ -27,7 +27,8 @@ class GameLvl1 extends StatefulWidget {
 
 class _GameLvl1State extends State<GameLvl1> {
   late bool levelup, accbalance; // balance patch from mainpage
-
+  // ignore: unused_field
+  late List<GlobalKey> _globalKey;
   bool levelkeep = true, gamestart = false, countdown = false;
   List arrowLocation = [
     {"x": 0.1},
@@ -85,7 +86,7 @@ class _GameLvl1State extends State<GameLvl1> {
 
   Future<bool> _loadingcountdownpic() {
     // loading countdown animated pic
-    return Future(() => Future.delayed(const Duration(seconds: 3)));
+    return Future(() => Future.delayed(const Duration(seconds: 6)));
   }
 
   void countdownpicload() async {
@@ -165,6 +166,7 @@ class _GameLvl1State extends State<GameLvl1> {
                 // clevel = localStorage.getData("levelName"),
                 // Text("Children level: $clevel"),
                 ...List.generate(10, (index) {
+                  // change the number to generate the numbers of balloon
                   print("durationTime:: $durationTime");
                   // generate numbers of baloon
                   if (gamestart == true && countdown == false) {
@@ -325,7 +327,8 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
   String m = '()';
   String n = '/';
   late AnimationController _animationController;
-  late AnimationController _arrownimationController;
+  late AnimationController _arrowController;
+  late List arrowlocation;
 
 //game level started
 
@@ -424,11 +427,15 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
         t = true;
         score(t);
         // level(l);
-        setState(() {
-          _UpdatePic(t, d, e);
-          reset(widget.screenWidth);
-          _animationController.forward(from: 0.0);
-        });
+        arrowshoot(
+            arrowController: widget.arrowController,
+            screenWidth: widget.screenWidth,
+            screenHeight: widget.screenHeight,
+            arrowlocation: widget.arrowlocation);
+
+        _UpdatePic(t, d, e);
+        reset(widget.screenWidth);
+        _animationController.forward(from: 0.0);
       }
     });
     _animationController.addStatusListener((status) {
@@ -487,18 +494,15 @@ class arrowshoot extends StatefulWidget {
 
 class _arrowshootState extends State<arrowshoot>
     with SingleTickerProviderStateMixin {
-  late AnimationController _arrowcontroller;
   late double initscreenHeight, initscreenWidth;
+  late AnimationController _arrowcontroller;
   late List arrowlocation;
 
   @override
   void initState() {
     super.initState();
     final AnimationController _arrowcontroller = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 600));
-    initscreenHeight = widget.screenHeight * 0.18;
-    initscreenWidth = widget.screenWidth * 0.45;
-    arrowlocation = widget.arrowlocation;
+        vsync: this, duration: const Duration(milliseconds: 500));
   }
 
   @override
@@ -509,24 +513,33 @@ class _arrowshootState extends State<arrowshoot>
 
   @override
   Widget build(BuildContext context) {
-    return SlideTransition(
-        // replaced with Animationbuilder
-        // pending on variable injection via balloon position
-        position: _arrowcontroller.drive(Tween(
-            begin: Offset(initscreenHeight, initscreenWidth),
-            end: Offset(arrowlocation[1], arrowlocation[2]))),
-        child: AnimatedContainer(
-          duration: Duration(milliseconds: 600),
-          transform:
-              Matrix4.translationValues(initscreenHeight, initscreenWidth, 0),
-          width: widget.screenWidth * 0.14,
-          height: widget.screenHeight * 0.1,
-          child: Transform.rotate(
-              angle: -pi / 2,
-              child: const Image(
-                  image: AssetImage(
-                      "images/game/arrow.png"))), // angle is changing along with animation
-        ));
+    final double initscreenHeight = widget.screenHeight * 0.18;
+    final double initscreenWidth = widget.screenWidth * 0.45;
+    final double endscreenHeight = widget.arrowlocation[0];
+    final double endscreenWidth = widget.arrowlocation[1];
+    return AnimatedBuilder(
+      animation: _arrowcontroller,
+      builder: (context, child) {
+        return Positioned(
+            top: Tween(begin: initscreenHeight, end: endscreenHeight)
+                .animate(_arrowcontroller)
+                .value,
+            left: Tween(begin: initscreenWidth, end: endscreenWidth)
+                .animate(_arrowcontroller)
+                .value,
+            child: Container(
+              transform: Matrix4.translationValues(
+                  initscreenHeight, initscreenWidth, 0),
+              width: widget.screenWidth * 0.14,
+              height: widget.screenHeight * 0.1,
+              child: Transform.rotate(
+                  angle: -pi / 2,
+                  child: const Image(
+                      image: AssetImage(
+                          "images/game/arrow.png"))), // angle is changing along with animation
+            ));
+      },
+    );
   }
 }
 //keypad monitorring
@@ -686,14 +699,6 @@ class _KeyPadState extends State<KeyPad> with SingleTickerProviderStateMixin {
                         fontWeight: FontWeight.w800),
                   );
                 }),
-            // child: Text(
-            //   "$displayPressNum",
-            //   style: TextStyle(
-            //       fontSize: screenWidth * 0.1,
-            //       color: Colors.white38,
-            //       fontFamily: "MotleyForces",
-            //       fontWeight: FontWeight.w800),
-            // ),
           )),
       Align(
           alignment: Alignment.bottomCenter,
@@ -741,6 +746,21 @@ class _KeyPadState extends State<KeyPad> with SingleTickerProviderStateMixin {
                                 height: screenHeight * 0.1,
                                 child: const Image(
                                     image: AssetImage("images/game/bow.png")))),
+                      ),
+                      Container(
+                        // pending on variable injection via balloon position
+
+                        child: Transform.rotate(
+                            angle: -pi / 2,
+                            child: AnimatedContainer(
+                                duration: Duration(milliseconds: 300),
+                                // transform:
+                                //     RotatedBox(quarterTurns: quarterTurns),
+                                width: screenWidth * 0.14,
+                                height: screenHeight * 0.1,
+                                child: const Image(
+                                    image:
+                                        AssetImage("images/game/arrow.png")))),
                       ),
                     ],
                   )),

@@ -35,8 +35,8 @@ class _MainlistleftdrawerState extends State<Mainlistleftdrawer> {
         decoration: const BoxDecoration(
             image: DecorationImage(
                 fit: BoxFit.cover,
-                opacity: 0.5,
-                image: AssetImage("images/game/agrorithbkgpic.jpg"))),
+                opacity: 100,
+                image: AssetImage("images/game/matchbkgpic.jpg"))),
         child: ListView(
           children: [
             Container(

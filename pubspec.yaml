@@ -106,6 +106,7 @@ flutter:
     - images/game/agrorithbkgpic.jpg
     - images/game/agrorithbkgpic2.jpg
     - images/game/animatedHahapic.gif
+    - images/game/animatedgoldtrophypic.gif
     - images/game/letgopic.gif
     - images/game/animatednextpic.gif
     - images/game/pinktitlebele.png
@@ -117,6 +118,7 @@ flutter:
     - images/game/canonpic.png
     - images/game/canonbullet.png
     - images/game/animatedreadygo.gif
+    - images/game/matchbkgpic.jpg
     # audios
     - audios/mainenteranceBGM.wav
     - audios/level1_BGM.mp3
