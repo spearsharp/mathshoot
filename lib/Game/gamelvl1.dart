@@ -123,7 +123,7 @@ class _GameLvl1State extends State<GameLvl1> {
                     score += snapshot.data as int;
                     if (score < 0) {
                       score = 0;
-                      print("Game Over");
+                      print("Game Over"); // stop game and popup failure mask
                     }
                   } else {
                     score = 0;
@@ -251,12 +251,15 @@ class _GameLvl1State extends State<GameLvl1> {
                     ? KeyPad(
                         inputController: _inputController,
                         screenWidth: screenWidth,
-                        accbalance: accbalance)
+                        accbalance: accbalance,
+                        T: false,
+                      )
                     : gamestart
                         ? KeyPad(
                             inputController: _inputController,
                             screenWidth: screenWidth,
-                            accbalance: accbalance)
+                            accbalance: accbalance,
+                            T: false)
                         : const Text(""),
                 //tap to kickoff game, level1
 
@@ -327,7 +330,6 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
   String m = '()';
   String n = '/';
   late AnimationController _animationController;
-  late AnimationController _arrowController;
   List arrowlocation = [
     11.1,
     12.2
@@ -374,6 +376,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
 
   // ignore: non_constant_identifier_names
   ListView _UpdatePic(t, d, e) {
+    // insert arrowshooting function
     if (t) {
 // print("爆炸图");
 //arrow shoot , fadetransition, slidetransition
@@ -403,6 +406,15 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
     }
   }
 
+  Future arrowshooting(
+      arrowController, screenWidth, screenHeigh, arrowlocationt) async {
+    arrowshoot(
+        arrowController: arrowController,
+        screenWidth: screenWidth,
+        screenHeight: screenHeigh,
+        arrowlocation: arrowlocation);
+  }
+
   @override
   void initState() {
     a = Random().nextInt(99);
@@ -428,14 +440,15 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
       if (total == event) {
         // score correct
         t = true;
+        arrowlocation = [1.1, 1, 2]; //get realtime balloon location
         score(t);
         // level(l);
-        arrowshoot(
-            arrowController: widget.arrowController,
-            screenWidth: widget.screenWidth,
-            screenHeight: widget.screenHeight,
-            arrowlocation: arrowlocation);
+// trigger arrow shooting
+        var result = await arrowshooting(widget.arrowController,
+            widget.screenWidth, widget.screenHeight, arrowlocation);
+        print("result:$result");
 
+        await Future.delayed(Duration(milliseconds: 200));
         _UpdatePic(t, d, e);
         reset(widget.screenWidth);
         _animationController.forward(from: 0.0);
@@ -504,6 +517,8 @@ class _arrowshootState extends State<arrowshoot>
   @override
   void initState() {
     super.initState();
+    var arrowlocation = widget.arrowlocation;
+    print("arrowlocation:$arrowlocation");
     final AnimationController _arrowcontroller = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 500));
   }
@@ -550,12 +565,13 @@ class _arrowshootState extends State<arrowshoot>
 class KeyPad extends StatefulWidget {
   final StreamController<int> inputController;
   final double screenWidth;
-  final bool accbalance;
+  final bool accbalance, T;
   const KeyPad(
       {super.key,
       required this.inputController,
       required this.screenWidth,
-      required this.accbalance});
+      required this.accbalance,
+      required this.T});
 
   @override
   State<KeyPad> createState() => _KeyPadState();
@@ -566,7 +582,7 @@ class _KeyPadState extends State<KeyPad> with SingleTickerProviderStateMixin {
   String displayPressNum = "";
   late String inputNum;
   late StreamController<int> inputController;
-  late bool accbalance;
+  late bool accbalance, T = false;
   bool sign = false, correctanswer = false;
   int presscount = 0;
   List<Widget> keyBoard(double t, int v) {
@@ -612,7 +628,7 @@ class _KeyPadState extends State<KeyPad> with SingleTickerProviderStateMixin {
                       }
                     }
                     print("displayPressNum:$displayPressNum");
-                    //pending on checking answer ,transit tmplist into judge
+                    //pending on checking answer ,transit tmplist into judge  and set T= true
 
                     if (correctanswer == true) {
                       displayPressNum = "";
@@ -626,7 +642,7 @@ class _KeyPadState extends State<KeyPad> with SingleTickerProviderStateMixin {
                     //     0, displayPressNum.length - 1);
                     displayPressNum = "";
                     print("displayPressNum:$displayPressNum");
-                    //pending on checking answer ,transit tmplist into judge
+                    //pending on checking answer ,transit tmplist into judge , and set T= true
                     if (correctanswer == true) {
                       displayPressNum = "";
                       sign = true;
@@ -638,7 +654,7 @@ class _KeyPadState extends State<KeyPad> with SingleTickerProviderStateMixin {
                     displayPressNum = displayPressNum + keyvalue.toString();
                     correctanswer = false;
                     sign = false;
-                    //pending on checking answer ,transit tmplist into judge
+                    //pending on checking answer ,transit tmplist into judge  and set T= true
                   }
               }
               //check answers correction ,get return
@@ -752,18 +768,33 @@ class _KeyPadState extends State<KeyPad> with SingleTickerProviderStateMixin {
                       ),
                       Container(
                         // pending on variable injection via balloon position
-
-                        child: Transform.rotate(
-                            angle: -pi / 2,
-                            child: AnimatedContainer(
-                                duration: Duration(milliseconds: 300),
-                                // transform:
-                                //     RotatedBox(quarterTurns: quarterTurns),
-                                width: screenWidth * 0.14,
-                                height: screenHeight * 0.1,
-                                child: const Image(
-                                    image:
-                                        AssetImage("images/game/arrow.png")))),
+                        child: T
+                            ? Transform.rotate(
+                                angle: -pi / 2,
+                                child: AnimatedContainer(
+                                    duration: Duration(
+                                        milliseconds:
+                                            300), // pending on add animation
+                                    // transform:
+                                    //     RotatedBox(quarterTurns: quarterTurns),
+                                    width: screenWidth * 0.14,
+                                    height: screenHeight * 0.1,
+                                    child: const Image(
+                                        image: AssetImage(
+                                            "images/game/arrow.png"))))
+                            : Transform.rotate(
+                                angle: -pi / 2, // for rotate arrow using
+                                child: AnimatedContainer(
+                                    duration: Duration(
+                                        milliseconds:
+                                            300), // pending on add animation
+                                    // transform:
+                                    //     RotatedBox(quarterTurns: quarterTurns),
+                                    width: screenWidth * 0.14,
+                                    height: screenHeight * 0.1,
+                                    child: const Image(
+                                        image: AssetImage(
+                                            "images/game/arrow.png")))),
                       ),
                     ],
                   )),

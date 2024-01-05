@@ -252,7 +252,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
         Container(
             color: Colors.transparent,
             child: const Image(
-              image: AssetImage("images/game/goldcyclebomb.gif"),
+              image: AssetImage("images/game/smogbomb.gif"),
               fit: BoxFit.contain,
             )),
       ]);
