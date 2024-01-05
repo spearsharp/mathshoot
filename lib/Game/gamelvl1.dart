@@ -328,7 +328,10 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
   String n = '/';
   late AnimationController _animationController;
   late AnimationController _arrowController;
-  late List arrowlocation;
+  List arrowlocation = [
+    11.1,
+    12.2
+  ]; // pending on change to realtime patch balloon position
 
 //game level started
 
@@ -431,7 +434,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
             arrowController: widget.arrowController,
             screenWidth: widget.screenWidth,
             screenHeight: widget.screenHeight,
-            arrowlocation: widget.arrowlocation);
+            arrowlocation: arrowlocation);
 
         _UpdatePic(t, d, e);
         reset(widget.screenWidth);
