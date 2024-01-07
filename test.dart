@@ -396,7 +396,7 @@ class arith {
                       print("tmpret_after_add:$calcWIP");
                       count1 = count1 + 1;
                     }
-// add into List for next calc cycle  :2-(12÷1×4)+3=?
+// add into List for next calc cycle
                     countpth++;
                     d = d + 1;
                     print("calcWIP_y:$calcWIP");

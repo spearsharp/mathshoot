@@ -32,6 +32,7 @@ class _GameLvl2State extends State<GameLvl2> {
   final StreamController<int> _inputController =
       StreamController.broadcast(); //multiple listener
   final StreamController<int> _scoreController = StreamController.broadcast();
+  final StreamController<int> _arrowController = StreamController.broadcast();
   final StreamController<int> _levelController = StreamController.broadcast();
 
   int score = 0;
@@ -147,6 +148,7 @@ class _GameLvl2State extends State<GameLvl2> {
                       screenWidth: screenWidth,
                       inputController: _inputController,
                       scoreController: _scoreController,
+                      arrowController: _arrowController,
                       levelController: _levelController);
                 }),
                 // localStorage.removeData("levelName"),
@@ -169,7 +171,8 @@ class Game extends StatefulWidget {
       required this.screenWidth,
       required this.inputController,
       required this.scoreController,
-      required this.levelController});
+      required this.levelController,
+      required StreamController<int> arrowController});
   @override
   State<Game> createState() => _GameState();
 }
@@ -258,6 +261,8 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
       ]);
     }
   }
+
+  //
 
 //level up and awearded
 

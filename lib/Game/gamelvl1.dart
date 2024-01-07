@@ -4,6 +4,7 @@ import 'dart:ui';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:auto_size_text/auto_size_text.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get/route_manager.dart';
 import 'package:get/utils.dart';
 import 'dart:async';
@@ -26,9 +27,11 @@ class GameLvl1 extends StatefulWidget {
 }
 
 class _GameLvl1State extends State<GameLvl1> {
-  late bool levelup, accbalance; // balance patch from mainpage
+  late bool levelup;
+  late int accbalance, bombbalance; // balance patch from mainpage
   // ignore: unused_field
   late List<GlobalKey> _globalKey;
+  late DateTime gameStartTime;
   bool levelkeep = true, gamestart = false, countdown = false;
   List arrowLocation = [
     {"x": 0.1},
@@ -62,7 +65,7 @@ class _GameLvl1State extends State<GameLvl1> {
 
     super.initState();
     print(widget.arguments);
-    accbalance = false;
+    accbalance = widget.arguments["accbalance"];
     // accbalance =
     //     widget.arguments["accbalance"]; // fetch accbalance frome mainpage
     void gamekickoff() {}
@@ -170,7 +173,9 @@ class _GameLvl1State extends State<GameLvl1> {
                   print("durationTime:: $durationTime");
                   // generate numbers of baloon
                   if (gamestart == true && countdown == false) {
+                    gameStartTime = DateTime.now();
                     return Game(
+                      gameStartTime: gameStartTime,
                       screenHeight: screenHeight,
                       screenWidth: screenWidth,
                       inputController: _inputController,
@@ -253,13 +258,16 @@ class _GameLvl1State extends State<GameLvl1> {
                         screenWidth: screenWidth,
                         accbalance: accbalance,
                         T: false,
+                        bombbalance: bombbalance,
                       )
                     : gamestart
                         ? KeyPad(
                             inputController: _inputController,
                             screenWidth: screenWidth,
                             accbalance: accbalance,
-                            T: false)
+                            T: false,
+                            bombbalance: bombbalance,
+                          )
                         : const Text(""),
                 //tap to kickoff game, level1
 
@@ -305,6 +313,7 @@ class Game extends StatefulWidget {
   final StreamController<int> inputController;
   final StreamController<int> scoreController;
   final StreamController<List> arrowController;
+  final DateTime gameStartTime;
   // final StreamController<int> levelController;
   const Game({
     super.key,
@@ -313,6 +322,7 @@ class Game extends StatefulWidget {
     required this.inputController,
     required this.scoreController,
     required this.arrowController,
+    required this.gameStartTime,
     // required this.levelController,
   });
   @override
@@ -326,6 +336,8 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
   late int a, b, c, d, e, f, g, netscore, levelevent;
   late Color color;
   late bool t, l, accbalance = false;
+  late int shootDuration;
+  late DateTime gameStartTime;
   int durationTime = Random().nextInt(5000) + 5800;
   String m = '()';
   String n = '/';
@@ -348,7 +360,12 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
     color = Colors.primaries[Random().nextInt(Colors.primaries.length)];
   }
 
-  // levelup(level) {
+  // levelup(level) { // level up animated pic
+  //   int speed = (5000 + 5000 / 2 * level) as int;
+  //   return speed;
+  // }
+
+  // levelfailed(level) {   // levelfailed animated pic and next pic
   //   int speed = (5000 + 5000 / 2 * level) as int;
   //   return speed;
   // }
@@ -356,13 +373,19 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
 //level up and awearded
 
   //score update
-  score(t) {
+  score(t, gameStartTime) {
     if (t) {
       widget.scoreController.add(3);
       netscore = netscore + 3;
       if (netscore > 10) {
         l = true;
-        netscore = 0;
+        shootDuration = DateTime.now().difference(gameStartTime).inMilliseconds;
+        print("shootDuration:$shootDuration ");
+        netscore = (netscore + (netscore ~/ shootDuration) * 2)
+            as int; // shooting duration time shooter and higher scored
+        print("shootDuration:$shootDuration ");
+        //save score to localstorage
+        // netscore = 0;
       }
     } else {
       widget.scoreController.add(-1);
@@ -406,6 +429,19 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
     }
   }
 
+  ListView _arrowhooting(t, screenHeight, screenWidth, arrowlocation) {
+    return ListView(children: [
+      AnimatedPositioned(
+          top: t ? screenHeight * 0.6 : -screenHeight * 0.3,
+          left: t ? screenWidth * 0.6 : -screenWidth * 0.3,
+          duration: Duration(microseconds: 300),
+          child: const Image(
+            image: AssetImage("images/game/smogbomb.gif"),
+            fit: BoxFit.contain,
+          )),
+    ]);
+  }
+
   Future arrowshooting(
       arrowController, screenWidth, screenHeigh, arrowlocationt) async {
     arrowshoot(
@@ -423,6 +459,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
     late int speed;
     netscore = 0;
     super.initState();
+    gameStartTime = widget.gameStartTime;
 
     // game started
     reset(widget.screenWidth); //first round to play
@@ -441,11 +478,11 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
         // score correct
         t = true;
         arrowlocation = [1.1, 1, 2]; //get realtime balloon location
-        score(t);
+        score(t, widget.gameStartTime);
         // level(l);
-// trigger arrow shooting
-        var result = await arrowshooting(widget.arrowController,
-            widget.screenWidth, widget.screenHeight, arrowlocation);
+        // trigger arrow shooting
+        var result = _arrowhooting(
+            t, widget.screenHeight, widget.screenWidth, arrowlocation);
         print("result:$result");
 
         await Future.delayed(Duration(milliseconds: 200));
@@ -459,7 +496,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
 
       if (status == AnimationStatus.completed) {
         t = false;
-        score(t);
+        score(t, widget.gameStartTime);
         reset(widget.screenWidth);
         _animationController.forward(from: 0.0);
       }
@@ -565,13 +602,15 @@ class _arrowshootState extends State<arrowshoot>
 class KeyPad extends StatefulWidget {
   final StreamController<int> inputController;
   final double screenWidth;
-  final bool accbalance, T;
+  final bool T;
+  final int accbalance, bombbalance;
   const KeyPad(
       {super.key,
       required this.inputController,
       required this.screenWidth,
       required this.accbalance,
-      required this.T});
+      required this.T,
+      required this.bombbalance});
 
   @override
   State<KeyPad> createState() => _KeyPadState();
@@ -582,7 +621,8 @@ class _KeyPadState extends State<KeyPad> with SingleTickerProviderStateMixin {
   String displayPressNum = "";
   late String inputNum;
   late StreamController<int> inputController;
-  late bool accbalance, T = false;
+  late bool T = false;
+  late int accbalance, bombbalance;
   bool sign = false, correctanswer = false;
   int presscount = 0;
   List<Widget> keyBoard(double t, int v) {
@@ -687,6 +727,7 @@ class _KeyPadState extends State<KeyPad> with SingleTickerProviderStateMixin {
     super.initState();
     inputController = widget.inputController;
     accbalance = widget.accbalance;
+    bombbalance = widget.bombbalance;
   }
 
   @override
@@ -734,8 +775,12 @@ class _KeyPadState extends State<KeyPad> with SingleTickerProviderStateMixin {
                               EdgeInsets.fromLTRB(0, screenHeight * 0.06, 0, 0),
                           width: screenWidth * 0.14,
                           height: screenHeight * 0.14,
-                          child: Image(
-                              image: AssetImage("images/game/bomb_s.gif"))))
+                          child: Row(
+                            children: [
+                              Text("$bombbalance"),
+                              Image(image: AssetImage("images/game/bomb_s.gif"))
+                            ],
+                          )))
                   : const Text(""),
               Positioned(
                   left: screenWidth * 0.45,
