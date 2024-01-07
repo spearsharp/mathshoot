@@ -21,6 +21,8 @@ class Mainlist extends StatefulWidget {
 
 class _MainlistState extends State<Mainlist> {
   int num = 14;
+  final int accbalance =
+      111; // pending on patch from local storage and database
 
   final _assetAudioPlayer = AssetsAudioPlayer();
   final _keyAudioPlayer = AssetsAudioPlayer();
@@ -44,6 +46,7 @@ class _MainlistState extends State<Mainlist> {
   void initState() {
     // TODO: implement initState
     //play BGM
+    accbalance == null ? 1111 : widget.arguments["accbalance"];
     _assetAudioPlayer.open(
       Audio("audios/mainlistBGM.wav"),
       autoStart: true,
@@ -71,6 +74,7 @@ class _MainlistState extends State<Mainlist> {
       print(_arguments[i]['levelname']);
       print(_arguments[i]['arguments']);
       print(_arguments[i]['gameunlockstatus'] == "unlocked");
+
       tmplist.add(
         InkWell(
           onTap: () {
@@ -300,17 +304,17 @@ class _MainlistState extends State<Mainlist> {
                     keypresssound();
                     print("top up function"); // pending to topup function
                   },
-                  child: const Row(
+                  child: Row(
                     children: [
-                      Image(
+                      const Image(
                         image: AssetImage('images/game/icon/goldcoinpic.png'),
                         width: 20,
                       ),
-                      AutoSizeText('111111',
+                      AutoSizeText('$accbalance',
                           minFontSize: 18,
                           maxFontSize: 25,
                           overflow: TextOverflow.ellipsis,
-                          style: TextStyle(
+                          style: const TextStyle(
                               fontFamily: 'CreamCake', color: Colors.white70)),
                     ],
                   ))),

@@ -28,7 +28,8 @@ class GameLvl1 extends StatefulWidget {
 
 class _GameLvl1State extends State<GameLvl1> {
   late bool levelup;
-  late int accbalance, bombbalance; // balance patch from mainpage
+  late int accbalance,
+      bombbalance; //accbalance transfered from mainlist and bombalance patch from local storage and database
   // ignore: unused_field
   late List<GlobalKey> _globalKey;
   late DateTime gameStartTime;
@@ -65,7 +66,10 @@ class _GameLvl1State extends State<GameLvl1> {
 
     super.initState();
     print(widget.arguments);
-    accbalance = widget.arguments["accbalance"];
+    // accbalance == null ? 111 : widget.arguments["accbalance"];
+    //    bombbalance == null ? 11 : widget.arguments["bombbalance"];
+    accbalance = 111;
+    bombbalance = 11;
     // accbalance =
     //     widget.arguments["accbalance"]; // fetch accbalance frome mainpage
     void gamekickoff() {}
@@ -335,8 +339,8 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
   late double x;
   late int a, b, c, d, e, f, g, netscore, levelevent;
   late Color color;
-  late bool t, l, accbalance = false;
-  late int shootDuration;
+  late bool t, l;
+  late int shootDuration, accbalance;
   late DateTime gameStartTime;
   int durationTime = Random().nextInt(5000) + 5800;
   String m = '()';
@@ -765,8 +769,9 @@ class _KeyPadState extends State<KeyPad> with SingleTickerProviderStateMixin {
           child: Stack(
             fit: StackFit.expand,
             children: [
-              accbalance == true
-                  ? Positioned(
+              accbalance == 0 // debug
+                  ? const Text("")
+                  : Positioned(
                       // align with arrow, the canon fire function
                       bottom: screenHeight * 0.15,
                       right: 0,
@@ -780,8 +785,7 @@ class _KeyPadState extends State<KeyPad> with SingleTickerProviderStateMixin {
                               Text("$bombbalance"),
                               Image(image: AssetImage("images/game/bomb_s.gif"))
                             ],
-                          )))
-                  : const Text(""),
+                          ))),
               Positioned(
                   left: screenWidth * 0.45,
                   bottom: screenHeight * 0.18,
