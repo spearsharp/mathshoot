@@ -87,13 +87,16 @@ flutter:
     - images/portrait.jpg
     - images/game/bgpic1.jpeg
     - images/game/mainlevel.png
-    - images/game/3balloon.png
     - images/game/7balloon.png
+    - images/game/3balloon.png
+    - images/game/3balloonpopupmsg.png
     - images/game/1balloon.png
     - images/game/firesmogbomb.gif
     - images/game/goldcyclebomb.gif
     - images/game/popbombcelebrate.gif
+    - images/game/animatedplay.gif
     - images/game/animatedcountdown.gif
+    - images/game/animatedbuttonBGP.gif
     - images/game/blackboardbkgpic.jpg
     - images/game/smogbomb.gif
     - images/game/mainlevel.png

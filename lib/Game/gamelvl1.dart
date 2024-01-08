@@ -27,13 +27,17 @@ class GameLvl1 extends StatefulWidget {
 }
 
 class _GameLvl1State extends State<GameLvl1> {
+  late Map gamearguements;
   late bool levelup;
   late int accbalance,
       bombbalance; //accbalance transfered from mainlist and bombalance patch from local storage and database
   // ignore: unused_field
   late List<GlobalKey> _globalKey;
   late DateTime gameStartTime;
-  bool levelkeep = true, gamestart = false, countdown = false;
+  bool levelkeep = true,
+      gamestart = false,
+      countdown = false,
+      gamepause = false;
   List arrowLocation = [
     {"x": 0.1},
     {"Y": 0.2}
@@ -65,7 +69,9 @@ class _GameLvl1State extends State<GameLvl1> {
     );
 
     super.initState();
+
     print(widget.arguments);
+
     // accbalance == null ? 111 : widget.arguments["accbalance"];
     //    bombbalance == null ? 11 : widget.arguments["bombbalance"];
     accbalance = 111;
@@ -82,6 +88,72 @@ class _GameLvl1State extends State<GameLvl1> {
 
   void audioStop() {
     _assetAudioPlay.stop();
+  }
+
+  void backtoMainList() async {
+    setState(() {
+      gamepause = true;
+    });
+    var result = await showDialog(
+        barrierDismissible: true,
+        barrierLabel: "Good",
+        context: context,
+        builder: (contect) {
+          return AlertDialog(
+            titleTextStyle: TextStyle(fontFamily: "Balloony"),
+            title: const Text("Exit the game?"),
+            content: Container(
+                decoration: const BoxDecoration(
+                    image: DecorationImage(
+                        fit: BoxFit.cover,
+                        image:
+                            AssetImage("images/game/3balloonpopupmsg.png")))),
+            actions: <Widget>[
+              Stack(
+                alignment: Alignment.bottomCenter,
+                children: [
+                  Container(
+                      decoration: const BoxDecoration(
+                          image: DecorationImage(
+                              image: AssetImage(
+                                  "images/game/animatedbuttonBGP.gif"))),
+                      child: TextButton(
+                        onPressed: () {
+                          print("resume the game");
+                          setState(() {
+                            gamepause = false;
+                          });
+                        },
+                        child: Text(
+                          "Resume",
+                          style: TextStyle(
+                              fontFamily: "Motlyforce",
+                              color: Colors.amber[900]),
+                        ),
+                      )),
+                  Container(
+                      decoration: const BoxDecoration(
+                          image: DecorationImage(
+                              image: AssetImage(
+                                  "images/game/animatedbuttonBGP.gif"))),
+                      child: TextButton(
+                        onPressed: () {
+                          print("exit to mainlist");
+                          Navigator.pop(context);
+                        },
+                        child: Text(
+                          "Exit",
+                          style: TextStyle(
+                              fontFamily: "Motlyforce",
+                              color: Colors.yellow[900]),
+                        ),
+                      ))
+                ],
+              ),
+            ],
+          );
+        });
+    print("pause_game_result:$result");
   }
 
   @override
@@ -113,6 +185,7 @@ class _GameLvl1State extends State<GameLvl1> {
     MediaQueryData queryData = MediaQuery.of(context);
     double screenHeight = queryData.size.height;
     double screenWidth = queryData.size.width;
+    final Map gamearguements = {"gamepause": false, "title": "level1"};
     print("screenHeight: $screenHeight");
     return Scaffold(
         extendBodyBehindAppBar: true,
@@ -122,6 +195,11 @@ class _GameLvl1State extends State<GameLvl1> {
           shadowColor: Colors.transparent,
           backgroundColor: Colors.transparent,
           elevation: 0,
+          leading: BackButton(
+            onPressed: () {
+              backtoMainList();
+            },
+          ),
           title: StreamBuilder(
               stream: _scoreController.stream,
               builder: (context, snapshot) {
@@ -179,12 +257,13 @@ class _GameLvl1State extends State<GameLvl1> {
                   if (gamestart == true && countdown == false) {
                     gameStartTime = DateTime.now();
                     return Game(
+                      gamearguments: gamearguements,
                       gameStartTime: gameStartTime,
                       screenHeight: screenHeight,
                       screenWidth: screenWidth,
                       inputController: _inputController,
                       scoreController: _scoreController,
-                      arrowController: _arrowController,
+                      arrowController: _arrowController, gamepause: gamepause,
                       // levelController: _levelController,
                     );
                   } else {
@@ -249,7 +328,7 @@ class _GameLvl1State extends State<GameLvl1> {
                                             width: 280,
                                             height: 80,
                                             image: AssetImage(
-                                              "images/game/animatednextpic.gif",
+                                              "images/game/animatedplay.gif",
                                             )),
                                       )
                                     ],
@@ -312,8 +391,10 @@ class _GameLvl1State extends State<GameLvl1> {
 
 //Arithmatic game section
 class Game extends StatefulWidget {
+  final Map gamearguments;
   final double screenHeight;
   final double screenWidth;
+  final bool gamepause;
   final StreamController<int> inputController;
   final StreamController<int> scoreController;
   final StreamController<List> arrowController;
@@ -327,6 +408,8 @@ class Game extends StatefulWidget {
     required this.scoreController,
     required this.arrowController,
     required this.gameStartTime,
+    required this.gamepause,
+    required this.gamearguments,
     // required this.levelController,
   });
   @override
@@ -335,17 +418,18 @@ class Game extends StatefulWidget {
 
 class _GameState extends State<Game> with SingleTickerProviderStateMixin {
   //call arith module
-
+  late Map gamearguements;
   late double x;
   late int a, b, c, d, e, f, g, netscore, levelevent;
   late Color color;
-  late bool t, l;
+  late bool t, l, gamepause;
   late int shootDuration, accbalance;
   late DateTime gameStartTime;
   int durationTime = Random().nextInt(5000) + 5800;
   String m = '()';
   String n = '/';
   late AnimationController _animationController;
+  late AnimationController _animationArrowController;
   List arrowlocation = [
     11.1,
     12.2
@@ -460,6 +544,9 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
     a = Random().nextInt(99);
     b = Random().nextInt(99);
     c = Random().nextInt(9);
+    final Map gamearguments = {"gamepause": false};
+    gamepause = widget.gamepause;
+
     late int speed;
     netscore = 0;
     super.initState();
@@ -471,6 +558,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
     _animationController = AnimationController(
         vsync: this, duration: Duration(milliseconds: durationTime));
     _animationController.forward();
+
     widget.inputController.stream.listen((event) async {
       //pending update input display and flag to route.
       int total = d + e;
@@ -479,7 +567,11 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
       print("event:: $event");
 
       if (total == event) {
-        // score correct
+        // _animationArrowController = AnimationController(
+        //     vsync: this, duration: Duration(milliseconds: 300));
+        // _animationController
+        //     .forward(); // two methods to shoot balloo , 1st - shooting includinto game section, 2nd - setup an independent section for animation arrowshooting.but how to align with those two parts.. TBD
+        // // score correct
         t = true;
         arrowlocation = [1.1, 1, 2]; //get realtime balloon location
         score(t, widget.gameStartTime);
@@ -503,6 +595,14 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
         score(t, widget.gameStartTime);
         reset(widget.screenWidth);
         _animationController.forward(from: 0.0);
+      }
+
+      //click setting button to stop the game and waiting for next action
+      if (gamepause) {
+        _animationController.stop();
+      } else {
+        //click setting button to stop the game and waiting for next action
+        _animationController.forward();
       }
       //get inputController data,and monitorring
     });
