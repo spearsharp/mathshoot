@@ -32,7 +32,8 @@ class _GameLvl1State extends State<GameLvl1> {
   late int accbalance,
       bombbalance; //accbalance transfered from mainlist and bombalance patch from local storage and database
   // ignore: unused_field
-  late List<GlobalKey> _globalKey;
+  late List<GlobalKey>
+      _globalKey; // for positioned location dispatch for arrowshooting using.
   late DateTime gameStartTime;
   bool levelkeep = true,
       gamestart = false,
@@ -429,7 +430,6 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
   String m = '()';
   String n = '/';
   late AnimationController _animationController;
-  late AnimationController _animationArrowController;
   List arrowlocation = [
     11.1,
     12.2
@@ -530,15 +530,6 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
     ]);
   }
 
-  Future arrowshooting(
-      arrowController, screenWidth, screenHeigh, arrowlocationt) async {
-    arrowshoot(
-        arrowController: arrowController,
-        screenWidth: screenWidth,
-        screenHeight: screenHeigh,
-        arrowlocation: arrowlocation);
-  }
-
   @override
   void initState() {
     a = Random().nextInt(99);
@@ -572,6 +563,13 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
         // _animationController
         //     .forward(); // two methods to shoot balloo , 1st - shooting includinto game section, 2nd - setup an independent section for animation arrowshooting.but how to align with those two parts.. TBD
         // // score correct
+        var location = _animationController.status;
+        print("location:$location");
+        var arrowshootResult = arrowshoot(
+          screenWidth: ScreenAdapter.getScreenWidth(),
+          screenHeight: ScreenAdapter.getScreenHeight(),
+          arrowlocation: [],
+        );
         t = true;
         arrowlocation = [1.1, 1, 2]; //get realtime balloon location
         score(t, widget.gameStartTime);
@@ -618,6 +616,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
         animation: _animationController,
         builder: (context, child) {
           return Positioned(
+              key: GlobalKey,
               top: Tween(begin: screenHeight * 0.6, end: -screenHeight * 0.3)
                   .animate(_animationController)
                   .value,
@@ -637,10 +636,8 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
 class arrowshoot extends StatefulWidget {
   final List arrowlocation;
   final double screenWidth, screenHeight;
-  final StreamController<List> arrowController;
   const arrowshoot(
       {super.key,
-      required this.arrowController,
       required this.screenWidth,
       required this.screenHeight,
       required this.arrowlocation});
@@ -662,6 +659,7 @@ class _arrowshootState extends State<arrowshoot>
     print("arrowlocation:$arrowlocation");
     final AnimationController _arrowcontroller = AnimationController(
         vsync: this, duration: const Duration(milliseconds: 500));
+    _arrowcontroller.forward();
   }
 
   @override
