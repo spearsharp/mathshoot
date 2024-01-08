@@ -778,14 +778,29 @@ class _KeyPadState extends State<KeyPad> with SingleTickerProviderStateMixin {
                       child: Container(
                           margin:
                               EdgeInsets.fromLTRB(0, screenHeight * 0.06, 0, 0),
-                          width: screenWidth * 0.14,
+                          width: screenWidth * 0.17,
                           height: screenHeight * 0.14,
-                          child: Row(
-                            children: [
-                              Text("$bombbalance"),
-                              Image(image: AssetImage("images/game/bomb_s.gif"))
-                            ],
-                          ))),
+                          child: InkWell(
+                              onTap: () {
+                                print(
+                                    "detect the bomb number"); // 1 bomb for 1 bolloon  and trigger bolloon break animation - target the balloon on answer, write the returned answer into a list and for bomb break
+                              },
+                              child: Row(
+                                children: [
+                                  Text(
+                                    "$bombbalance",
+                                    style: TextStyle(
+                                        fontFamily: "MotleyForces",
+                                        fontSize: screenWidth * 0.06,
+                                        color: Colors.grey[800]),
+                                  ),
+                                  Image(
+                                      height: screenWidth * 0.11,
+                                      width: screenWidth * 0.11,
+                                      image:
+                                          AssetImage("images/game/bomb_s.gif"))
+                                ],
+                              )))),
               Positioned(
                   left: screenWidth * 0.45,
                   bottom: screenHeight * 0.18,
@@ -803,7 +818,6 @@ class _KeyPadState extends State<KeyPad> with SingleTickerProviderStateMixin {
                                           "images/game/bowandarrow.png"))))),
                       Container(
                         // pending on variable injection via balloon position
-
                         child: Transform.rotate(
                             angle: -pi / 2,
                             child: AnimatedContainer(
