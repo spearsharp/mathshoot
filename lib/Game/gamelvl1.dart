@@ -433,6 +433,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
   late int shootDuration, accbalance;
   late DateTime gameStartTime;
   late GlobalKey<State<StatefulWidget>> arrowGlobalkey;
+  late double screenWidth, screenHeight;
   int durationTime = Random().nextInt(5000) + 5800;
   String m = '()';
   String n = '/';
@@ -540,6 +541,8 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
   @override
   void initState() {
     arrowGlobalkey = widget.arrowGlobalkey;
+    final double screenHeight = widget.screenHeight;
+    final double screenWidth = widget.screenWidth;
     super.initState();
     //game param patch
     a = Random().nextInt(99);
@@ -567,19 +570,27 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
       print("e:: $e");
       print("event:: $event");
 
+/*
+core function : This section include all core features and functional flag here.
+1.balloon controller
+2.arrowshooting controller
+3.detect num of bomb controller
+4.game start
+5.game pause
+6.game resume
+7.game levelup/game failed
+8.score recorder/awarding
+9.core arith calling
+10topup money
+*/
       if (total == event) {
-        // _animationArrowController = AnimationController(
-        //     vsync: this, duration: Duration(milliseconds: 300));
-        // _animationController
-        //     .forward(); // two methods to shoot balloo , 1st - shooting includinto game section, 2nd - setup an independent section for animation arrowshooting.but how to align with those two parts.. TBD
-        // // score correct
-        // var location = _animationController.status;
-        // print("location:$location");
-        // var arrowshootResult = arrowshoot(
-        //   screenWidth: ScreenAdapter.getScreenWidth(),
-        //   screenHeight: ScreenAdapter.getScreenHeight(),
-        //   arrowlocation: [],
-        // );
+// call arrowshooting animationn
+        arrowshoot(
+          arrowlocation: [],
+          screenWidth: screenWidth,
+          screenHeight: screenHeight,
+        );
+
         t = true;
         arrowlocation = [1.1, 1, 2]; //get realtime balloon location
         score(t, widget.gameStartTime);
@@ -619,9 +630,6 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
 
   @override
   Widget build(BuildContext context) {
-    MediaQueryData queryData = MediaQuery.of(context);
-    double screenHeight = queryData.size.height;
-    double screenWidth = queryData.size.width;
     return AnimatedBuilder(
         animation: _animationController,
         builder: (context, child) {
@@ -646,11 +654,12 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
 class arrowshoot extends StatefulWidget {
   final List arrowlocation;
   final double screenWidth, screenHeight;
-  const arrowshoot(
-      {super.key,
-      required this.screenWidth,
-      required this.screenHeight,
-      required this.arrowlocation});
+  const arrowshoot({
+    super.key,
+    required this.arrowlocation,
+    required this.screenWidth,
+    required this.screenHeight,
+  });
 
   @override
   State<arrowshoot> createState() => _arrowshootState();
