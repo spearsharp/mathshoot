@@ -255,11 +255,13 @@ class _GameLvl1State extends State<GameLvl1> {
                   // change the number to generate the numbers of balloon
                   print("durationTime:: $durationTime");
                   print("ballonIndex_init:$index");
+                  final arrowGlobalKey = GlobalKey();
+                  print("arrowGlobalkey_init:$arrowGlobalKey");
                   // generate numbers of baloon
                   if (gamestart == true && countdown == false) {
                     gameStartTime = DateTime.now();
                     return Game(
-                      ballonIndex: index,
+                      arrowGlobalkey: arrowGlobalKey,
                       gamearguments: gamearguements,
                       gameStartTime: gameStartTime,
                       screenHeight: screenHeight,
@@ -402,7 +404,7 @@ class Game extends StatefulWidget {
   final StreamController<int> scoreController;
   final StreamController<List> arrowController;
   final DateTime gameStartTime;
-  final int ballonIndex;
+  final GlobalKey<State<StatefulWidget>> arrowGlobalkey;
   // final StreamController<int> levelController;
   const Game({
     super.key,
@@ -414,7 +416,7 @@ class Game extends StatefulWidget {
     required this.gameStartTime,
     required this.gamepause,
     required this.gamearguments,
-    required this.ballonIndex,
+    required this.arrowGlobalkey,
     // required this.levelController,
   });
   @override
@@ -430,7 +432,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
   late bool t, l, gamepause;
   late int shootDuration, accbalance;
   late DateTime gameStartTime;
-  late List<GlobalKey> _arrowGlobalKeys = [];
+  late GlobalKey<State<StatefulWidget>> arrowGlobalkey;
   int durationTime = Random().nextInt(5000) + 5800;
   String m = '()';
   String n = '/';
@@ -537,6 +539,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
 
   @override
   void initState() {
+    arrowGlobalkey = widget.arrowGlobalkey;
     super.initState();
     //game param patch
     a = Random().nextInt(99);
@@ -544,11 +547,6 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
     c = Random().nextInt(9);
     final Map gamearguments = {"gamepause": false};
     gamepause = widget.gamepause;
-    ballonIndex = widget.ballonIndex;
-    final List<GlobalKey> _arrowGlobalKeys = List<GlobalKey>.generate(
-        ballonIndex,
-        (ballonIndex) => GlobalKey(debugLabel: "_arrowGlobalKeys$ballonIndex"));
-
     //
 
     late int speed;
@@ -575,21 +573,21 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
         // _animationController
         //     .forward(); // two methods to shoot balloo , 1st - shooting includinto game section, 2nd - setup an independent section for animation arrowshooting.but how to align with those two parts.. TBD
         // // score correct
-        var location = _animationController.status;
-        print("location:$location");
-        var arrowshootResult = arrowshoot(
-          screenWidth: ScreenAdapter.getScreenWidth(),
-          screenHeight: ScreenAdapter.getScreenHeight(),
-          arrowlocation: [],
-        );
+        // var location = _animationController.status;
+        // print("location:$location");
+        // var arrowshootResult = arrowshoot(
+        //   screenWidth: ScreenAdapter.getScreenWidth(),
+        //   screenHeight: ScreenAdapter.getScreenHeight(),
+        //   arrowlocation: [],
+        // );
         t = true;
         arrowlocation = [1.1, 1, 2]; //get realtime balloon location
         score(t, widget.gameStartTime);
         // level(l);
         // trigger arrow shooting
-        var result = _arrowhooting(
-            t, widget.screenHeight, widget.screenWidth, arrowlocation);
-        print("result:$result");
+        // var result = _arrowhooting(
+        //     t, widget.screenHeight, widget.screenWidth, arrowlocation);
+        // print("result:$result");
 
         await Future.delayed(Duration(milliseconds: 200));
         _UpdatePic(t, d, e);
@@ -628,7 +626,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
         animation: _animationController,
         builder: (context, child) {
           return Positioned(
-              key: _arrowGlobalKeys[ballonIndex],
+              key: arrowGlobalkey,
               top: Tween(begin: screenHeight * 0.6, end: -screenHeight * 0.3)
                   .animate(_animationController)
                   .value,
