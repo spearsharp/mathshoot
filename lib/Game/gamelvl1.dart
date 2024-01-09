@@ -254,10 +254,12 @@ class _GameLvl1State extends State<GameLvl1> {
                 ...List.generate(10, (index) {
                   // change the number to generate the numbers of balloon
                   print("durationTime:: $durationTime");
+                  print("ballonIndex_init:$index");
                   // generate numbers of baloon
                   if (gamestart == true && countdown == false) {
                     gameStartTime = DateTime.now();
                     return Game(
+                      ballonIndex: index,
                       gamearguments: gamearguements,
                       gameStartTime: gameStartTime,
                       screenHeight: screenHeight,
@@ -400,6 +402,7 @@ class Game extends StatefulWidget {
   final StreamController<int> scoreController;
   final StreamController<List> arrowController;
   final DateTime gameStartTime;
+  final int ballonIndex;
   // final StreamController<int> levelController;
   const Game({
     super.key,
@@ -411,6 +414,7 @@ class Game extends StatefulWidget {
     required this.gameStartTime,
     required this.gamepause,
     required this.gamearguments,
+    required this.ballonIndex,
     // required this.levelController,
   });
   @override
@@ -421,11 +425,12 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
   //call arith module
   late Map gamearguements;
   late double x;
-  late int a, b, c, d, e, f, g, netscore, levelevent;
+  late int a, b, c, d, e, f, g, netscore, levelevent, ballonIndex;
   late Color color;
   late bool t, l, gamepause;
   late int shootDuration, accbalance;
   late DateTime gameStartTime;
+  late List<GlobalKey> _arrowGlobalKeys = [];
   int durationTime = Random().nextInt(5000) + 5800;
   String m = '()';
   String n = '/';
@@ -532,15 +537,22 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
 
   @override
   void initState() {
+    super.initState();
+    //game param patch
     a = Random().nextInt(99);
     b = Random().nextInt(99);
     c = Random().nextInt(9);
     final Map gamearguments = {"gamepause": false};
     gamepause = widget.gamepause;
+    ballonIndex = widget.ballonIndex;
+    final List<GlobalKey> _arrowGlobalKeys = List<GlobalKey>.generate(
+        ballonIndex,
+        (ballonIndex) => GlobalKey(debugLabel: "_arrowGlobalKeys$ballonIndex"));
+
+    //
 
     late int speed;
     netscore = 0;
-    super.initState();
     gameStartTime = widget.gameStartTime;
 
     // game started
@@ -616,7 +628,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
         animation: _animationController,
         builder: (context, child) {
           return Positioned(
-              key: GlobalKey,
+              key: _arrowGlobalKeys[ballonIndex],
               top: Tween(begin: screenHeight * 0.6, end: -screenHeight * 0.3)
                   .animate(_animationController)
                   .value,
