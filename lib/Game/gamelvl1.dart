@@ -32,8 +32,6 @@ class _GameLvl1State extends State<GameLvl1> {
   late int accbalance,
       bombbalance; //accbalance transfered from mainlist and bombalance patch from local storage and database
   // ignore: unused_field
-  late List<GlobalKey>
-      _globalKey; // for positioned location dispatch for arrowshooting using.
   late DateTime gameStartTime;
   bool levelkeep = true,
       gamestart = false,
@@ -52,8 +50,11 @@ class _GameLvl1State extends State<GameLvl1> {
       StreamController.broadcast(); //multiple listener
   final StreamController<int> _scoreController = StreamController.broadcast();
   final StreamController<List> _arrowController = StreamController.broadcast();
+
   // final StreamController<int> _levelController = StreamController.broadcast();
+
   var _assetAudioPlay = AssetsAudioPlayer.newPlayer();
+
   int score = 0;
   int level = 1;
   int baloonAmt = 1;
@@ -62,6 +63,7 @@ class _GameLvl1State extends State<GameLvl1> {
   @override
   void initState() {
     //setting background picture and popup message and BGM
+    super.initState();
     _assetAudioPlay.open(
       Audio("audios/level1_BGM.mp3"),
       autoStart: true,
@@ -69,7 +71,9 @@ class _GameLvl1State extends State<GameLvl1> {
       loopMode: LoopMode.single,
     );
 
-    super.initState();
+//check globalkey initialized
+
+    //arrowposition globalkey
 
     print(widget.arguments);
 
@@ -187,6 +191,7 @@ class _GameLvl1State extends State<GameLvl1> {
     double screenHeight = queryData.size.height;
     double screenWidth = queryData.size.width;
     final Map gamearguements = {"gamepause": false, "title": "level1"};
+
     print("screenHeight: $screenHeight");
     return Scaffold(
         extendBodyBehindAppBar: true,
@@ -209,7 +214,8 @@ class _GameLvl1State extends State<GameLvl1> {
                     score += snapshot.data as int;
                     if (score < 0) {
                       score = 0;
-                      print("Game Over"); // stop game and popup failure mask
+                      print("Game Over");
+                      // stop game and popup failure mask, and show play again/exit
                     }
                   } else {
                     score = 0;
@@ -254,14 +260,12 @@ class _GameLvl1State extends State<GameLvl1> {
                 ...List.generate(10, (index) {
                   // change the number to generate the numbers of balloon
                   print("durationTime:: $durationTime");
-                  print("ballonIndex_init:$index");
-                  final arrowGlobalKey = GlobalKey();
-                  print("arrowGlobalkey_init:$arrowGlobalKey");
                   // generate numbers of baloon
                   if (gamestart == true && countdown == false) {
+                    print("ballonIndex_init:$index");
+                    print("screenHeightinit:$screenHeight");
                     gameStartTime = DateTime.now();
                     return Game(
-                      arrowGlobalkey: arrowGlobalKey,
                       gamearguments: gamearguements,
                       gameStartTime: gameStartTime,
                       screenHeight: screenHeight,
@@ -404,10 +408,9 @@ class Game extends StatefulWidget {
   final StreamController<int> scoreController;
   final StreamController<List> arrowController;
   final DateTime gameStartTime;
-  final GlobalKey<State<StatefulWidget>> arrowGlobalkey;
   // final StreamController<int> levelController;
   const Game({
-    super.key,
+    Key? key,
     required this.screenHeight,
     required this.screenWidth,
     required this.inputController,
@@ -416,15 +419,16 @@ class Game extends StatefulWidget {
     required this.gameStartTime,
     required this.gamepause,
     required this.gamearguments,
-    required this.arrowGlobalkey,
+
     // required this.levelController,
-  });
+  }) : super(key: key);
   @override
   State<Game> createState() => _GameState();
 }
 
 class _GameState extends State<Game> with SingleTickerProviderStateMixin {
   //call arith module
+  final GlobalKey _Gamekey = GlobalKey();
   late Map gamearguements;
   late double x;
   late int a, b, c, d, e, f, g, netscore, levelevent, ballonIndex;
@@ -432,13 +436,12 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
   late bool t, l, gamepause;
   late int shootDuration, accbalance;
   late DateTime gameStartTime;
-  late GlobalKey<State<StatefulWidget>> arrowGlobalkey;
   late double screenWidth, screenHeight;
   int durationTime = Random().nextInt(5000) + 5800;
   String m = '()';
   String n = '/';
   late AnimationController _animationController;
-  List arrowlocation = [
+  List _arrowlocation = [
     11.1,
     12.2
   ]; // pending on change to realtime patch balloon position
@@ -468,7 +471,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
 
 //level up and awearded
 
-  //score update
+  //score update upon _scoreController.stream -> rebuild streambuilder in realtime
   score(t, gameStartTime) {
     if (t) {
       widget.scoreController.add(3);
@@ -528,8 +531,8 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
   ListView _arrowhooting(t, screenHeight, screenWidth, arrowlocation) {
     return ListView(children: [
       AnimatedPositioned(
-          top: t ? screenHeight * 0.6 : -screenHeight * 0.3,
-          left: t ? screenWidth * 0.6 : -screenWidth * 0.3,
+          top: t ? widget.screenHeight * 0.6 : -widget.screenHeight * 0.3,
+          left: t ? widget.screenWidth * 0.6 : -widget.screenWidth * 0.3,
           duration: Duration(microseconds: 300),
           child: const Image(
             image: AssetImage("images/game/smogbomb.gif"),
@@ -538,12 +541,26 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
     ]);
   }
 
+/*
+core function : This section include all core features and functional flag here.
+1.balloon controller
+2.arrowshooting controller
+3.detect num of bomb controller
+4.game start
+5.game pause
+6.game resume
+7.game levelup/game failed
+8.score recorder/awarding
+9.core arith calling
+10topup money
+*/
   @override
   void initState() {
-    arrowGlobalkey = widget.arrowGlobalkey;
-    final double screenHeight = widget.screenHeight;
-    final double screenWidth = widget.screenWidth;
+    //1.balloon controller
     super.initState();
+    screenHeight = widget.screenHeight;
+    screenWidth = widget.screenWidth;
+
     //game param patch
     a = Random().nextInt(99);
     b = Random().nextInt(99);
@@ -570,29 +587,21 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
       print("e:: $e");
       print("event:: $event");
 
-/*
-core function : This section include all core features and functional flag here.
-1.balloon controller
-2.arrowshooting controller
-3.detect num of bomb controller
-4.game start
-5.game pause
-6.game resume
-7.game levelup/game failed
-8.score recorder/awarding
-9.core arith calling
-10topup money
-*/
       if (total == event) {
-// call arrowshooting animationn
+        var renderBox =
+            _Gamekey.currentContext!.findRenderObject() as RenderBox;
+        final Offset bollonPos = renderBox.localToGlobal(Offset.infinite);
+        print(
+            "Animation Positioned component's position is (${bollonPos.dx}, ${bollonPos.dy})");
+//2.arrowshooting controller
+        _arrowlocation = [1.1, 1, 2]; //get realtime balloon location
         arrowshoot(
-          arrowlocation: [],
-          screenWidth: screenWidth,
-          screenHeight: screenHeight,
+          arrowlocation: _arrowlocation,
+          screenWidth: widget.screenWidth,
+          screenHeight: widget.screenHeight,
         );
 
         t = true;
-        arrowlocation = [1.1, 1, 2]; //get realtime balloon location
         score(t, widget.gameStartTime);
         // level(l);
         // trigger arrow shooting
@@ -634,16 +643,18 @@ core function : This section include all core features and functional flag here.
         animation: _animationController,
         builder: (context, child) {
           return Positioned(
-              key: arrowGlobalkey,
-              top: Tween(begin: screenHeight * 0.6, end: -screenHeight * 0.3)
+              key: _Gamekey,
+              top: Tween(
+                      begin: widget.screenHeight * 0.6,
+                      end: -widget.screenHeight * 0.3)
                   .animate(_animationController)
                   .value,
               left: x,
               child: Container(
                   // decoration: ,
                   color: Colors.red.withOpacity(0),
-                  width: screenWidth * 0.25,
-                  height: screenHeight * 0.3,
+                  width: widget.screenWidth * 0.25,
+                  height: widget.screenHeight * 0.3,
                   padding: const EdgeInsets.fromLTRB(8, 5, 8, 5),
                   child: _UpdatePic(t, d, e)));
         });
@@ -667,13 +678,21 @@ class arrowshoot extends StatefulWidget {
 
 class _arrowshootState extends State<arrowshoot>
     with SingleTickerProviderStateMixin {
-  late double initscreenHeight, initscreenWidth;
+  late double initscreenHeight,
+      initscreenWidth,
+      endscreenHeight,
+      endscreenWidth;
   late AnimationController _arrowcontroller;
   late List arrowlocation;
 
   @override
   void initState() {
     super.initState();
+    final double initscreenHeight = widget.screenHeight * 0.18;
+    final double initscreenWidth = widget.screenWidth * 0.45;
+    final double endscreenHeight = widget.arrowlocation[0];
+    final double endscreenWidth = widget.arrowlocation[1];
+
     var arrowlocation = widget.arrowlocation;
     print("arrowlocation:$arrowlocation");
     final AnimationController _arrowcontroller = AnimationController(
@@ -689,10 +708,6 @@ class _arrowshootState extends State<arrowshoot>
 
   @override
   Widget build(BuildContext context) {
-    final double initscreenHeight = widget.screenHeight * 0.18;
-    final double initscreenWidth = widget.screenWidth * 0.45;
-    final double endscreenHeight = widget.arrowlocation[0];
-    final double endscreenWidth = widget.arrowlocation[1];
     return AnimatedBuilder(
       animation: _arrowcontroller,
       builder: (context, child) {
