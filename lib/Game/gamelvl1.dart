@@ -39,10 +39,7 @@ class _GameLvl1State extends State<GameLvl1> {
     "bowEmpty": false,
   };
 
-  List arrowLocation = [
-    {"x": 0.1},
-    {"Y": 0.2}
-  ];
+  List arrowLocation = [0.1, 0.2];
   int currentlevel = 0;
   // final player = AudioPlayer();
   final _assetAudioPlayer = AssetsAudioPlayer();
@@ -347,35 +344,17 @@ class _GameLvl1State extends State<GameLvl1> {
                                 ],
                               ),
                 countdown
-                    ? Container(
-                        height: screenHeight * 0.3,
-                        child: Column(
-                          children: [
-                            Row(
-                              children: [
-                                arrowshoot(
-                                  arrowLocation: arrowLocation,
-                                  screenWidth: screenWidth,
-                                  screenHeight: screenHeight,
-                                  arrowcontroller: _arrowController,
-                                  bowarrowStatus: bowarrowStatus,
-                                )
-                              ],
-                            ),
-                            Expanded(
-                                child: KeyPad(
-                              //use another container to wrap it ensure the arrowbow and bomb in right position with keypad
-                              inputController: _inputController,
-                              screenWidth: screenWidth,
-                              accbalance: accbalance,
-                              T: false,
-                              bombbalance: bombbalance,
-                            )),
-                          ],
-                        ),
+                    ? KeyPad(
+                        //use another container to wrap it ensure the arrowbow and bomb in right position with keypad
+                        inputController: _inputController,
+                        screenWidth: screenWidth,
+                        accbalance: accbalance,
+                        T: false,
+                        bombbalance: bombbalance,
                       )
                     : gamestart
                         ? KeyPad(
+                            //use another container to wrap it ensure the arrowbow and bomb in right position with keypad
                             inputController: _inputController,
                             screenWidth: screenWidth,
                             accbalance: accbalance,
