@@ -39,7 +39,7 @@ class _GameLvl1State extends State<GameLvl1> {
     "bowEmpty": false,
   };
 
-  List arrowLocation = [0.1, 0.2];
+  final List arrowLocation = [0.1, 0.2];
   int currentlevel = 0;
   // final player = AudioPlayer();
   final _assetAudioPlayer = AssetsAudioPlayer();
@@ -162,9 +162,12 @@ class _GameLvl1State extends State<GameLvl1> {
 
   @override
   void dispose() {
-    super.dispose();
     _assetAudioPlay.stop();
     _keyAudioPlayer.stop();
+    _inputController.close();
+    _arrowController.close();
+    _scoreController.close();
+    super.dispose();
   }
 
   Future<bool> _loadingcountdownpic() {
@@ -359,76 +362,71 @@ class _GameLvl1State extends State<GameLvl1> {
                     //     ))
                     Align(
                         alignment: Alignment.bottomCenter,
-                        child: Stack(
-                          children: [
-                            Align(
-                                alignment: Alignment.bottomCenter,
-                                child: KeyPad(
-                                  //use another container to wrap it ensure the arrowbow and bomb in right position with keypad
-                                  inputController: _inputController,
-                                  screenWidth: screenWidth,
-                                  accbalance: accbalance,
-                                  T: false,
-                                  bombbalance: bombbalance,
-                                  screenHeight: screenHeight,
-                                )),
-                            Positioned(
-                                top: screenHeight * 0.6,
-                                child: KeyPad(
-                                  //use another container to wrap it ensure the arrowbow and bomb in right position with keypad
-                                  inputController: _inputController,
-                                  screenWidth: screenWidth,
-                                  accbalance: accbalance,
-                                  T: false,
-                                  bombbalance: bombbalance,
-                                  screenHeight: screenHeight,
-                                )),
-                          ],
-                        ))
+                        child: Stack(children: [
+                          Align(
+                              alignment: Alignment.bottomCenter,
+                              child: KeyPad(
+                                //use another container to wrap it ensure the arrowbow and bomb in right position with keypad
+                                inputController: _inputController,
+                                screenWidth: screenWidth,
+                                accbalance: accbalance,
+                                T: false,
+                                bombbalance: bombbalance,
+                                screenHeight: screenHeight,
+                              )),
+                          Positioned(
+                              left: screenWidth * 0.45,
+                              bottom: screenHeight * 0.17,
+                              child: Stack(children: [
+                                Container(
+                                    child: Transform.rotate(
+                                        angle: -pi / 2,
+                                        child: Container(
+                                            width: screenWidth * 0.14,
+                                            height: screenHeight * 0.1,
+                                            child: const Image(
+                                                image: AssetImage(
+                                                    "images/game/bowandarrow.png"))))),
+                                Container(
+                                  // pending on variable injection via balloon position
+                                  child: Transform.rotate(
+                                      angle: -pi / 2,
+                                      child: AnimatedContainer(
+                                          duration: Duration(milliseconds: 300),
+                                          // transform:
+                                          //     RotatedBox(quarterTurns: quarterTurns),
+                                          width: screenWidth * 0.14,
+                                          height: screenHeight * 0.1,
+                                          child: const Image(
+                                              image: AssetImage(
+                                                  "images/game/bow.png")))),
+                                ),
+                              ]))
+                        ]))
                     : gamestart
                         ? Align(
                             alignment: Alignment.bottomCenter,
-                            child: KeyPad(
-                              //use another container to wrap it ensure the arrowbow and bomb in right position with keypad
-                              inputController: _inputController,
-                              screenWidth: screenWidth,
-                              accbalance: accbalance,
-                              T: false,
-                              bombbalance: bombbalance,
-                              screenHeight: screenHeight,
+                            child: Stack(
+                              children: [
+                                Align(
+                                    alignment: Alignment.bottomCenter,
+                                    child: KeyPad(
+                                      //use another container to wrap it ensure the arrowbow and bomb in right position with keypad
+                                      inputController: _inputController,
+                                      screenWidth: screenWidth,
+                                      accbalance: accbalance,
+                                      T: false,
+                                      bombbalance: bombbalance,
+                                      screenHeight: screenHeight,
+                                    )),
+                                arrowshoot(
+                                    arrowLocation: arrowLocation,
+                                    screenWidth: screenWidth,
+                                    screenHeight: screenHeight,
+                                    arrowController: _arrowController,
+                                    bowarrowStatus: bowarrowStatus),
+                              ],
                             ))
-
-                        // Align(
-                        //     alignment: Alignment.bottomCenter,
-                        //     child: Container(
-                        //       height: screenHeight,
-                        //       width: screenWidth,
-                        //       child: Column(
-                        //         mainAxisAlignment: MainAxisAlignment.center,
-                        //         children: [
-                        //           Positioned(
-                        //               top: 0,
-                        //               // bottom: screenHeight * 0.3,
-                        //               child: arrowshoot(
-                        //                 arrowLocation: arrowLocation,
-                        //                 screenWidth: screenWidth,
-                        //                 screenHeight: screenHeight,
-                        //                 arrowController: _arrowController,
-                        //                 bowarrowStatus: bowarrowStatus,
-                        //               )),
-                        //           Expanded(
-                        //               child: KeyPad(
-                        //             //use another container to wrap it ensure the arrowbow and bomb in right position with keypad
-                        //             inputController: _inputController,
-                        //             screenWidth: screenWidth,
-                        //             accbalance: accbalance,
-                        //             T: false,
-                        //             bombbalance: bombbalance,
-                        //             screenHeight: screenHeight,
-                        //           )),
-                        //         ],
-                        //       ),
-                        //     ))
                         : const Text(""),
                 //tap to kickoff game, level1
 
@@ -804,11 +802,11 @@ class _arrowshootState extends State<arrowshoot>
     });
   }
 
-  @override
-  void dispose() {
-    _arrowAnimationController.dispose();
-    super.dispose();
-  }
+  // @override
+  // void dispose() {
+  //   _arrowAnimationController.dispose();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -833,11 +831,12 @@ class _arrowshootState extends State<arrowshoot>
                     .value,
                 child: AnimatedContainer(
                   // key: ,
+                  curve: Curves.linear,
                   duration: Duration(milliseconds: 400),
                   transform: Matrix4.translationValues(
                       initscreenHeight, initscreenWidth, 0),
                   width: widget.screenWidth * 0.14,
-                  height: widget.screenHeight * 0.1,
+                  height: widget.screenHeight * 0.18,
                   child: Transform.rotate(
                       angle: -pi / 2,
                       child: const Image(
@@ -849,7 +848,7 @@ class _arrowshootState extends State<arrowshoot>
           // fade animation
           // animated arrowshooting , move to main statefulwidget
           left: widget.screenWidth * 0.45,
-          bottom: widget.screenHeight * 0.18,
+          bottom: widget.screenHeight * 0.15,
           // alignment: Alignment(screenWidth * 0.5, 0.3 * screenHeight),
           child: Stack(
             children: [
@@ -858,7 +857,7 @@ class _arrowshootState extends State<arrowshoot>
                       angle: -pi / 2,
                       child: Container(
                           width: widget.screenWidth * 0.14,
-                          height: widget.screenHeight * 0.1,
+                          height: widget.screenHeight * 0.18,
                           child: const Image(
                               image:
                                   AssetImage("images/game/bowandarrow.png"))))),
@@ -871,7 +870,7 @@ class _arrowshootState extends State<arrowshoot>
                         // transform:
                         //     RotatedBox(quarterTurns: quarterTurns),
                         width: widget.screenWidth * 0.14,
-                        height: widget.screenHeight * 0.1,
+                        height: widget.screenHeight * 0.18,
                         child: const Image(
                             image: AssetImage("images/game/bow.png")))),
               ),
@@ -886,7 +885,7 @@ class _arrowshootState extends State<arrowshoot>
                             // transform:
                             //     RotatedBox(quarterTurns: quarterTurns),
                             width: widget.screenWidth * 0.14,
-                            height: widget.screenHeight * 0.1,
+                            height: widget.screenHeight * 0.18,
                             child: const Image(
                                 image: AssetImage("images/game/arrow.png"))))
                     : Transform.rotate(
@@ -897,7 +896,7 @@ class _arrowshootState extends State<arrowshoot>
                             // transform:
                             //     RotatedBox(quarterTurns: quarterTurns),
                             width: widget.screenWidth * 0.14,
-                            height: widget.screenHeight * 0.1,
+                            height: widget.screenHeight * 0.18,
                             child: const Image(
                                 image: AssetImage("images/game/arrow.png")))),
               ),
@@ -1085,7 +1084,7 @@ class _KeyPadState extends State<KeyPad> with SingleTickerProviderStateMixin {
                           margin: EdgeInsets.fromLTRB(
                               0, widget.screenHeight * 0.06, 0, 0),
                           width: widget.screenWidth * 0.17,
-                          height: widget.screenHeight * 0.14,
+                          height: widget.screenHeight * 0.17,
                           child: InkWell(
                               onTap: () {
                                 print(
@@ -1107,67 +1106,6 @@ class _KeyPadState extends State<KeyPad> with SingleTickerProviderStateMixin {
                                           AssetImage("images/game/bomb_s.gif"))
                                 ],
                               )))),
-              // Positioned(
-              //     // animated arrowshooting , move to main statefulwidget
-              //     left: screenWidth * 0.45,
-              //     bottom: screenHeight * 0.18,
-              //     // alignment: Alignment(screenWidth * 0.5, 0.3 * screenHeight),
-              //     child: Stack(
-              //       children: [
-              //         Container(
-              //             child: Transform.rotate(
-              //                 angle: -pi / 2,
-              //                 child: Container(
-              //                     width: screenWidth * 0.14,
-              //                     height: screenHeight * 0.1,
-              //                     child: const Image(
-              //                         image: AssetImage(
-              //                             "images/game/bowandarrow.png"))))),
-              //         Container(
-              //           // pending on variable injection via balloon position
-              //           child: Transform.rotate(
-              //               angle: -pi / 2,
-              //               child: AnimatedContainer(
-              //                   duration: Duration(milliseconds: 300),
-              //                   // transform:
-              //                   //     RotatedBox(quarterTurns: quarterTurns),
-              //                   width: screenWidth * 0.14,
-              //                   height: screenHeight * 0.1,
-              //                   child: const Image(
-              //                       image: AssetImage("images/game/bow.png")))),
-              //         ),
-              //         Container(
-              //           // pending on variable injection via balloon position
-              //           child: T
-              //               ? Transform.rotate(
-              //                   angle: -pi / 2,
-              //                   child: AnimatedContainer(
-              //                       duration: Duration(
-              //                           milliseconds:
-              //                               300), // pending on add animation
-              //                       // transform:
-              //                       //     RotatedBox(quarterTurns: quarterTurns),
-              //                       width: screenWidth * 0.14,
-              //                       height: screenHeight * 0.1,
-              //                       child: const Image(
-              //                           image: AssetImage(
-              //                               "images/game/arrow.png"))))
-              //               : Transform.rotate(
-              //                   angle: -pi / 2, // for rotate arrow using
-              //                   child: AnimatedContainer(
-              //                       duration: Duration(
-              //                           milliseconds:
-              //                               300), // pending on add animation
-              //                       // transform:
-              //                       //     RotatedBox(quarterTurns: quarterTurns),
-              //                       width: screenWidth * 0.14,
-              //                       height: screenHeight * 0.1,
-              //                       child: const Image(
-              //                           image: AssetImage(
-              //                               "images/game/arrow.png")))),
-              //         ),
-              //       ],
-              //     )),
               Positioned(
                   bottom: 0,
                   left: 0,
