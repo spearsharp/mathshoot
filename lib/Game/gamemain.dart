@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:assets_audio_player/assets_audio_player.dart';
+import 'package:device_info_plus/device_info_plus.dart';
 import 'package:get/utils.dart';
 import '../services/screeenAdapter.dart';
 import '../routers/routers.dart';
@@ -16,12 +17,22 @@ class GameMain extends StatefulWidget {
 }
 
 class _GameMainState extends State<GameMain> {
+  late Map _deviceinfo;
   final _assetAudioPlayer = AssetsAudioPlayer();
   final _keyAudioPlayer = AssetsAudioPlayer();
+
+  _getDeviceInfo() async {
+    final deviceinfoplugin = DeviceInfoPlugin();
+    final deviceinfo = await deviceinfoplugin.deviceInfo;
+    final deviceinfomap = deviceinfo.toMap();
+    _deviceinfo = deviceinfomap;
+    print("_deviceinfo:$_deviceinfo");
+  }
 
   @override
   void initState() {
     // super.initState();
+    _getDeviceInfo();
     _assetAudioPlayer.open(
       Audio('audios/mainenteranceBGM.wav'),
       autoStart: true,

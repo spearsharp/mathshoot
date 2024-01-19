@@ -46,6 +46,8 @@ dependencies:
   icons_plus: ^4.0.0
   auto_size_text: ^3.0.0
   visibility_detector: ^0.4.0+2
+  device_info_plus: ^9.1.1
+  connectivity_plus: ^5.0.2
 
 dev_dependencies:
   flutter_test:
@@ -83,6 +85,7 @@ flutter:
     - images/game/portrait/woman2.png
     - images/game/portrait/woman3.png
     - images/game/portrait/woman4.png
+    - images/game/portrait/portrait_default.png
     #images
     - images/flutter_pers.jpg
     - images/portrait.jpg

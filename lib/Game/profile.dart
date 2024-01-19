@@ -103,7 +103,7 @@ class _ProfileState extends State<Profile> {
                                   child: const Image(
                                       fit: BoxFit.contain,
                                       image: AssetImage(
-                                          "images/game/portrait/man4.png"))),
+                                          "images/game/portrait/portrait_default.png"))), //pending on localstorage data patch
                             )),
                         Expanded(
                             flex: 1,

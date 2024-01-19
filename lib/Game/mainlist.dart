@@ -166,8 +166,8 @@ class _MainlistState extends State<Mainlist> {
                           "spear.yao@goldmanfuks.com"), // Pending on Players contack info
                       // ],
                       currentAccountPicture: CircleAvatar(
-                          backgroundImage:
-                              AssetImage('images/game/portrait/man2.png')),
+                          backgroundImage: AssetImage(
+                              'images/game/portrait/portrait_default.png')), // patch localdata if null, return default portrait
                       decoration: BoxDecoration(
                           image: DecorationImage(
                               fit: BoxFit.cover,
@@ -274,6 +274,26 @@ class _MainlistState extends State<Mainlist> {
                 ),
                 title: Text(
                   "guide",
+                  style: TextStyle(
+                      fontSize: 20,
+                      fontFamily: 'MotleyForces',
+                      color: Colors.white70),
+                ),
+              ),
+            ),
+            Divider(),
+            InkWell(
+              onTap: () {
+                keypresssound();
+                Navigator.pushNamed(context, '/',
+                    arguments: {"title": "mainlist"});
+              },
+              child: const ListTile(
+                leading: CircleAvatar(
+                  child: Icon(Icons.exit_to_app),
+                ),
+                title: Text(
+                  "exit",
                   style: TextStyle(
                       fontSize: 20,
                       fontFamily: 'MotleyForces',

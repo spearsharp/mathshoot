@@ -71,13 +71,13 @@ class _GameLvl1State extends State<GameLvl1> {
 
     print(widget.arguments);
 
-    // accbalance == null ? 111 : widget.arguments["accbalance"];
-    //    bombbalance == null ? 11 : widget.arguments["bombbalance"];
+//initialize patch data from backend server
     accbalance = 111;
     bombbalance = 11;
     // accbalance =
     //     widget.arguments["accbalance"]; // fetch accbalance frome mainpage
-    void gamekickoff() {}
+
+    void gamekickoff() {} // remove if no necessary
   }
 
   void keypresssound() {
@@ -483,8 +483,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
   late Color color;
   late bool t,
       l,
-      gamepause,
-      bombing; // if bombing , need to stop the almost close to finished balloon
+      gamepause; // if bombing , need to stop the almost close to finished balloon
   late int shootDuration, accbalance;
   late DateTime gameStartTime;
   late double screenWidth, screenHeight;
@@ -493,8 +492,8 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
   String n = '/';
   late AnimationController _animationController;
   late StreamController<List> arrowController;
-  late List
-      arrowLocation; // pending on change to realtime patch balloon position
+  late List arrowLocation,
+      bombing; // pending on change to realtime patch balloon position
 
 //game level started
 
@@ -547,7 +546,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
   }
 
   // ignore: non_constant_identifier_names
-  ListView _UpdatePic(t, d, e, List arrowLocation) {
+  ListView _UpdatePic(t, d, e, List arrowLocation, List bombing) {
     if (t) {
 // print("爆炸图");
 //arrow shoot , fadetransition, slidetransition
@@ -605,6 +604,9 @@ core function : This section include all core features and functional flag here.
     c = Random().nextInt(9);
     final Map gamearguments = {"gamepause": false};
     gamepause = widget.gamepause;
+    bombing = [
+      {"bombingNum": 1}
+    ];
     bowarrowStatus = {
       "bowReady": true, // pendingon arrowbow rotation
       "arrowshooted": false,
@@ -704,7 +706,7 @@ core function : This section include all core features and functional flag here.
                     width: widget.screenWidth * 0.25,
                     height: widget.screenHeight * 0.3,
                     padding: const EdgeInsets.fromLTRB(8, 5, 8, 5),
-                    child: _UpdatePic(t, d, e)));
+                    child: _UpdatePic(t, d, e, arrowLocation, bombing)));
           }),
     ]);
   }
