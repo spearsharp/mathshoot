@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:ui';
 import 'dart:async';
 
+import 'package:arithg/model/userinfo.dart';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:get/utils.dart';
@@ -12,6 +13,8 @@ import '../Game/gamelvl2.dart';
 import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/localStorage.dart';
+import '../services/util.dart';
+import '../model/userinfo.dart';
 
 class GameMain extends StatefulWidget {
   const GameMain({Key? key}) : super(key: key);
@@ -25,6 +28,8 @@ class _GameMainState extends State<GameMain> {
   late String _deviceinfoS;
   final _assetAudioPlayer = AssetsAudioPlayer();
   final _keyAudioPlayer = AssetsAudioPlayer();
+  late UserProfiles userProfiles;
+  late UserSettings userSettings;
 
   _getDeviceInfo() async {
     final deviceinfoplugin = DeviceInfoPlugin();
@@ -46,6 +51,9 @@ class _GameMainState extends State<GameMain> {
       showNotification: true,
       loopMode: LoopMode.single,
     );
+    //get devicesData get local data,if null,new user and gennerate all fields
+    var userName = Tools.uName(8);
+    print("userName:$userName");
   }
 
   @override

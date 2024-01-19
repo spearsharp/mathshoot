@@ -144,12 +144,12 @@ class _GameLvl2State extends State<GameLvl2> {
                   print("durationTime:: $durationTime");
                   // generate numbers of baloon
                   return Game(
-                      screenHeight: screenHeight,
-                      screenWidth: screenWidth,
-                      inputController: _inputController,
-                      scoreController: _scoreController,
-                      arrowController: _arrowController,
-                      levelController: _levelController);
+                    screenHeight: screenHeight,
+                    screenWidth: screenWidth,
+                    inputController: _inputController,
+                    scoreController: _scoreController,
+                    levelController: _levelController,
+                  );
                 }),
                 // localStorage.removeData("levelName"),
                 KeyPad(inputController: _inputController)
@@ -165,14 +165,14 @@ class Game extends StatefulWidget {
   final StreamController<int> inputController;
   final StreamController<int> scoreController;
   final StreamController<int> levelController;
-  const Game(
-      {super.key,
-      required this.screenHeight,
-      required this.screenWidth,
-      required this.inputController,
-      required this.scoreController,
-      required this.levelController,
-      required StreamController<int> arrowController});
+  const Game({
+    super.key,
+    required this.screenHeight,
+    required this.screenWidth,
+    required this.inputController,
+    required this.scoreController,
+    required this.levelController,
+  });
   @override
   State<Game> createState() => _GameState();
 }
