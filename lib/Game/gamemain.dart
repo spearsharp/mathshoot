@@ -1,4 +1,6 @@
+import 'dart:convert';
 import 'dart:ui';
+import 'dart:async';
 
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:device_info_plus/device_info_plus.dart';
@@ -8,6 +10,8 @@ import '../routers/routers.dart';
 import '../Game/gamelvl1.dart';
 import '../Game/gamelvl2.dart';
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../services/localStorage.dart';
 
 class GameMain extends StatefulWidget {
   const GameMain({Key? key}) : super(key: key);
@@ -18,6 +22,7 @@ class GameMain extends StatefulWidget {
 
 class _GameMainState extends State<GameMain> {
   late Map _deviceinfo;
+  late String _deviceinfoS;
   final _assetAudioPlayer = AssetsAudioPlayer();
   final _keyAudioPlayer = AssetsAudioPlayer();
 
@@ -26,7 +31,9 @@ class _GameMainState extends State<GameMain> {
     final deviceinfo = await deviceinfoplugin.deviceInfo;
     final deviceinfomap = deviceinfo.toMap();
     _deviceinfo = deviceinfomap;
+    _deviceinfoS = jsonEncode(_deviceinfo);
     print("_deviceinfo:$_deviceinfo");
+    print("_deviceinfoS:$_deviceinfoS");
   }
 
   @override

@@ -36,7 +36,6 @@ dependencies:
   cupertino_icons: ^1.0.2
   flutter_screenutil: ^5.8.4
   get: 4.6.5
-  shared_preferences: ^2.2.0
   fluttertoast: ^8.2.4
   ftoast: ^2.0.0
   audioplayers: ^5.2.1
@@ -48,6 +47,7 @@ dependencies:
   visibility_detector: ^0.4.0+2
   device_info_plus: ^9.1.1
   connectivity_plus: ^5.0.2
+  shared_preferences: ^2.2.2
 
 dev_dependencies:
   flutter_test:
