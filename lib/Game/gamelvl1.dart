@@ -33,13 +33,8 @@ class _GameLvl1State extends State<GameLvl1> {
       gamestart = false,
       countdown = false,
       gamepause = false;
-  Map bowarrowStatus = {
-    "bowReady": false,
-    "arrowshooted": false,
-    "bowEmpty": false,
-  };
 
-  final List arrowLocation = [0.1, 0.2];
+  final List arrowLocation = [0.0, 0.0];
   int currentlevel = 0;
   // final player = AudioPlayer();
   final _assetAudioPlayer = AssetsAudioPlayer();
@@ -165,7 +160,6 @@ class _GameLvl1State extends State<GameLvl1> {
     _assetAudioPlay.stop();
     _keyAudioPlayer.stop();
     _inputController.close();
-    _arrowController.close();
     _scoreController.close();
     super.dispose();
   }
@@ -278,7 +272,8 @@ class _GameLvl1State extends State<GameLvl1> {
                       screenWidth: screenWidth,
                       inputController: _inputController,
                       scoreController: _scoreController,
-                      arrowController: _arrowController, gamepause: gamepause,
+                      arrowController: _arrowController,
+                      gamepause: gamepause,
                       // levelController: _levelController,
                     );
                   } else {
@@ -379,20 +374,6 @@ class _GameLvl1State extends State<GameLvl1> {
                                             child: const Image(
                                                 image: AssetImage(
                                                     "images/game/bowandarrow.png"))))),
-                                Container(
-                                  // pending on variable injection via balloon position
-                                  child: Transform.rotate(
-                                      angle: -pi / 2,
-                                      child: AnimatedContainer(
-                                          duration: Duration(milliseconds: 300),
-                                          // transform:
-                                          //     RotatedBox(quarterTurns: quarterTurns),
-                                          width: screenWidth * 0.14,
-                                          height: screenHeight * 0.1,
-                                          child: const Image(
-                                              image: AssetImage(
-                                                  "images/game/bow.png")))),
-                                ),
                               ]))
                         ]))
                     : gamestart
@@ -411,12 +392,20 @@ class _GameLvl1State extends State<GameLvl1> {
                                       bombbalance: bombbalance,
                                       screenHeight: screenHeight,
                                     )),
-                                arrowshoot(
-                                    arrowLocation: arrowLocation,
-                                    screenWidth: screenWidth,
-                                    screenHeight: screenHeight,
-                                    arrowController: _arrowController,
-                                    bowarrowStatus: bowarrowStatus),
+                                Positioned(
+                                    left: screenWidth * 0.45,
+                                    bottom: screenHeight * 0.17,
+                                    child: Stack(children: [
+                                      Container(
+                                          child: Transform.rotate(
+                                              angle: -pi / 2,
+                                              child: Container(
+                                                  width: screenWidth * 0.14,
+                                                  height: screenHeight * 0.1,
+                                                  child: const Image(
+                                                      image: AssetImage(
+                                                          "images/game/bowandarrow.png"))))),
+                                    ]))
                               ],
                             ))
                         : const Text(""),
@@ -474,10 +463,10 @@ class Game extends StatefulWidget {
     required this.screenWidth,
     required this.inputController,
     required this.scoreController,
-    required this.arrowController,
     required this.gameStartTime,
     required this.gamepause,
     required this.gamearguments,
+    required this.arrowController,
 
     // required this.levelController,
   }) : super(key: key);
@@ -488,11 +477,14 @@ class Game extends StatefulWidget {
 class _GameState extends State<Game> with SingleTickerProviderStateMixin {
   //call arith module
   final GlobalKey _Gamekey = GlobalKey();
-  late Map gamearguements;
+  late Map gamearguements, bowarrowStatus;
   late double x;
   late int a, b, c, d, e, f, g, netscore, levelevent, ballonIndex;
   late Color color;
-  late bool t, l, gamepause;
+  late bool t,
+      l,
+      gamepause,
+      bombing; // if bombing , need to stop the almost close to finished balloon
   late int shootDuration, accbalance;
   late DateTime gameStartTime;
   late double screenWidth, screenHeight;
@@ -500,8 +492,9 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
   String m = '()';
   String n = '/';
   late AnimationController _animationController;
-  List _arrowlocation =
-      []; // pending on change to realtime patch balloon position
+  late StreamController<List> arrowController;
+  late List
+      arrowLocation; // pending on change to realtime patch balloon position
 
 //game level started
 
@@ -554,11 +547,11 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
   }
 
   // ignore: non_constant_identifier_names
-  ListView _UpdatePic(t, d, e) {
-    // insert arrowshooting function
+  ListView _UpdatePic(t, d, e, List arrowLocation) {
     if (t) {
 // print("爆炸图");
 //arrow shoot , fadetransition, slidetransition
+      // insert arrowshooting function
       t = false;
       return ListView(children: [
         Container(
@@ -598,6 +591,7 @@ core function : This section include all core features and functional flag here.
 9.core arith calling
 10topup money
 */
+
   @override
   void initState() {
     //1.balloon controller
@@ -611,6 +605,12 @@ core function : This section include all core features and functional flag here.
     c = Random().nextInt(9);
     final Map gamearguments = {"gamepause": false};
     gamepause = widget.gamepause;
+    bowarrowStatus = {
+      "bowReady": true, // pendingon arrowbow rotation
+      "arrowshooted": false,
+      "bowEmpty": false,
+    };
+    arrowController = widget.arrowController;
     //
 
     late int speed;
@@ -619,7 +619,7 @@ core function : This section include all core features and functional flag here.
 
     // game started
     reset(widget.screenWidth); //first round to play
-
+    arrowLocation = [x, 0.0];
     _animationController = AnimationController(
         vsync: this, duration: Duration(milliseconds: durationTime));
     _animationController.forward();
@@ -636,15 +636,19 @@ core function : This section include all core features and functional flag here.
             _Gamekey.currentContext!.findRenderObject() as RenderBox;
         final Offset bollonPos = renderBox.localToGlobal(Offset.zero);
         print(
-            "Animation Positioned component's position is (${bollonPos.dx}, ${bollonPos.dy})");
+            "Animation-Positioned-component's position is (${bollonPos.dx}, ${bollonPos.dy})");
 //2.arrowshooting controller
-        _arrowlocation = [
+        arrowLocation = [
           bollonPos.dx,
           bollonPos.dy
         ]; //get realtime balloon location
-        //foor each location change , add a new list with x,y into _arrowController
 
-        widget.arrowController.add(_arrowlocation); // shooting triggered
+        print("arrowController:$arrowController");
+        bowarrowStatus = {
+          "bowReady": true,
+          "arrowshooted": true,
+          "bowEmpty": false
+        };
 
         t = true;
         score(t, widget.gameStartTime);
@@ -654,8 +658,8 @@ core function : This section include all core features and functional flag here.
         //     t, widget.screenHeight, widget.screenWidth, arrowlocation);
         // print("result:$result");
 
-        await Future.delayed(Duration(milliseconds: 200));
-        _UpdatePic(t, d, e);
+        await Future.delayed(Duration(milliseconds: 300));
+        _UpdatePic(t, d, e, arrowLocation, bombing);
         reset(widget.screenWidth);
         _animationController.forward(from: 0.0);
       }
@@ -682,257 +686,137 @@ core function : This section include all core features and functional flag here.
 
   @override
   Widget build(BuildContext context) {
-    return AnimatedBuilder(
-        animation: _animationController,
-        builder: (context, child) {
-          return Positioned(
-              key: _Gamekey,
-              top: Tween(
-                      begin: widget.screenHeight * 0.6,
-                      end: -widget.screenHeight * 0.3)
-                  .animate(_animationController)
-                  .value,
-              left: x,
-              child: Container(
-                  // decoration: ,
-                  color: Colors.red.withOpacity(0),
-                  width: widget.screenWidth * 0.25,
-                  height: widget.screenHeight * 0.3,
-                  padding: const EdgeInsets.fromLTRB(8, 5, 8, 5),
-                  child: _UpdatePic(t, d, e)));
-        });
+    return Stack(children: [
+      AnimatedBuilder(
+          animation: _animationController,
+          builder: (context, child) {
+            return Positioned(
+                key: _Gamekey,
+                top: Tween(
+                        begin: widget.screenHeight * 0.6,
+                        end: -widget.screenHeight * 0.3)
+                    .animate(_animationController)
+                    .value,
+                left: x,
+                child: Container(
+                    // decoration: ,
+                    color: Colors.red.withOpacity(0),
+                    width: widget.screenWidth * 0.25,
+                    height: widget.screenHeight * 0.3,
+                    padding: const EdgeInsets.fromLTRB(8, 5, 8, 5),
+                    child: _UpdatePic(t, d, e)));
+          }),
+    ]);
   }
 }
 
 //arrow shooting and animation
-class arrowshoot extends StatefulWidget {
-  final List arrowLocation;
-  final Map bowarrowStatus;
-  final double screenWidth, screenHeight;
-  final StreamController<List> arrowController;
-  const arrowshoot({
-    super.key,
-    required this.arrowLocation,
-    required this.screenWidth,
-    required this.screenHeight,
-    required this.arrowController,
-    required this.bowarrowStatus,
-  });
+// class arrowshoot extends StatefulWidget {
+//   final List arrowLocation;
+//   final Map bowarrowStatus;
+//   final double screenWidth, screenHeight;
+//   final StreamController<List> arrowController;
+//   const arrowshoot({
+//     super.key,
+//     required this.arrowLocation,
+//     required this.screenWidth,
+//     required this.screenHeight,
+//     required this.arrowController,
+//     required this.bowarrowStatus,
+//   });
 
-  @override
-  State<arrowshoot> createState() => _arrowshootState();
-}
+//   @override
+//   State<arrowshoot> createState() => _arrowshootState();
+// }
 
-class _arrowshootState extends State<arrowshoot>
-    with SingleTickerProviderStateMixin {
-  late double initscreenHeight,
-      initscreenWidth,
-      endscreenHeight,
-      endscreenWidth;
-  late AnimationController _arrowShootingAnimationController,
-      _arrowRotationAnimationController;
-  late List arrowlocation;
-  late bool bowReady, arrowshooted, bowEmpty;
+// class _arrowshootState extends State<arrowshoot>
+//     with SingleTickerProviderStateMixin {
+//   late double screenWidth,
+//       screenHeight,
+//       initscreenHeight,
+//       initscreenWidth,
+//       endscreenHeight,
+//       endscreenWidth;
+//   late AnimationController _arrowShootingAnimationController,
+//       _arrowRotationAnimationController;
+//   late List arrowLocation;
+//   late StreamController arrowController;
+//   late bool bowReady, arrowshooted, bowEmpty;
+//   late Map bowarrowStatus;
+//   late double endx, endy;
 
-  @override
-  void initState() {
-    super.initState();
+//   @override
+//   void initState() {
+//     super.initState();
+//     //data transmit
+//     screenWidth = widget.screenWidth;
+//     screenHeight = widget.screenHeight;
+//     initscreenHeight = widget.screenHeight * 0.18;
+//     initscreenWidth = widget.screenWidth * 0.45;
+//     endscreenHeight = widget.screenHeight * 0.18;
+//     endscreenWidth = widget.screenWidth * 0.45;
+//     arrowController = widget.arrowController;
+//     bowarrowStatus = widget.bowarrowStatus;
+//     bowReady = bowarrowStatus["bowReady"];
+//     arrowshooted = bowarrowStatus["arrowshooted"];
+//     bowEmpty = bowarrowStatus["bowEmpty"];
+//     endx = widget.arrowLocation[0];
+//     endy = widget.arrowLocation[1];
 
-    final StreamController<List> arrowController = widget.arrowController;
-    bowReady = widget.bowarrowStatus["bowReady"];
-    arrowshooted = widget.bowarrowStatus["arrowshooted"];
-    bowEmpty = widget.bowarrowStatus["bowEmpty"];
+// // animated arrow rotation
+//     // _arrowRotationAnimationController = AnimationController(
+//     //     vsync: this,
+//     //     duration: const Duration(milliseconds: 500),
+//     //     lowerBound: positiveRotated,
+//     //     upperBound: nagetiveRotated);
 
-    var arrowlocation = widget.arrowLocation;
+//     print("arrowlocation:$arrowLocation");
+//     _arrowShootingAnimationController = AnimationController(
+//         vsync: this, duration: const Duration(milliseconds: 1000));
+//     _arrowShootingAnimationController.forward();
 
-// animated arrow rotation
-    // _arrowRotationAnimationController = AnimationController(
-    //     vsync: this,
-    //     duration: const Duration(milliseconds: 500),
-    //     lowerBound: positiveRotated,
-    //     upperBound: nagetiveRotated);
+//     _arrowShootingAnimationController.addStatusListener((status) {
+//       if (status == AnimationStatus.completed) {
+//         print("arrow shooting status complete");
+//       }
 
-    print("arrowlocation:$arrowlocation");
-    _arrowShootingAnimationController = AnimationController(
-        vsync: this, duration: const Duration(milliseconds: 500));
-    _arrowShootingAnimationController.addStatusListener((status) {
-      if (status == AnimationStatus.completed) {
-        print("arrow shooting status complete");
-      }
+//       if (status == AnimationStatus.forward) {
+//         print("arrow shooting status shooted");
+//       }
 
-      if (status == AnimationStatus.forward) {
-        print("arrow shooting status shooted");
-      }
+//       if (status == AnimationStatus.dismissed) {
+//         print("arrow shooting status dismissed");
+//       }
+//     });
+//   }
 
-      if (status == AnimationStatus.dismissed) {
-        print("arrow shooting status dismissed");
-      }
-    });
+//   @override
+//   void dispose() {
+//     _arrowShootingAnimationController.dispose();
+//     _arrowRotationAnimationController.dispose();
+//     super.dispose();
+//   }
 
-    widget.arrowController.stream.listen((Event) async {
-      print("Event_arrowshooting:$Event");
-      final double endscreenHeight = Event[1];
-      final double endscreenWidth = Event[2];
-
-      _arrowShootingAnimationController.forward();
-      if (bowReady && widget.arrowLocation != null) {
-        _arrowShootingAnimationController.forward();
-      } else if (arrowshooted) {
-        _arrowShootingAnimationController.reset();
-      } else
-        (bowEmpty) {
-          _arrowShootingAnimationController.stop();
-        };
-    });
-  }
-
-  @override
-  void dispose() {
-    _arrowShootingAnimationController.dispose();
-    _arrowRotationAnimationController.dispose();
-    super.dispose();
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final double screenWidth = widget.screenWidth;
-    final double screenHeight = widget.screenHeight;
-    final double initscreenHeight = widget.screenHeight * 0.18;
-    final double initscreenWidth = widget.screenWidth * 0.45;
-    final double endscreenHeight = widget.screenHeight * 0.18;
-    final double endscreenWidth = widget.screenWidth * 0.45;
-
-    final StreamController<List> arrowController = widget.arrowController;
-    return Stack(children: [
-      StreamBuilder(
-          stream: widget.arrowController.stream,
-          builder: (context, snapshot) {
-            print(
-                "_arrowAnimationController:$_arrowShootingAnimationController");
-            print(
-                "initscreenHeight:$initscreenHeight - endscreenHeight: $endscreenHeight - initscreenWidth:$initscreenWidth - endscreenWidth:$endscreenWidth");
-            var response = snapshot.data as List;
-            print("response:$response");
-
-            //check stream health
-
-            switch (snapshot.connectionState) {
-              case ConnectionState.none:
-                return const Center(child: Text("None:  No data transited"));
-              case ConnectionState.waiting:
-                return const Center(child: Text("Waitting for Data stream"));
-              case ConnectionState.active:
-                if (snapshot.hasError) {
-                  return Center(
-                    child: Text(
-                        "Active: data stream active , Error:${snapshot.error}"),
-                  );
-                } else {
-                  return SlideTransition(
-                      position: _arrowShootingAnimationController.drive(Tween(
-                          begin: Offset(initscreenWidth, initscreenHeight),
-                          end: Offset(response[1], response[2]))),
-                      child: Image(
-                          width: screenWidth * 0.02,
-                          height: screenHeight * 0.02,
-                          image: const AssetImage("images/game/arrow.png")));
-                }
-              case ConnectionState.done:
-                return const Center(
-                  child: Text(""),
-                );
-              default:
-                throw "ConnectionState is abnormal";
-            }
-
-            // AnimatedPositioned(
-            //     duration: Duration(milliseconds: 600),
-            //     curve: Curves.linear,
-            //     top: Tween(begin: initscreenHeight, end: endscreenHeight)
-            //         .animate(_arrowShootingAnimationController)
-            //         .value,
-            //     left: Tween(begin: initscreenWidth, end: endscreenWidth)
-            //         .animate(_arrowShootingAnimationController)
-            //         .value,
-            //     child: Image(
-            //         width: screenWidth * 0.02,
-            //         height: screenHeight * 0.02,
-            //         image: const AssetImage("images/game/arrow.png"))
-            // child: AnimatedRotation(
-            //   // key: ,
-            //   animation: _arrowAnimationController,
-            //   duration: Duration(milliseconds: 600),
-            //   transform: Matrix4.translationValues(
-            //       initscreenHeight, initscreenWidth, 0),
-            //   turns: _arrowAnimationController,
-            //   child: Transform.rotate(
-            //       angle: -pi / 2,
-            //       child: const Image(
-            //           image: AssetImage(
-            //               "images/game/arrow.png"))), // angle is changing along with animation
-            // )
-          }),
-      Positioned(
-          // fade animation
-          // animated arrowshooting , move to main statefulwidget
-          left: widget.screenWidth * 0.45,
-          bottom: widget.screenHeight * 0.15,
-          // alignment: Alignment(screenWidth * 0.5, 0.3 * screenHeight),
-          child: Stack(
-            children: [
-              Container(
-                  child: Transform.rotate(
-                      angle: -pi / 2,
-                      child: Container(
-                          width: widget.screenWidth * 0.14,
-                          height: widget.screenHeight * 0.18,
-                          child: const Image(
-                              image:
-                                  AssetImage("images/game/bowandarrow.png"))))),
-              Container(
-                // pending on variable injection via balloon position
-                child: Transform.rotate(
-                    angle: -pi / 2,
-                    child: AnimatedContainer(
-                        duration: Duration(milliseconds: 300),
-                        // transform:
-                        //     RotatedBox(quarterTurns: quarterTurns),
-                        width: widget.screenWidth * 0.14,
-                        height: widget.screenHeight * 0.18,
-                        child: const Image(
-                            image: AssetImage("images/game/bow.png")))),
-              ),
-              Container(
-                // pending on variable injection via balloon position
-                child: bowReady
-                    ? Transform.rotate(
-                        angle: -pi / 2,
-                        child: AnimatedContainer(
-                            duration: Duration(
-                                milliseconds: 300), // pending on add animation
-                            // transform:
-                            //     RotatedBox(quarterTurns: quarterTurns),
-                            width: widget.screenWidth * 0.14,
-                            height: widget.screenHeight * 0.18,
-                            child: const Image(
-                                image: AssetImage("images/game/arrow.png"))))
-                    : Transform.rotate(
-                        angle: -pi / 2, // for rotate arrow using
-                        child: AnimatedContainer(
-                            duration: Duration(
-                                milliseconds: 300), // pending on add animation
-                            // transform:
-                            //     RotatedBox(quarterTurns: quarterTurns),
-                            width: widget.screenWidth * 0.14,
-                            height: widget.screenHeight * 0.18,
-                            child: const Image(
-                                image: AssetImage("images/game/arrow.png")))),
-              ),
-            ],
-          )),
-    ]);
-  }
-}
+//   @override
+//   Widget build(BuildContext context) {
+//     print("endx:$endx,,endy:$endy");
+//     return Center(
+//         child: SlideTransition(
+//             position: _arrowShootingAnimationController
+//                 .drive(CurveTween(curve: Curves.elasticInOut))
+//                 .drive(Tween(begin: Offset(0.0, -10), end: Offset(1, 10))),
+//             // begin: Offset(initscreenWidth / 100, initscreenHeight / 10),
+//             // end: Offset(endx / 100, endy / 10))),
+//             child: Container(
+//                 width: screenWidth * 0.02,
+//                 height: screenHeight * 0.02,
+//                 child: Text(
+//                   "测试",
+//                   style: TextStyle(fontSize: 30),
+//                 ))));
+//     // child: const Image(image: AssetImage("images/game/arrow.png"))));)
+//   }
+// }
 //keypad monitorring
 
 class KeyPad extends StatefulWidget {
