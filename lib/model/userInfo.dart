@@ -3,22 +3,29 @@ import 'dart:ffi';
 class UserProfiles {
   final String UUID;
   final String Name;
-  final Int Score;
+  final int Score;
+  final int Level;
+  final String IPaddress;
   final String Email;
+  final List DeviceInfo;
 
-  UserProfiles(
-      {required this.UUID,
-      required this.Name,
-      required this.Score,
-      required this.Email});
+  UserProfiles({
+    required this.UUID,
+    required this.Name,
+    required this.Score,
+    required this.Email,
+    required this.Level,
+    required this.IPaddress,
+    required this.DeviceInfo,
+  });
 }
 
 class UserSettings {
   final String UUID;
   final String Name;
-  final Bool TouchSound;
-  final Bool GameMusic;
-  final Bool BGM;
+  final bool TouchSound;
+  final bool GameMusic;
+  final bool BGM;
   final String Portrait;
 
   UserSettings(

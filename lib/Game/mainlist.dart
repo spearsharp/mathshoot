@@ -307,37 +307,47 @@ class _MainlistState extends State<Mainlist> {
       appBar: AppBar(
         iconTheme: IconThemeData(color: Colors.white70),
         title: Row(children: [
-          const Padding(
-            padding: EdgeInsets.symmetric(horizontal: 20.0),
+          const Expanded(
+            flex: 4,
             child: AutoSizeText(
               "Math Balloon",
-              minFontSize: 25,
+              minFontSize: 15,
               maxFontSize: 30,
               overflow: TextOverflow.ellipsis,
               style: TextStyle(fontFamily: 'Balloony', color: Colors.white70),
             ),
           ),
-          Align(
-              alignment: Alignment.centerRight,
+          Expanded(
+              flex: 1,
               child: InkWell(
                   onTap: () {
                     keypresssound();
                     print("top up function"); // pending to topup function
                   },
-                  child: Row(
-                    children: [
-                      const Image(
-                        image: AssetImage('images/game/icon/goldcoinpic.png'),
-                        width: 20,
-                      ),
-                      AutoSizeText('$accbalance',
-                          minFontSize: 18,
-                          maxFontSize: 25,
-                          overflow: TextOverflow.ellipsis,
-                          style: const TextStyle(
-                              fontFamily: 'CreamCake', color: Colors.white70)),
-                    ],
-                  ))),
+                  child: Align(
+                      alignment: Alignment.centerRight,
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Expanded(
+                            flex: 1,
+                            child: const Image(
+                              image: AssetImage(
+                                  'images/game/icon/goldcoinpic.png'),
+                            ),
+                          ),
+                          Expanded(
+                            flex: 2,
+                            child: AutoSizeText(' $accbalance',
+                                minFontSize: 18,
+                                maxFontSize: 25,
+                                overflow: TextOverflow.ellipsis,
+                                style: const TextStyle(
+                                    fontFamily: 'MotleyForces',
+                                    color: Colors.yellowAccent)),
+                          )
+                        ],
+                      )))),
         ]),
         centerTitle: true,
         shadowColor: Colors.transparent,

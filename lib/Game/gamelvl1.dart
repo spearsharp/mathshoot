@@ -192,59 +192,93 @@ class _GameLvl1State extends State<GameLvl1> {
     return Scaffold(
         extendBodyBehindAppBar: true,
         appBar: AppBar(
-          iconTheme: const IconThemeData(color: Colors.white70),
-          centerTitle: true,
-          shadowColor: Colors.transparent,
-          backgroundColor: Colors.transparent,
-          elevation: 0,
-          leading: BackButton(
-            onPressed: () {
-              backtoMainList();
-            },
-          ),
-          title: StreamBuilder(
-              stream: _scoreController.stream,
-              builder: (context, snapshot) {
-                if (snapshot.hasData) {
-                  if (score >= 0) {
-                    score += snapshot.data as int;
-                    if (score < 0) {
-                      score = 0;
-                      print("Game Over");
-                      setState(() {
-                        gamepause = true;
-                      });
-                      // stop game and popup failure mask, and show play again/exit
-                    }
-                  } else {
-                    score = 0;
-                  }
-                  // localStorage.setData("levelName", level);
-                }
-                if (snapshot.hasError) {
-                  return Text("Error: ${snapshot.error}");
-                }
-                return Padding(
-                    padding: const EdgeInsets.fromLTRB(30, 10, 10, 10),
-                    child: Wrap(
-                      alignment: WrapAlignment.spaceBetween,
-                      children: [
-                        Text("score： $score",
-                            style: const TextStyle(
-                                fontFamily: 'PWBalloon',
-                                color: Colors.black87,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 28)),
-                        SizedBox(
-                          width: screenWidth,
-                        ),
-                        // Text(
-                        //   "level： $level",
-                        // )
-                      ],
-                    ));
-              }),
-        ),
+            iconTheme: const IconThemeData(color: Colors.white70),
+            centerTitle: true,
+            shadowColor: Colors.transparent,
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            leading: BackButton(
+              onPressed: () {
+                backtoMainList();
+              },
+            ),
+            title: Row(
+              children: [
+                Expanded(
+                  flex: 4,
+                  child: StreamBuilder(
+                      stream: _scoreController.stream,
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          if (score >= 0) {
+                            score += snapshot.data as int;
+                            if (score < 0) {
+                              score = 0;
+                              print("Game Over");
+                              setState(() {
+                                gamepause = true;
+                              });
+                              // stop game and popup failure mask, and show play again/exit
+                            }
+                          } else {
+                            score = 0;
+                          }
+                          // localStorage.setData("levelName", level);
+                        }
+                        if (snapshot.hasError) {
+                          return Text("Error: ${snapshot.error}");
+                        }
+                        return Padding(
+                            padding: const EdgeInsets.fromLTRB(30, 10, 10, 10),
+                            child: Wrap(
+                              alignment: WrapAlignment.spaceBetween,
+                              children: [
+                                AutoSizeText("score： $score",
+                                    minFontSize: 15,
+                                    maxFontSize: 30,
+                                    overflow: TextOverflow.ellipsis,
+                                    style: const TextStyle(
+                                        fontFamily: 'PWBalloon',
+                                        color: Colors.black54,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 28)),
+                              ],
+                            ));
+                      }),
+                ),
+                Expanded(
+                    child: Expanded(
+                        flex: 1,
+                        // full screen with topup money
+                        child: InkWell(
+                            onTap: () {
+                              print("topup money");
+                            },
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: const Row(
+                                children: [
+                                  Expanded(
+                                      flex: 1,
+                                      child: Image(
+                                        image: AssetImage(
+                                            "images/game/icon/goldcoinpic.png"),
+                                      )),
+                                  Expanded(
+                                    flex: 2,
+                                    child: AutoSizeText(' 123',
+                                        minFontSize: 18,
+                                        maxFontSize: 25,
+                                        overflow: TextOverflow.ellipsis,
+                                        style: const TextStyle(
+                                            fontFamily: 'MotleyForces',
+                                            color: Colors.yellowAccent)),
+                                  )
+                                ],
+                              ),
+                            ))))
+              ],
+            )),
         body: Container(
             height: screenHeight,
             width: screenWidth,
@@ -410,37 +444,6 @@ class _GameLvl1State extends State<GameLvl1> {
                             ))
                         : const Text(""),
                 //tap to kickoff game, level1
-
-                Positioned(
-                    // full screen with topup money
-                    top: screenHeight * 0.055,
-                    right: -30,
-                    child: InkWell(
-                        onTap: () {
-                          print("topup money");
-                        },
-                        child: Container(
-                          width: 100,
-                          child: const Row(
-                            children: [
-                              Expanded(
-                                  flex: 1,
-                                  child: Image(
-                                    image: AssetImage(
-                                        "images/game/icon/goldcoinpic.png"),
-                                  )),
-                              Expanded(
-                                flex: 4,
-                                child: Text(
-                                    "123", // pending on topup fuunction, show the balancef
-                                    style: TextStyle(
-                                        fontSize: 20,
-                                        fontFamily: 'MotleyForces',
-                                        color: Colors.blueGrey)),
-                              )
-                            ],
-                          ),
-                        ))),
               ],
             )));
   }
