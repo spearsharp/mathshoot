@@ -4,7 +4,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 // ignore: camel_case_types
 class localStorage {
-  static setData(String? key, int? val) async {
+  static setData(String? key, dynamic? val) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setInt(key!, val!);
   }

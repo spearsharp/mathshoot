@@ -49,6 +49,8 @@ dependencies:
   connectivity_plus: ^5.0.2
   shared_preferences: ^2.2.2
   uuid: ^3.0.7
+  dio: ^5.4.0
+  get_it: ^7.6.7
 
 dev_dependencies:
   flutter_test:

@@ -158,8 +158,8 @@ class _GameLvl1State extends State<GameLvl1> {
 
   @override
   void dispose() {
-    _assetAudioPlay.stop();
-    _keyAudioPlayer.stop();
+    _assetAudioPlay.dispose();
+    _keyAudioPlayer.dispose();
     _inputController.close();
     _scoreController.close();
     super.dispose();
