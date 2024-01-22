@@ -7,9 +7,11 @@ import '../Game/gamelvl1.dart';
 import '../Game/gamelvl2.dart';
 import '../Game/setting.dart';
 import '../Game/profile.dart';
+import '../model/userinfo.dart';
 import '../services/iconUtil.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:auto_size_text/auto_size_text.dart';
+import 'package:crypto/crypto.dart';
 
 class Mainlist extends StatefulWidget {
   final Map arguments;
@@ -20,6 +22,9 @@ class Mainlist extends StatefulWidget {
 }
 
 class _MainlistState extends State<Mainlist> {
+  late UserSettings userSettings;
+  late UserProfiles userProfiles;
+
   int num = 14;
   final int accbalance =
       111; // pending on patch from local storage and database
@@ -46,13 +51,17 @@ class _MainlistState extends State<Mainlist> {
   void initState() {
     // TODO: implement initState
     //play BGM
+    userSettings = widget.arguments["userSettings"];
+    userProfiles = widget.arguments["userProfiles"];
     accbalance == null ? 1111 : widget.arguments["accbalance"];
-    _assetAudioPlayer.open(
-      Audio("audios/mainlistBGM.wav"),
-      autoStart: true,
-      showNotification: true,
-      loopMode: LoopMode.single,
-    );
+    userSettings.BGM
+        ? _assetAudioPlayer.open(
+            Audio("audios/mainlistBGM.wav"),
+            autoStart: true,
+            showNotification: true,
+            loopMode: LoopMode.single,
+          )
+        : null;
     super.initState();
   }
 

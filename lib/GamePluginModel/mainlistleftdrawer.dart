@@ -1,5 +1,6 @@
 import 'dart:ffi';
 
+import 'package:arithg/model/userInfo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 
@@ -14,9 +15,10 @@ class Mainlistleftdrawer extends StatefulWidget {
 }
 
 class _MainlistleftdrawerState extends State<Mainlistleftdrawer> {
+  late UserSettings userSettings;
   bool soundStatus =
       false; // pending on change to read record from local storage
-  bool touchsoundStatus =
+  bool gamesoundStatus =
       false; // pending on change to read record from local storage
   bool bkgsoundStatus =
       false; // pending on change to read record from local storage
@@ -24,6 +26,11 @@ class _MainlistleftdrawerState extends State<Mainlistleftdrawer> {
   // void initState() {
   //   super.initState();
   //   print(widget.arguments);
+  @override
+  void initState() {
+    super.initState();
+    userSettings = widget.arguments["userSettings"];
+  }
   // }
 
   @override
@@ -60,13 +67,15 @@ class _MainlistleftdrawerState extends State<Mainlistleftdrawer> {
                           height: 35.0,
                           valueFontSize: 15.0,
                           toggleSize: 45.0,
-                          value: soundStatus,
+                          value: userSettings.TouchSound,
                           borderRadius: 30.0,
                           padding: 4.0,
                           showOnOff: true,
                           onToggle: (val) {
                             setState(() {
-                              soundStatus = val;
+                              soundStatus = !userSettings.TouchSound;
+                              print("soundStatus:$soundStatus");
+                              //update localstorage
                               print("Touch sound"); // on/off action
                             });
                           },
@@ -94,14 +103,15 @@ class _MainlistleftdrawerState extends State<Mainlistleftdrawer> {
                           height: 35.0,
                           valueFontSize: 15.0,
                           toggleSize: 45.0,
-                          value: touchsoundStatus,
+                          value: userSettings.GameMusic,
                           borderRadius: 30.0,
                           padding: 4.0,
                           showOnOff: true,
                           onToggle: (val) {
                             setState(() {
-                              touchsoundStatus = val;
-                              print("Game sound"); // on/off action
+                              gamesoundStatus = !userSettings.GameMusic;
+                              print(
+                                  "Game sound:$gamesoundStatus"); // on/off action
                             });
                           },
                         )),
@@ -128,14 +138,15 @@ class _MainlistleftdrawerState extends State<Mainlistleftdrawer> {
                           height: 35.0,
                           valueFontSize: 15.0,
                           toggleSize: 45.0,
-                          value: bkgsoundStatus,
+                          value: userSettings.BGM,
                           borderRadius: 30.0,
                           padding: 4.0,
                           showOnOff: true,
                           onToggle: (val) {
                             setState(() {
-                              bkgsoundStatus = val;
-                              print("background sound"); // on/off action
+                              bkgsoundStatus = !userSettings.BGM;
+                              print(
+                                  "background sound:$bkgsoundStatus"); // on/off action
                             });
                           },
                         )),

@@ -51,6 +51,7 @@ dependencies:
   uuid: ^3.0.7
   dio: ^5.4.0
   get_it: ^7.6.7
+  crypto: ^3.0.3
 
 dev_dependencies:
   flutter_test:
@@ -138,6 +139,9 @@ flutter:
     - audios/pressmobilekeyBGM.wav
     - audios/endingBGM.mp3
     - audios/mainlistBGM.wav
+    - audios/balloonbreakBGM_big.mp3
+    - audios/balloonbreakBGM_loud.mp3
+    - audios/bombbreakBGM_big.mp3
 
   # An image asset can refer to one or more resolution-specific "variants", see1
   # https://flutter.dev/assets-and-images/#resolution-aware

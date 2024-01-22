@@ -13,6 +13,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../services/localStorage.dart';
 import '../model/userInfo.dart';
 import 'package:audioplayers/audioplayers.dart';
+import 'package:crypto/crypto.dart';
 // import 'services/arith.dart';
 
 class GameLvl1 extends StatefulWidget {
@@ -395,6 +396,7 @@ class _GameLvl1State extends State<GameLvl1> {
                                 T: false,
                                 bombbalance: bombbalance,
                                 screenHeight: screenHeight,
+                                keyAudioPlayer: _keyAudioPlayer,
                               )),
                           Positioned(
                               left: screenWidth * 0.45,
@@ -426,6 +428,7 @@ class _GameLvl1State extends State<GameLvl1> {
                                       T: false,
                                       bombbalance: bombbalance,
                                       screenHeight: screenHeight,
+                                      keyAudioPlayer: _keyAudioPlayer,
                                     )),
                                 Positioned(
                                     left: screenWidth * 0.45,
@@ -716,120 +719,12 @@ core function : This section include all core features and functional flag here.
   }
 }
 
-//arrow shooting and animation
-// class arrowshoot extends StatefulWidget {
-//   final List arrowLocation;
-//   final Map bowarrowStatus;
-//   final double screenWidth, screenHeight;
-//   final StreamController<List> arrowController;
-//   const arrowshoot({
-//     super.key,
-//     required this.arrowLocation,
-//     required this.screenWidth,
-//     required this.screenHeight,
-//     required this.arrowController,
-//     required this.bowarrowStatus,
-//   });
-
-//   @override
-//   State<arrowshoot> createState() => _arrowshootState();
-// }
-
-// class _arrowshootState extends State<arrowshoot>
-//     with SingleTickerProviderStateMixin {
-//   late double screenWidth,
-//       screenHeight,
-//       initscreenHeight,
-//       initscreenWidth,
-//       endscreenHeight,
-//       endscreenWidth;
-//   late AnimationController _arrowShootingAnimationController,
-//       _arrowRotationAnimationController;
-//   late List arrowLocation;
-//   late StreamController arrowController;
-//   late bool bowReady, arrowshooted, bowEmpty;
-//   late Map bowarrowStatus;
-//   late double endx, endy;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     //data transmit
-//     screenWidth = widget.screenWidth;
-//     screenHeight = widget.screenHeight;
-//     initscreenHeight = widget.screenHeight * 0.18;
-//     initscreenWidth = widget.screenWidth * 0.45;
-//     endscreenHeight = widget.screenHeight * 0.18;
-//     endscreenWidth = widget.screenWidth * 0.45;
-//     arrowController = widget.arrowController;
-//     bowarrowStatus = widget.bowarrowStatus;
-//     bowReady = bowarrowStatus["bowReady"];
-//     arrowshooted = bowarrowStatus["arrowshooted"];
-//     bowEmpty = bowarrowStatus["bowEmpty"];
-//     endx = widget.arrowLocation[0];
-//     endy = widget.arrowLocation[1];
-
-// // animated arrow rotation
-//     // _arrowRotationAnimationController = AnimationController(
-//     //     vsync: this,
-//     //     duration: const Duration(milliseconds: 500),
-//     //     lowerBound: positiveRotated,
-//     //     upperBound: nagetiveRotated);
-
-//     print("arrowlocation:$arrowLocation");
-//     _arrowShootingAnimationController = AnimationController(
-//         vsync: this, duration: const Duration(milliseconds: 1000));
-//     _arrowShootingAnimationController.forward();
-
-//     _arrowShootingAnimationController.addStatusListener((status) {
-//       if (status == AnimationStatus.completed) {
-//         print("arrow shooting status complete");
-//       }
-
-//       if (status == AnimationStatus.forward) {
-//         print("arrow shooting status shooted");
-//       }
-
-//       if (status == AnimationStatus.dismissed) {
-//         print("arrow shooting status dismissed");
-//       }
-//     });
-//   }
-
-//   @override
-//   void dispose() {
-//     _arrowShootingAnimationController.dispose();
-//     _arrowRotationAnimationController.dispose();
-//     super.dispose();
-//   }
-
-//   @override
-//   Widget build(BuildContext context) {
-//     print("endx:$endx,,endy:$endy");
-//     return Center(
-//         child: SlideTransition(
-//             position: _arrowShootingAnimationController
-//                 .drive(CurveTween(curve: Curves.elasticInOut))
-//                 .drive(Tween(begin: Offset(0.0, -10), end: Offset(1, 10))),
-//             // begin: Offset(initscreenWidth / 100, initscreenHeight / 10),
-//             // end: Offset(endx / 100, endy / 10))),
-//             child: Container(
-//                 width: screenWidth * 0.02,
-//                 height: screenHeight * 0.02,
-//                 child: Text(
-//                   "测试",
-//                   style: TextStyle(fontSize: 30),
-//                 ))));
-//     // child: const Image(image: AssetImage("images/game/arrow.png"))));)
-//   }
-// }
-//keypad monitorring
-
 class KeyPad extends StatefulWidget {
   final StreamController<int> inputController;
   final double screenWidth, screenHeight;
   final bool T;
   final int accbalance, bombbalance;
+  final AssetsAudioPlayer keyAudioPlayer;
   const KeyPad(
       {super.key,
       required this.inputController,
@@ -837,7 +732,8 @@ class KeyPad extends StatefulWidget {
       required this.accbalance,
       required this.T,
       required this.bombbalance,
-      required this.screenHeight});
+      required this.screenHeight,
+      required this.keyAudioPlayer});
 
   @override
   State<KeyPad> createState() => _KeyPadState();
@@ -852,6 +748,12 @@ class _KeyPadState extends State<KeyPad> with SingleTickerProviderStateMixin {
   late int accbalance, bombbalance;
   bool sign = false, correctanswer = false;
   int presscount = 0;
+
+  void keypresssound() {
+    widget.keyAudioPlayer.open(Audio('audios/pressmobilekeyBGM.wav'),
+        autoStart: true, loopMode: LoopMode.none);
+  }
+
   List<Widget> keyBoard(double t, int v) {
     List Keypad = [
       {"name": "0", "value": 0},
@@ -878,6 +780,7 @@ class _KeyPadState extends State<KeyPad> with SingleTickerProviderStateMixin {
                   MaterialStateProperty.all(Colors.primaries[i][300]),
               foregroundColor: MaterialStateProperty.all(Colors.black45)),
           onPressed: () {
+            keypresssound();
             if (displayPressNum.length < 5) {
               switch (keyvalue) {
                 case 10:

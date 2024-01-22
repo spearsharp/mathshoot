@@ -16,6 +16,7 @@ import '../services/util.dart';
 import '../services/ipmacAddr.dart';
 import '../model/userInfo.dart';
 import 'package:dio/dio.dart';
+import 'package:crypto/crypto.dart';
 
 class GameMain extends StatefulWidget {
   const GameMain({Key? key}) : super(key: key);
@@ -44,6 +45,7 @@ class _GameMainState extends State<GameMain> {
   }
 
   _patchPersonalInfo(uuid) async {
+    //sec check
     var response = await Dio().get("https://www.goldmanfuks.com/api/httpget",
         queryParameters: {"UUID": uuid});
     print(response.data is Map);
@@ -51,6 +53,7 @@ class _GameMainState extends State<GameMain> {
   }
 
   _dispatchPersonalInfo(uuid) async {
+    //sec check
     var response = await Dio().get("https://www.goldmanfuks.com/api/httpget",
         queryParameters: {"UUID": uuid});
     print(response.data is Map);
@@ -165,13 +168,18 @@ class _GameMainState extends State<GameMain> {
                           var tttt = _assetAudioPlayer.playerState;
                           print("_assetAudioPlayer:$tttt");
                           //press key sound
-                          _keyAudioPlayer.open(
-                              Audio('audios/pressmobilekeyBGM.wav'),
-                              autoStart: true,
-                              loopMode: LoopMode.none);
+                          _userSettings.BGM
+                              ? _keyAudioPlayer.open(
+                                  Audio('audios/pressmobilekeyBGM.wav'),
+                                  autoStart: true,
+                                  loopMode: LoopMode.none)
+                              : null;
                           // rounte to level1
-                          Navigator.pushNamed(context, "/mainlist",
-                              arguments: {"title": "mainlist"});
+                          Navigator.pushNamed(context, "/mainlist", arguments: {
+                            "title": "mainlist",
+                            "userSettings": _userSettings,
+                            "userProfiles": _userProfiles,
+                          });
                         },
                         child: Container(
                             padding: EdgeInsets.fromLTRB(
@@ -198,10 +206,12 @@ class _GameMainState extends State<GameMain> {
                     InkWell(
                         onTap: () {
                           _assetAudioPlayer.stop;
-                          _keyAudioPlayer.open(
-                              Audio('audios/pressmobilekeyBGM.wav'),
-                              autoStart: true,
-                              loopMode: LoopMode.none);
+                          _userSettings.BGM
+                              ? _keyAudioPlayer.open(
+                                  Audio('audios/pressmobilekeyBGM.wav'),
+                                  autoStart: true,
+                                  loopMode: LoopMode.none)
+                              : null;
                           //route to exit
                           Navigator.pushNamed(context, "/guide",
                               arguments: {"title": "mainpage"});
@@ -232,10 +242,12 @@ class _GameMainState extends State<GameMain> {
                         onTap: () {
                           _assetAudioPlayer.stop;
                           _assetAudioPlayer.dispose();
-                          _keyAudioPlayer.open(
-                              Audio('audios/pressmobilekeyBGM.wav'),
-                              autoStart: true,
-                              loopMode: LoopMode.none);
+                          _userSettings.BGM
+                              ? _keyAudioPlayer.open(
+                                  Audio('audios/pressmobilekeyBGM.wav'),
+                                  autoStart: true,
+                                  loopMode: LoopMode.none)
+                              : null;
                           //route to setting page
                           Navigator.pushNamed(context, "/setting",
                               arguments: {"title": "mainpage"});

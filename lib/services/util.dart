@@ -6,19 +6,17 @@ import 'package:uuid/uuid.dart';
 
 class Tools {
   static uuid() {
-    var uuid = Uuid();
-    var uuidv1 = uuid.v1();
+    var uuid = const Uuid();
     return uuid;
   }
 
   static uName<String>(int v) {
     String randomStringHead = "MS-" as String;
-    String randomName = '' as String;
+    String uName = '' as String;
 
     if (v > 10) {
-      randomName = "LengthErr" as String;
+      uName = "LengthErr" as String;
     } else {
-      Random random = Random();
       List characters = [
         '0',
         '1',
@@ -86,10 +84,10 @@ class Tools {
       for (int i = 0; i < v!; i++) {
         String tmpchar = characters[Random().nextInt(characters.length)];
         randomStringHead =
-            (randomStringHead!.toString() + tmpchar!.toString())! as String;
+            (randomStringHead!.toString() + tmpchar!.toString()) as String;
       }
     }
-    randomName = randomStringHead;
-    return randomName;
+    uName = randomStringHead;
+    return uName;
   }
 }
