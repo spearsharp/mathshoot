@@ -11,6 +11,7 @@ import '../Game/gamelvl2.dart';
 import '../services/screeenAdapter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import '../services/localStorage.dart';
+import '../model/userInfo.dart';
 import 'package:audioplayers/audioplayers.dart';
 // import 'services/arith.dart';
 
@@ -254,9 +255,9 @@ class _GameLvl1State extends State<GameLvl1> {
                             onTap: () {
                               print("topup money");
                             },
-                            child: Align(
+                            child: const Align(
                               alignment: Alignment.centerRight,
-                              child: const Row(
+                              child: Row(
                                 children: [
                                   Expanded(
                                       flex: 1,
@@ -270,7 +271,7 @@ class _GameLvl1State extends State<GameLvl1> {
                                         minFontSize: 18,
                                         maxFontSize: 25,
                                         overflow: TextOverflow.ellipsis,
-                                        style: const TextStyle(
+                                        style: TextStyle(
                                             fontFamily: 'MotleyForces',
                                             color: Colors.yellowAccent)),
                                   )

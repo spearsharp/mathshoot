@@ -64,8 +64,8 @@ class _MainlistState extends State<Mainlist> {
   @override
   void dispose() {
     super.dispose();
-    _assetAudioPlayer.stop();
-    _keyAudioPlayer.stop();
+    _assetAudioPlayer.dispose();
+    _keyAudioPlayer.dispose();
   }
 
   List<Widget> _inkwelllvltitle(ScreenAdapter) {
