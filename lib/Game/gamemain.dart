@@ -1,7 +1,6 @@
 import 'dart:convert';
 import 'dart:async';
 
-import 'package:arithg/services/ipmacAddr.dart';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:get/utils.dart';
@@ -44,74 +43,105 @@ class _GameMainState extends State<GameMain> {
     print("_deviceinfoS:$_deviceinfoS");
   }
 
-  _patchPersonalInfo(uuid) async {
+  Future _patchPersonalInfo(uuid) async {
     //sec check
-    var response = await Dio().get("https://www.goldmanfuks.com/api/httpget",
+    var response = await Dio().post("https://www.goldmanfuks.com/api/httpget",
         queryParameters: {"UUID": uuid});
     print(response.data is Map);
     print(response.data["userProfiles"]);
   }
 
-  _dispatchPersonalInfo(uuid) async {
+  Future _dispatchPersonalInfo(uuid) async {
     //sec check
-    var response = await Dio().get("https://www.goldmanfuks.com/api/httpget",
+    var response = await Dio().post("https://www.goldmanfuks.com/api/httppost",
         queryParameters: {"UUID": uuid});
     print(response.data is Map);
     print(response.data["userProfiles"]);
   }
 
-  _getIpMacAddr() async {
+  Future _getIpMacAddr() async {
     ipmacAddr = await NetworkService().getNetworkInfo();
+    print("ipmacAddr:$ipmacAddr");
+    print(ipmacAddr is Map);
+    print("ipmacAddr.ipAddress: ${ipmacAddr.ipAddress}");
+  }
+
+  Future _setLocalStorage(key, val) async {
+    var res = await localStorage.setData(
+        key, val); // fix the localstorage set get del data module
+    print("res:::");
+    print(res is JsonCodec);
+    // Timer.periodic(const Duration(milliseconds: 4000), (t) {
+    //   print("setdata-done");
+    //   t.cancel();
+    // });
+  }
+
+  Future<dynamic> _getLocalStorage(key) async {
+    var res = await localStorage
+        .getData(key); // fix the localstorage set get del data module
+    String resdata = res.toString();
+    return resdata;
   }
 
   @override
   void initState() {
-    // super.initState();
+    super.initState();
+    print("get initial data");
     _getDeviceInfo();
-    _getIpMacAddr();
+    // _getIpMacAddr();
+    print("succ_get_deviceINfo");
+
+    _getLocalStorage("UUID").then((resdata) {
+      if (uuid == "") {
+        print("localstorage-UUID getting null");
+        // check based on new device or not
+        uuid = Tools.uuid();
+        uName = Tools.uName(10);
+        _userProfiles = UserProfiles(
+            UUID: uuid,
+            Name: uName,
+            Score: 0,
+            Email: "",
+            Account: [],
+            Level: 1,
+            IPaddress: "0.0.0.0",
+            DeviceInfo: [
+              {"macAddress": "1231231"}
+            ],
+            AccBalance: 0,
+            BombBalance: 0,
+            PaymentInfo: [],
+            PersonalLog: []);
+        //initial Personal settings
+        _userSettings = UserSettings(
+          UUID: Tools.uuid(),
+          Name: Tools.uName(10),
+          TouchSound: true,
+          GameMusic: true,
+          BGM: true,
+          Portrait: "",
+        );
+        var retSetPS = localStorage.setData("UUID", _userSettings.UUID);
+        print("userProfiles:$_userProfiles,,,userSettings:$_userSettings");
+        // var sevDataSavResp = _dispatchPersonalInfo(uuid); // data saving
+        //post personal info to server
+      } else {
+        print("localstorage-UUID getting succ");
+        //get all personal info from local and server  ---patch data from server
+
+        String _uuid = localStorage.getData("UUID");
+        print("_uuid:$_uuid");
+
+        uuid = _userProfiles.UUID;
+        uName = _userProfiles.Name;
+        // UserProfiles userProfilesSev = _patchPersonalInfo(uuid);
+        //health check on data synchronized
+      }
+    });
+
 //check and get personl info from local Storage
-    if (localStorage.getData("UUID") == "") {
-      // check based on new device or not
-      uuid = Tools.uuid();
-      uName = Tools.uName(10);
-      _userProfiles = UserProfiles(
-          UUID: uuid,
-          Name: uName,
-          Score: 0,
-          Email: "",
-          Account: [],
-          Level: 1,
-          IPaddress: "",
-          DeviceInfo: [],
-          AccBalance: 0,
-          BombBalance: 0,
-          PaymentInfo: [],
-          PersonalLog: []);
-      //initial Personal settings
-      _userSettings = UserSettings(
-        UUID: Tools.uuid(),
-        Name: Tools.uName(10),
-        TouchSound: true,
-        GameMusic: true,
-        BGM: true,
-        Portrait: "",
-      );
-      var retSet = localStorage.setData("_userSettings", _userSettings);
-      print("_userProfiles:$_userProfiles,,,_userSettings:$_userSettings");
-      var sevDataSavResp = _dispatchPersonalInfo(uuid); // data saving
-      //post personal info to server
-    } else {
-      //get all personal info from local and server  ---patch data from server
-
-      _userSettings = localStorage.getData("_userSettings");
-      _userProfiles = localStorage.getData("_userProfiles");
-
-      uuid = _userProfiles.UUID;
-      uName = _userProfiles.Name;
-      UserProfiles userProfilesSev = _patchPersonalInfo(uuid);
-      //health check on data synchronized
-    }
-
+    print("_userSettings.BGM:${_userSettings.BGM}");
     _userSettings.BGM
         ? _assetAudioPlayer.open(
             Audio('audios/mainenteranceBGM.wav'),

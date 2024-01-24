@@ -1,6 +1,6 @@
 import 'dart:ffi';
 
-import 'package:arithg/model/userInfo.dart';
+import '../model/userInfo.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 

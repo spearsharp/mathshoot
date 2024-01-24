@@ -10,6 +10,8 @@ class NetworkInfo {
   NetworkInfo({required this.ipAddress, required this.macAddress});
 
   factory NetworkInfo.fromJson(Map<String, dynamic> json) {
+    print("NetworkInfo:$NetworkInfo");
+    print(NetworkInfo is List);
     return NetworkInfo(
       ipAddress: json['ipAddress'] as String,
       macAddress: json['macAddress'] as String,
@@ -26,6 +28,7 @@ class NetworkService {
   Future<NetworkInfo> getNetworkInfo() async {
     String ipAddress = await getIpAddress();
     String macAddress = await getMacAddress();
+    print("ipAddress:$ipAddress,,,macAddress:$macAddress");
     return NetworkInfo(ipAddress: ipAddress, macAddress: macAddress);
   }
 

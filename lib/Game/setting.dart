@@ -1,5 +1,5 @@
-import 'package:arithg/GamePluginModel/mainlistleftdrawer.dart';
-import 'package:arithg/services/screeenAdapter.dart';
+import '../GamePluginModel/mainlistleftdrawer.dart';
+import '../services/screeenAdapter.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:awesome_select/awesome_select.dart';

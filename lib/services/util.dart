@@ -6,7 +6,7 @@ import 'package:uuid/uuid.dart';
 
 class Tools {
   static uuid() {
-    var uuid = const Uuid();
+    String uuid = const Uuid().toString();
     return uuid;
   }
 

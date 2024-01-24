@@ -1,5 +1,5 @@
-import 'package:arithg/GamePluginModel/mainlistleftdrawer.dart';
-import 'package:arithg/services/screeenAdapter.dart';
+import '../GamePluginModel/mainlistleftdrawer.dart';
+import '../services/screeenAdapter.dart';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:flutter/material.dart';
 import 'package:get/route_manager.dart';
