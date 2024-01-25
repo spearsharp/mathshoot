@@ -5,17 +5,20 @@ import 'package:shared_preferences/shared_preferences.dart';
 class localStorage {
   static setData(String? key, dynamic val) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.setString(key!, json.encode(val));
   }
 
   static getData(String? key) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? data = prefs.getString(key!);
-    return json.decode(data!);
+    var data = prefs.getString(key!);
+    if (data != null) {
+      return json.decode(data);
+    } else {
+      return data;
+    }
   }
 
-  static removeData(String key) async {
+  static removeData(String? key) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.remove(key);
+    return prefs.remove(key!);
   }
 }

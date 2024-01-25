@@ -51,6 +51,7 @@ class _MainlistState extends State<Mainlist> {
   void initState() {
     // TODO: implement initState
     //play BGM
+    print("widge_gamelist:${widget.arguments as String}");
     userSettings = widget.arguments["userSettings"];
     userProfiles = widget.arguments["userProfiles"];
     accbalance == null ? 1111 : widget.arguments["accbalance"];

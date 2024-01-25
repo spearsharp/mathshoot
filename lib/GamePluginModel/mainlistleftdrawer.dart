@@ -29,6 +29,8 @@ class _MainlistleftdrawerState extends State<Mainlistleftdrawer> {
   @override
   void initState() {
     super.initState();
+    var arguments = widget.arguments;
+    print("arguments:$arguments");
     userSettings = widget.arguments["userSettings"];
   }
   // }

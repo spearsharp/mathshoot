@@ -26,7 +26,7 @@ class GameMain extends StatefulWidget {
 
 class _GameMainState extends State<GameMain> {
   late Map _deviceinfo;
-  late String uuid, uName, _deviceinfoS;
+  late String _deviceinfoS;
   final _assetAudioPlayer = AssetsAudioPlayer();
   final _keyAudioPlayer = AssetsAudioPlayer();
   late UserProfiles _userProfiles;
@@ -84,6 +84,26 @@ class _GameMainState extends State<GameMain> {
     return resdata;
   }
 
+  Future _buttonBGM() async {
+    var resBTBGM = await _getLocalStorage("BGM");
+    print("resBTBGM:$resBTBGM");
+    switch (resBTBGM) {
+      case true:
+        return _keyAudioPlayer.open(Audio('audios/pressmobilekeyBGM.wav'),
+            autoStart: true, loopMode: LoopMode.none);
+      case false:
+        return null;
+      case null:
+        print("resBTBGM:$resBTBGM");
+        return _keyAudioPlayer.open(Audio('audios/pressmobilekeyBGM.wav'),
+            autoStart: true, loopMode: LoopMode.none);
+      default:
+        return _keyAudioPlayer.open(Audio('audios/pressmobilekeyBGM.wav'),
+            autoStart: true, loopMode: LoopMode.none);
+    }
+    // ignore: unrelated_type_equality_checks
+  }
+
   @override
   void initState() {
     super.initState();
@@ -92,12 +112,13 @@ class _GameMainState extends State<GameMain> {
     // _getIpMacAddr();
     print("succ_get_deviceINfo");
 
-    _getLocalStorage("UUID").then((resdata) {
-      if (uuid == "") {
-        print("localstorage-UUID getting null");
+    _getLocalStorage("UUID").then((resdata) async {
+      print("resdata:$resdata");
+      if (resdata == null) {
+        print("localstorage-UUID getting fail");
         // check based on new device or not
-        uuid = Tools.uuid();
-        uName = Tools.uName(10);
+        var uuid = await Tools.uuid();
+        var uName = await Tools.uName(10);
         _userProfiles = UserProfiles(
             UUID: uuid,
             Name: uName,
@@ -113,6 +134,7 @@ class _GameMainState extends State<GameMain> {
             BombBalance: 0,
             PaymentInfo: [],
             PersonalLog: []);
+        print("_userProfiles:$_userProfiles");
         //initial Personal settings
         _userSettings = UserSettings(
           UUID: Tools.uuid(),
@@ -122,6 +144,7 @@ class _GameMainState extends State<GameMain> {
           BGM: true,
           Portrait: "",
         );
+        print("_userSettings:$_userSettings");
         var retSetPS = localStorage.setData("UUID", _userSettings.UUID);
         print("userProfiles:$_userProfiles,,,userSettings:$_userSettings");
         // var sevDataSavResp = _dispatchPersonalInfo(uuid); // data saving
@@ -130,27 +153,26 @@ class _GameMainState extends State<GameMain> {
         print("localstorage-UUID getting succ");
         //get all personal info from local and server  ---patch data from server
 
-        String _uuid = localStorage.getData("UUID");
-        print("_uuid:$_uuid");
+        var uuid = localStorage.getData("UUID");
+        var uName = localStorage.getData("Name");
+        print(uuid);
+        print(uName);
 
-        uuid = _userProfiles.UUID;
-        uName = _userProfiles.Name;
         // UserProfiles userProfilesSev = _patchPersonalInfo(uuid);
         //health check on data synchronized
       }
+      //check and get personl info from local Storage
+      print("_userSettings.BGM:${_userSettings.BGM}");
+      _userSettings.BGM == true
+          ? _assetAudioPlayer.open(
+              Audio('audios/mainenteranceBGM.wav'),
+              autoStart: true,
+              showNotification: true,
+              loopMode: LoopMode.single,
+            )
+          : null;
+      //get devicesData get local data,if null,new user and gennerate all fields
     });
-
-//check and get personl info from local Storage
-    print("_userSettings.BGM:${_userSettings.BGM}");
-    _userSettings.BGM
-        ? _assetAudioPlayer.open(
-            Audio('audios/mainenteranceBGM.wav'),
-            autoStart: true,
-            showNotification: true,
-            loopMode: LoopMode.single,
-          )
-        : null;
-    //get devicesData get local data,if null,new user and gennerate all fields
   }
 
   @override
@@ -198,13 +220,7 @@ class _GameMainState extends State<GameMain> {
                           var tttt = _assetAudioPlayer.playerState;
                           print("_assetAudioPlayer:$tttt");
                           //press key sound
-                          _userSettings.BGM
-                              ? _keyAudioPlayer.open(
-                                  Audio('audios/pressmobilekeyBGM.wav'),
-                                  autoStart: true,
-                                  loopMode: LoopMode.none)
-                              : null;
-                          // rounte to level1
+                          _buttonBGM();
                           Navigator.pushNamed(context, "/mainlist", arguments: {
                             "title": "mainlist",
                             "userSettings": _userSettings,
@@ -236,12 +252,7 @@ class _GameMainState extends State<GameMain> {
                     InkWell(
                         onTap: () {
                           _assetAudioPlayer.stop;
-                          _userSettings.BGM
-                              ? _keyAudioPlayer.open(
-                                  Audio('audios/pressmobilekeyBGM.wav'),
-                                  autoStart: true,
-                                  loopMode: LoopMode.none)
-                              : null;
+                          _buttonBGM();
                           //route to exit
                           Navigator.pushNamed(context, "/guide",
                               arguments: {"title": "mainpage"});
@@ -272,12 +283,7 @@ class _GameMainState extends State<GameMain> {
                         onTap: () {
                           _assetAudioPlayer.stop;
                           _assetAudioPlayer.dispose();
-                          _userSettings.BGM
-                              ? _keyAudioPlayer.open(
-                                  Audio('audios/pressmobilekeyBGM.wav'),
-                                  autoStart: true,
-                                  loopMode: LoopMode.none)
-                              : null;
+                          _buttonBGM();
                           //route to setting page
                           Navigator.pushNamed(context, "/setting",
                               arguments: {"title": "mainpage"});
