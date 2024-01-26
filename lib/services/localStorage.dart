@@ -5,6 +5,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 class localStorage {
   static setData(String? key, dynamic val) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    prefs.setString(key!, json.encode(val));
   }
 
   static getData(String? key) async {

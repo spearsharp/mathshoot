@@ -6,7 +6,9 @@ import 'package:uuid/uuid.dart';
 
 class Tools {
   static uuid() async {
-    String uuid = const Uuid().toString();
+    var UUID = Uuid();
+    String uuid = UUID.v1().toString();
+    print("uuid:$uuid");
     return uuid;
   }
 

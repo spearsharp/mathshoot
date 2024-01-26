@@ -111,14 +111,21 @@ class _GameMainState extends State<GameMain> {
     _getDeviceInfo();
     // _getIpMacAddr();
     print("succ_get_deviceINfo");
+    var t = Tools.uuid();
+    print("tttt:$t");
+    _setLocalStorage("UUID", t).then((value) => {
+          _getLocalStorage("UUID").then((val) => {print("val:$val")})
+        });
 
     _getLocalStorage("UUID").then((resdata) async {
       print("resdata:$resdata");
+      print(resdata);
       if (resdata == null) {
         print("localstorage-UUID getting fail");
         // check based on new device or not
         var uuid = await Tools.uuid();
         var uName = await Tools.uName(10);
+        print("uuid:$uuid;;;uName:$uName");
         _userProfiles = UserProfiles(
             UUID: uuid,
             Name: uName,
@@ -153,7 +160,7 @@ class _GameMainState extends State<GameMain> {
         print("localstorage-UUID getting succ");
         //get all personal info from local and server  ---patch data from server
 
-        var uuid = localStorage.getData("UUID");
+        var uuid = resdata;
         var uName = localStorage.getData("Name");
         print(uuid);
         print(uName);
@@ -162,15 +169,16 @@ class _GameMainState extends State<GameMain> {
         //health check on data synchronized
       }
       //check and get personl info from local Storage
-      print("_userSettings.BGM:${_userSettings.BGM}");
-      _userSettings.BGM == true
-          ? _assetAudioPlayer.open(
-              Audio('audios/mainenteranceBGM.wav'),
-              autoStart: true,
-              showNotification: true,
-              loopMode: LoopMode.single,
-            )
-          : null;
+      // print("_userSettings.BGM:${_userSettings.BGM}");
+      // _userSettings.BGM == true
+      //     ?
+      _assetAudioPlayer.open(
+        Audio('audios/mainenteranceBGM.wav'),
+        autoStart: true,
+        showNotification: true,
+        loopMode: LoopMode.single,
+      );
+      // : null;
       //get devicesData get local data,if null,new user and gennerate all fields
     });
   }
@@ -219,6 +227,8 @@ class _GameMainState extends State<GameMain> {
                           _assetAudioPlayer.stop();
                           var tttt = _assetAudioPlayer.playerState;
                           print("_assetAudioPlayer:$tttt");
+                          print("_userSettings:$_userSettings");
+                          print("_userProfiles:$_userProfiles");
                           //press key sound
                           _buttonBGM();
                           Navigator.pushNamed(context, "/mainlist", arguments: {

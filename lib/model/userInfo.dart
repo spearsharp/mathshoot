@@ -60,7 +60,8 @@ class UserSettings {
       required this.TouchSound,
       required this.GameMusic,
       required this.BGM,
-      required this.Portrait});
+      required this.Portrait,
+      required});
   Map<String, dynamic> toMap() {
     return {
       'UUID': UUID,
