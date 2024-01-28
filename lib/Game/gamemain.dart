@@ -32,8 +32,9 @@ class _GameMainState extends State<GameMain> {
   late UserProfiles _userProfiles;
   late UserSettings _userSettings;
   late NetworkInfo ipmacAddr;
+  late bool resBTBGM, resTHBGM, resGMBGM;
 
-  _getDeviceInfo() async {
+  Future _getDeviceInfo() async {
     final deviceinfoplugin = DeviceInfoPlugin();
     final deviceinfo = await deviceinfoplugin.deviceInfo;
     final deviceinfomap = deviceinfo.toMap();
@@ -41,6 +42,7 @@ class _GameMainState extends State<GameMain> {
     _deviceinfoS = jsonEncode(_deviceinfo);
     print("_deviceinfo:$_deviceinfo");
     print("_deviceinfoS:$_deviceinfoS");
+    print("succ_get_deviceINfo");
   }
 
   Future _patchPersonalInfo(uuid) async {
@@ -77,7 +79,7 @@ class _GameMainState extends State<GameMain> {
     // });
   }
 
-  Future<dynamic> _getLocalStorage(key) async {
+  Future _getLocalStorage(key) async {
     var res = await localStorage
         .getData(key); // fix the localstorage set get del data module
     String resdata = res.toString();
@@ -85,7 +87,8 @@ class _GameMainState extends State<GameMain> {
   }
 
   Future _buttonBGM() async {
-    var resBTBGM = await _getLocalStorage("BGM");
+    final bool resBTBGM = true;
+    // var resBTBGM = await _getLocalStorage("BGM");  // pending on localStorage patch
     print("resBTBGM:$resBTBGM");
     switch (resBTBGM) {
       case true:
@@ -104,22 +107,34 @@ class _GameMainState extends State<GameMain> {
     // ignore: unrelated_type_equality_checks
   }
 
+  Future _deleteStorage(key) async {
+    var res = await localStorage.removeData(key);
+    print("res:::$res");
+  }
+
+  Future _uuidUNameGen<List>() async {
+    late List t_list;
+    String t_uuid = await Tools.uuid();
+    String t_uName = await Tools.uName(10);
+    _setLocalStorage("UUID", t_uuid);
+    _setLocalStorage("Name", t_uName);
+    t_list = [t_uuid, t_uName] as List;
+    print("t_list_ninner:${t_list.toString()}");
+    return t_list.toString();
+  }
+
   @override
   void initState() {
     super.initState();
-    print("get initial data");
-    _getDeviceInfo();
+    // _getDeviceInfo();
     // _getIpMacAddr();
-    print("succ_get_deviceINfo");
-    var t = Tools.uuid();
-    print("tttt:$t");
-    _setLocalStorage("UUID", t).then((value) => {
-          _getLocalStorage("UUID").then((val) => {print("val:$val")})
-        });
+    print("system broughtup , testing");
+    // _uuidUNameGen().then((value) => print(value as String));
+    _deleteStorage("UUID").then((value) => print(value));
 
     _getLocalStorage("UUID").then((resdata) async {
       print("resdata:$resdata");
-      print(resdata);
+      print(resdata as String);
       if (resdata == null) {
         print("localstorage-UUID getting fail");
         // check based on new device or not
@@ -160,10 +175,17 @@ class _GameMainState extends State<GameMain> {
         print("localstorage-UUID getting succ");
         //get all personal info from local and server  ---patch data from server
 
-        var uuid = resdata;
-        var uName = localStorage.getData("Name");
+        String uuid = resdata;
+        String uName = await localStorage.getData("Name");
+        resBTBGM == null ? true : await localStorage.getData("BGM");
+        resTHBGM == null ? true : await localStorage.getData("TouchSound");
+        resGMBGM == null ? true : await localStorage.getData("GameMusic");
+
         print(uuid);
-        print(uName);
+        print(uName as String);
+        print(resTHBGM);
+        print(resGMBGM);
+        print(resBTBGM);
 
         // UserProfiles userProfilesSev = _patchPersonalInfo(uuid);
         //health check on data synchronized
@@ -230,7 +252,12 @@ class _GameMainState extends State<GameMain> {
                           print("_userSettings:$_userSettings");
                           print("_userProfiles:$_userProfiles");
                           //press key sound
-                          _buttonBGM();
+                          resTHBGM
+                              ? _keyAudioPlayer.open(
+                                  Audio('audios/pressmobilekeyBGM.wav'),
+                                  autoStart: true,
+                                  loopMode: LoopMode.none)
+                              : null;
                           Navigator.pushNamed(context, "/mainlist", arguments: {
                             "title": "mainlist",
                             "userSettings": _userSettings,
@@ -262,7 +289,13 @@ class _GameMainState extends State<GameMain> {
                     InkWell(
                         onTap: () {
                           _assetAudioPlayer.stop;
-                          _buttonBGM();
+                          resTHBGM
+                              ? _keyAudioPlayer.open(
+                                  Audio('audios/pressmobilekeyBGM.wav'),
+                                  autoStart: true,
+                                  loopMode: LoopMode.none)
+                              : null;
+                          // _buttonBGM();
                           //route to exit
                           Navigator.pushNamed(context, "/guide",
                               arguments: {"title": "mainpage"});
@@ -293,7 +326,12 @@ class _GameMainState extends State<GameMain> {
                         onTap: () {
                           _assetAudioPlayer.stop;
                           _assetAudioPlayer.dispose();
-                          _buttonBGM();
+                          resTHBGM
+                              ? _keyAudioPlayer.open(
+                                  Audio('audios/pressmobilekeyBGM.wav'),
+                                  autoStart: true,
+                                  loopMode: LoopMode.none)
+                              : null;
                           //route to setting page
                           Navigator.pushNamed(context, "/setting",
                               arguments: {"title": "mainpage"});

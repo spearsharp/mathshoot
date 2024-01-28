@@ -5,11 +5,11 @@ import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
 class Tools {
-  static uuid() async {
+  static uuid<String>() async {
     var UUID = Uuid();
-    String uuid = UUID.v1().toString();
-    print("uuid:$uuid");
-    return uuid;
+    var v1 = UUID.v1().toString();
+    print("uuid_v1:$v1");
+    return v1 as String;
   }
 
   static uName<String>(int v) async {
