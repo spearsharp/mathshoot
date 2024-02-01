@@ -22,8 +22,8 @@ class Mainlist extends StatefulWidget {
 }
 
 class _MainlistState extends State<Mainlist> {
-  late Map<String, dynamic> _userSettings;
-  late Map<String, dynamic> _userProfiles;
+  // late _userSettings;
+  // late _userProfiles;
   late int accbalance, bombbalance;
 
   final _assetAudioPlayer = AssetsAudioPlayer();
@@ -47,15 +47,15 @@ class _MainlistState extends State<Mainlist> {
   @override
   void initState() {
     // TODO: implement initState
-    _userProfiles = widget.arguments["userProfiles"];
-    _userSettings = widget.arguments["UserSettings"];
+    var _userProfiles = widget.arguments["userProfiles"];
+    var _userSettings = widget.arguments["userSettings"];
     print("tt:::${_userProfiles.toString()}");
 
-    accbalance = _userProfiles["AccBalance"];
-    bombbalance = _userProfiles["BombBalance"];
+    accbalance = _userProfiles.AccBalance;
+
     print(
-        "mainlist:::userSettings:::${_userSettings["BGM"]};;;${_userProfiles["Name"]}");
-    _userSettings["BGM"]
+        "mainlist:::userSettings:::${_userSettings!.BGM};;;${_userProfiles!.Name}");
+    _userSettings.BGM
         ? _assetAudioPlayer.open(
             Audio("audios/mainlistBGM.wav"),
             autoStart: true,
@@ -160,8 +160,8 @@ class _MainlistState extends State<Mainlist> {
   @override
   Widget build(BuildContext context) {
     final _ScreenAdapter = MediaQuery.of(context).size;
-    UserSettings _userSettings = widget.arguments["userSettings"];
-    UserProfiles _userProfiles = widget.arguments["userProfiles"];
+    var _userSettings = widget.arguments["userSettings"];
+    var _userProfiles = widget.arguments["userProfiles"];
     print(
         "_userSettings::::${_userSettings.toString()};;;;_userProfiles::${_userProfiles.toString()}");
     return Scaffold(
