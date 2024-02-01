@@ -2,11 +2,11 @@ class UserProfiles {
   final String UUID;
   final String Name;
   final int Score;
+  final String Email;
   final int Level;
   final int AccBalance;
   final int BombBalance;
   final String IPaddress;
-  final String Email;
   final List Account; // Account info/google,facebook , twitter login
   final List DeviceInfo;
   final List PaymentInfo;
@@ -48,7 +48,7 @@ class UserProfiles {
 
 class UserSettings {
   final String UUID;
-  final String Name;
+  late final String Name;
   final bool TouchSound;
   final bool GameMusic;
   final bool BGM;
