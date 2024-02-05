@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:get/utils.dart';
+import 'package:mysql1/mysql1.dart';
 import '../services/screeenAdapter.dart';
 import '../routers/routers.dart';
 import '../Game/gamelvl1.dart';
@@ -16,6 +17,7 @@ import '../services/ipmacAddr.dart';
 import '../model/userInfo.dart';
 import 'package:dio/dio.dart';
 import 'package:crypto/crypto.dart';
+import 'package:mysql1/mysql1.dart';
 
 class GameMain extends StatefulWidget {
   const GameMain({Key? key}) : super(key: key);
@@ -34,10 +36,28 @@ class _GameMainState extends State<GameMain> {
   late NetworkInfo ipmacAddr;
   late bool resBTBGM, resTHBGM, resGMBGM;
 
+  //DB connection   - ref:https://pub.dev/packages/mysql1/example
+  Future _dbConn(String DBname, String sqlsen, List queryVar) async {
+    final conn = await MySqlConnection.connect(ConnectionSettings(
+      host: "localhost",
+      port: 3306,
+      user: 'root',
+      db: 'mathshoot',
+      password: 'Spear19830805',
+    ));
+    var res = await conn.query("select * from user_gameInfo");
+    for (var row in res) {
+      print('Name:${row[0]},level:${row[3]},Score:${row[4]}');
+    }
+    ;
+    await conn.close(); // close connection
+    return res;
+  }
+
   Future _getDevic() async {
     final deviceinfoplugin = DeviceInfoPlugin();
     final deviceinfo = await deviceinfoplugin.deviceInfo;
-    final deviceinfomap = deviceinfo.toMap();
+    final deviceinfomap = deviceinfo.data;
     _deviceinfo = deviceinfomap;
     _deviceinfoS = jsonEncode(_deviceinfo);
     print("_deviceinfo:$_deviceinfo");
@@ -122,6 +142,8 @@ class _GameMainState extends State<GameMain> {
     return t_list.toString();
   }
 
+  //V1 no backend server node,payment to stripe backend management , dart connnect to mysql directly
+
   @override
   void initState() {
     super.initState();
@@ -144,7 +166,7 @@ class _GameMainState extends State<GameMain> {
             UUID: uuid,
             Name: uName,
             Score: 0,
-            Email: "",
+            Email: "0@0.com",
             Level: 1,
             AccBalance: 0,
             BombBalance: 0,
@@ -214,7 +236,7 @@ class _GameMainState extends State<GameMain> {
             DeviceInfo: ['local'],
             AccBalance: 100,
             BombBalance: 200,
-            PaymentInfo: ["paypa"],
+            PaymentInfo: ["stripe"],
             PersonalLog: [DateTime.new]);
         //health check on data synchronized
       }

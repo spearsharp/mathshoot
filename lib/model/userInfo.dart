@@ -48,7 +48,7 @@ class UserProfiles {
 
 class UserSettings {
   final String UUID;
-  late final String Name;
+  final String Name;
   final bool TouchSound;
   final bool GameMusic;
   final bool BGM;
@@ -70,6 +70,38 @@ class UserSettings {
       'GameMusic': GameMusic,
       'BGM': BGM,
       'Portrait': Portrait,
+    };
+  }
+}
+
+class TxnInfo {
+  final String UUID;
+  final String Name;
+  final String TxnStatus;
+  final double TxnAmt;
+  final String AccNum;
+  final String PaymentType;
+  final DateTime PaymentTime;
+
+  TxnInfo({
+    required this.UUID,
+    required this.Name,
+    required this.TxnStatus,
+    required this.TxnAmt,
+    required this.AccNum,
+    required this.PaymentType,
+    required this.PaymentTime,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'UUID': UUID,
+      'Name': Name,
+      'TxnStatus': TxnStatus,
+      'TxnAmt': TxnAmt,
+      'AccNum': AccNum,
+      'PaymentType': PaymentType,
+      'PaymentTime': PaymentTime,
     };
   }
 }
