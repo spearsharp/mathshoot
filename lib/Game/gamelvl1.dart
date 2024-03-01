@@ -60,6 +60,7 @@ class _GameLvl1State extends State<GameLvl1> {
   void initState() {
     //setting background picture and popup message and BGM
     super.initState();
+    print("widge_gamelvl1:${widget.arguments}");
     _assetAudioPlay.open(
       Audio("audios/level1_BGM.mp3"),
       autoStart: true,

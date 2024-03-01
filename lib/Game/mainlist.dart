@@ -22,12 +22,9 @@ class Mainlist extends StatefulWidget {
 }
 
 class _MainlistState extends State<Mainlist> {
-  late UserSettings userSettings;
-  late UserProfiles userProfiles;
-
-  int num = 14;
-  final int accbalance =
-      111; // pending on patch from local storage and database
+  // late _userSettings;
+  // late _userProfiles;
+  late int accbalance, bombbalance;
 
   final _assetAudioPlayer = AssetsAudioPlayer();
   final _keyAudioPlayer = AssetsAudioPlayer();
@@ -50,6 +47,7 @@ class _MainlistState extends State<Mainlist> {
   @override
   void initState() {
     // TODO: implement initState
+<<<<<<< HEAD
     //play BGM
     var maparg = widget.arguments;
     print("maparg:$maparg");
@@ -57,6 +55,17 @@ class _MainlistState extends State<Mainlist> {
     userProfiles = widget.arguments["userProfiles"];
     accbalance == null ? 1111 : widget.arguments["accbalance"];
     userSettings.BGM == null
+=======
+    var _userProfiles = widget.arguments["userProfiles"];
+    var _userSettings = widget.arguments["userSettings"];
+    print("tt:::${_userProfiles.toString()}");
+
+    accbalance = _userProfiles.AccBalance;
+
+    print(
+        "mainlist:::userSettings:::${_userSettings!.BGM};;;${_userProfiles!.Name}");
+    _userSettings.BGM
+>>>>>>> 0393da9a41757c81dad7bc9332f60f25693b7061
         ? _assetAudioPlayer.open(
             Audio("audios/mainlistBGM.wav"),
             autoStart: true,
@@ -161,6 +170,10 @@ class _MainlistState extends State<Mainlist> {
   @override
   Widget build(BuildContext context) {
     final _ScreenAdapter = MediaQuery.of(context).size;
+    var _userSettings = widget.arguments["userSettings"];
+    var _userProfiles = widget.arguments["userProfiles"];
+    print(
+        "_userSettings::::${_userSettings.toString()};;;;_userProfiles::${_userProfiles.toString()}");
     return Scaffold(
       extendBodyBehindAppBar: true,
       drawer: Drawer(
@@ -349,7 +362,7 @@ class _MainlistState extends State<Mainlist> {
                           ),
                           Expanded(
                             flex: 2,
-                            child: AutoSizeText(' $accbalance',
+                            child: AutoSizeText('${_userProfiles.AccBalance}',
                                 minFontSize: 18,
                                 maxFontSize: 25,
                                 overflow: TextOverflow.ellipsis,
