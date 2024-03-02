@@ -124,6 +124,13 @@ class _GameMainState extends State<GameMain> {
         );
         var retSetPS = localStorage.setData("UUID", _userSettings.UUID);
         print("userProfiles:$_userProfiles,,,userSettings:$_userSettings");
+        //1st time login to play BGM
+        _assetAudioPlayer.open(
+          Audio('audios/mainenteranceBGM.wav'),
+          autoStart: true,
+          showNotification: true,
+          loopMode: LoopMode.single,
+        );
         // var sevDataSavResp = _dispatchPersonalInfo(uuid); // data saving
         //post personal info to server
       } else {
@@ -135,21 +142,22 @@ class _GameMainState extends State<GameMain> {
 
         uuid = _userProfiles.UUID;
         uName = _userProfiles.Name;
+        print("_userSettings.BGM:${_userSettings.BGM}");
+        _userSettings.BGM
+            ? _assetAudioPlayer.open(
+                Audio('audios/mainenteranceBGM.wav'),
+                autoStart: true,
+                showNotification: true,
+                loopMode: LoopMode.single,
+              )
+            : null;
         // UserProfiles userProfilesSev = _patchPersonalInfo(uuid);
         //health check on data synchronized
       }
     });
 
 //check and get personl info from local Storage
-    print("_userSettings.BGM:${_userSettings.BGM}");
-    _userSettings.BGM
-        ? _assetAudioPlayer.open(
-            Audio('audios/mainenteranceBGM.wav'),
-            autoStart: true,
-            showNotification: true,
-            loopMode: LoopMode.single,
-          )
-        : null;
+
     //get devicesData get local data,if null,new user and gennerate all fields
   }
 
