@@ -22,8 +22,8 @@ class Mainlist extends StatefulWidget {
 }
 
 class _MainlistState extends State<Mainlist> {
-  // late _userSettings;
-  // late _userProfiles;
+  late UserSettings _userSettings;
+  late UserProfiles _userProfiles;
   late int accbalance, bombbalance;
 
   final _assetAudioPlayer = AssetsAudioPlayer();
@@ -47,15 +47,10 @@ class _MainlistState extends State<Mainlist> {
   @override
   void initState() {
     // TODO: implement initState
-<<<<<<< HEAD
     //play BGM
     var maparg = widget.arguments;
     print("maparg:$maparg");
-    userSettings = widget.arguments["userSettings"];
-    userProfiles = widget.arguments["userProfiles"];
     accbalance == null ? 1111 : widget.arguments["accbalance"];
-    userSettings.BGM == null
-=======
     var _userProfiles = widget.arguments["userProfiles"];
     var _userSettings = widget.arguments["userSettings"];
     print("tt:::${_userProfiles.toString()}");
@@ -65,7 +60,6 @@ class _MainlistState extends State<Mainlist> {
     print(
         "mainlist:::userSettings:::${_userSettings!.BGM};;;${_userProfiles!.Name}");
     _userSettings.BGM
->>>>>>> 0393da9a41757c81dad7bc9332f60f25693b7061
         ? _assetAudioPlayer.open(
             Audio("audios/mainlistBGM.wav"),
             autoStart: true,

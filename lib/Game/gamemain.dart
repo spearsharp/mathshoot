@@ -28,7 +28,7 @@ class GameMain extends StatefulWidget {
 
 class _GameMainState extends State<GameMain> {
   late Map _deviceinfo;
-  late String _deviceinfoS;
+  late String _deviceinfoS, uuid, uName;
   final _assetAudioPlayer = AssetsAudioPlayer();
   final _keyAudioPlayer = AssetsAudioPlayer();
   late UserProfiles _userProfiles;
