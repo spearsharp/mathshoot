@@ -5,6 +5,7 @@ import 'routers/routers.dart';
 
 void main() {
   runApp(const MyApp());
+  print("test_print");
 }
 
 class MyApp extends StatelessWidget {

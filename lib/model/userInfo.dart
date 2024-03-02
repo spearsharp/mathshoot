@@ -2,11 +2,11 @@ class UserProfiles {
   final String UUID;
   final String Name;
   final int Score;
+  final String Email;
   final int Level;
   final int AccBalance;
   final int BombBalance;
   final String IPaddress;
-  final String Email;
   final List Account; // Account info/google,facebook , twitter login
   final List DeviceInfo;
   final List PaymentInfo;
@@ -60,7 +60,8 @@ class UserSettings {
       required this.TouchSound,
       required this.GameMusic,
       required this.BGM,
-      required this.Portrait});
+      required this.Portrait,
+      required});
   Map<String, dynamic> toMap() {
     return {
       'UUID': UUID,
@@ -69,6 +70,38 @@ class UserSettings {
       'GameMusic': GameMusic,
       'BGM': BGM,
       'Portrait': Portrait,
+    };
+  }
+}
+
+class TxnInfo {
+  final String UUID;
+  final String Name;
+  final String TxnStatus;
+  final double TxnAmt;
+  final String AccNum;
+  final String PaymentType;
+  final DateTime PaymentTime;
+
+  TxnInfo({
+    required this.UUID,
+    required this.Name,
+    required this.TxnStatus,
+    required this.TxnAmt,
+    required this.AccNum,
+    required this.PaymentType,
+    required this.PaymentTime,
+  });
+
+  Map<String, dynamic> toMap() {
+    return {
+      'UUID': UUID,
+      'Name': Name,
+      'TxnStatus': TxnStatus,
+      'TxnAmt': TxnAmt,
+      'AccNum': AccNum,
+      'PaymentType': PaymentType,
+      'PaymentTime': PaymentTime,
     };
   }
 }

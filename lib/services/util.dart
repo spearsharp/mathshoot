@@ -5,12 +5,14 @@ import 'package:get/get.dart';
 import 'package:uuid/uuid.dart';
 
 class Tools {
-  static uuid() {
-    String uuid = const Uuid().toString();
-    return uuid;
+  static uuid<String>() async {
+    var UUID = Uuid();
+    var v1 = UUID.v1().toString();
+    print("uuid_v1:$v1");
+    return v1 as String;
   }
 
-  static uName<String>(int v) {
+  static uName<String>(int v) async {
     String randomStringHead = "MS-" as String;
     String uName = '' as String;
 

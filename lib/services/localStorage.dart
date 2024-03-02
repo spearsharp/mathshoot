@@ -10,12 +10,17 @@ class localStorage {
 
   static getData(String? key) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? data = prefs.getString(key!);
-    return json.decode(data!);
+    var data = prefs.getString(key!);
+    if (data != null) {
+      return json.decode(data);
+    } else {
+      return data;
+    }
   }
 
-  static removeData(String key) async {
+  static removeData(String? key) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    return prefs.remove(key);
+    return prefs.remove(key!);
   }
 }
+//"db956000-bce0-11ee-96be-6d342d9b757d"

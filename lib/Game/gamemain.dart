@@ -4,6 +4,7 @@ import 'dart:async';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:get/utils.dart';
+import 'package:mysql1/mysql1.dart';
 import '../services/screeenAdapter.dart';
 import '../routers/routers.dart';
 import '../Game/gamelvl1.dart';
@@ -16,6 +17,7 @@ import '../services/ipmacAddr.dart';
 import '../model/userInfo.dart';
 import 'package:dio/dio.dart';
 import 'package:crypto/crypto.dart';
+import 'package:mysql1/mysql1.dart';
 
 class GameMain extends StatefulWidget {
   const GameMain({Key? key}) : super(key: key);
@@ -26,21 +28,41 @@ class GameMain extends StatefulWidget {
 
 class _GameMainState extends State<GameMain> {
   late Map _deviceinfo;
-  late String uuid, uName, _deviceinfoS;
+  late String _deviceinfoS;
   final _assetAudioPlayer = AssetsAudioPlayer();
   final _keyAudioPlayer = AssetsAudioPlayer();
   late UserProfiles _userProfiles;
   late UserSettings _userSettings;
   late NetworkInfo ipmacAddr;
+  late bool resBTBGM, resTHBGM, resGMBGM;
 
-  _getDeviceInfo() async {
+  //DB connection   - ref:https://pub.dev/packages/mysql1/example
+  Future _dbConn(String DBname, String sqlsen, List queryVar) async {
+    final conn = await MySqlConnection.connect(ConnectionSettings(
+      host: "localhost",
+      port: 3306,
+      user: 'root',
+      db: 'mathshoot',
+      password: 'Spear19830805',
+    ));
+    var res = await conn.query("select * from user_gameInfo");
+    for (var row in res) {
+      print('Name:${row[0]},level:${row[3]},Score:${row[4]}');
+    }
+    ;
+    await conn.close(); // close connection
+    return res;
+  }
+
+  Future _getDevic() async {
     final deviceinfoplugin = DeviceInfoPlugin();
     final deviceinfo = await deviceinfoplugin.deviceInfo;
-    final deviceinfomap = deviceinfo.toMap();
+    final deviceinfomap = deviceinfo.data;
     _deviceinfo = deviceinfomap;
     _deviceinfoS = jsonEncode(_deviceinfo);
     print("_deviceinfo:$_deviceinfo");
     print("_deviceinfoS:$_deviceinfoS");
+    print("succ_get_deviceINfo");
   }
 
   Future _patchPersonalInfo(uuid) async {
@@ -77,24 +99,65 @@ class _GameMainState extends State<GameMain> {
     // });
   }
 
-  Future<dynamic> _getLocalStorage(key) async {
+  Future _getLocalStorage(key) async {
     var res = await localStorage
         .getData(key); // fix the localstorage set get del data module
-    String resdata = res.toString();
-    return resdata;
+    return res;
   }
+
+  Future _buttonBGM() async {
+    final bool resBTBGM = true;
+    // var resBTBGM = await _getLocalStorage("BGM");  // pending on localStorage patch
+    print("resBTBGM:$resBTBGM");
+    switch (resBTBGM) {
+      case true:
+        return _keyAudioPlayer.open(Audio('audios/pressmobilekeyBGM.wav'),
+            autoStart: true, loopMode: LoopMode.none);
+      case false:
+        return null;
+      case null:
+        print("resBTBGM:$resBTBGM");
+        return _keyAudioPlayer.open(Audio('audios/pressmobilekeyBGM.wav'),
+            autoStart: true, loopMode: LoopMode.none);
+      default:
+        return _keyAudioPlayer.open(Audio('audios/pressmobilekeyBGM.wav'),
+            autoStart: true, loopMode: LoopMode.none);
+    }
+    // ignore: unrelated_type_equality_checks
+  }
+
+  Future _deleteStorage(key) async {
+    var res = await localStorage.removeData(key);
+    print("res:::$res");
+  }
+
+  Future _uuidUNameGen<List>() async {
+    late List t_list;
+    String t_uuid = await Tools.uuid();
+    String t_uName = await Tools.uName(10);
+    _setLocalStorage("UUID", t_uuid);
+    _setLocalStorage("Name", t_uName);
+    t_list = [t_uuid, t_uName] as List;
+    print("t_list_ninner:${t_list.toString()}");
+    return t_list.toString();
+  }
+
+  //V1 no backend server node,payment to stripe backend management , dart connnect to mysql directly
 
   @override
   void initState() {
     super.initState();
-    print("get initial data");
-    _getDeviceInfo();
+    // _getDeviceInfo();
     // _getIpMacAddr();
-    print("succ_get_deviceINfo");
+    print("system broughtup , testing");
+    // _uuidUNameGen().then((value) => print(value as String));
+    // _deleteStorage("UUID").then((value) => print(value));
 
-    _getLocalStorage("UUID").then((resdata) {
-      if (uuid == "") {
-        print("localstorage-UUID getting null");
+    ///User Loing check and localinfo patch
+    _getLocalStorage("UUID").then((resdata) async {
+      print("resdata:$resdata");
+      if (resdata == null) {
+        print("localstorage-UUID getting fail");
         // check based on new device or not
         uuid = Tools.uuid();
         uName = Tools.uName(10);
@@ -102,21 +165,29 @@ class _GameMainState extends State<GameMain> {
             UUID: uuid,
             Name: uName,
             Score: 0,
-            Email: "",
-            Account: [],
+            Email: "0@0.com",
             Level: 1,
+            AccBalance: 0,
+            BombBalance: 0,
             IPaddress: "0.0.0.0",
+            Account: [
+              uuid
+            ],
             DeviceInfo: [
               {"macAddress": "1231231"}
             ],
-            AccBalance: 0,
-            BombBalance: 0,
-            PaymentInfo: [],
-            PersonalLog: []);
+            PaymentInfo: [
+              "0"
+            ],
+            PersonalLog: [
+              "0"
+            ]);
+        String tempMap = _userProfiles.toString();
+        print("_userProfiles:$tempMap");
         //initial Personal settings
         _userSettings = UserSettings(
-          UUID: Tools.uuid(),
-          Name: Tools.uName(10),
+          UUID: uuid,
+          Name: uName,
           TouchSound: true,
           GameMusic: true,
           BGM: true,
@@ -205,6 +276,8 @@ class _GameMainState extends State<GameMain> {
                           _assetAudioPlayer.stop();
                           var tttt = _assetAudioPlayer.playerState;
                           print("_assetAudioPlayer:$tttt");
+                          print("_userSettings:$_userSettings");
+                          print("_userProfiles:$_userProfiles");
                           //press key sound
                           _userSettings.BGM
                               ? _keyAudioPlayer.open(
@@ -212,7 +285,6 @@ class _GameMainState extends State<GameMain> {
                                   autoStart: true,
                                   loopMode: LoopMode.none)
                               : null;
-                          // rounte to level1
                           Navigator.pushNamed(context, "/mainlist", arguments: {
                             "title": "mainlist",
                             "userSettings": _userSettings,
@@ -250,6 +322,7 @@ class _GameMainState extends State<GameMain> {
                                   autoStart: true,
                                   loopMode: LoopMode.none)
                               : null;
+                          // _buttonBGM();
                           //route to exit
                           Navigator.pushNamed(context, "/guide",
                               arguments: {"title": "mainpage"});

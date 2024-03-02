@@ -52,6 +52,10 @@ dependencies:
   dio: ^5.4.0
   get_it: ^7.6.7
   crypto: ^3.0.3
+  flutter_stripe: ^10.0.0
+  font_awesome_flutter: ^10.7.0
+  pay: ^1.1.2
+  mysql1: ^0.20.0
 
 dev_dependencies:
   flutter_test:

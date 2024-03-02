@@ -13,7 +13,14 @@ class Setting extends StatefulWidget {
 }
 
 class _SettingState extends State<Setting> {
-  final Map arguments = {'title': 'title'};
+  late Map arguments;
+
+  @override
+  void initState() {
+    super.initState();
+    print("widge_settings:${widget.arguments}");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
