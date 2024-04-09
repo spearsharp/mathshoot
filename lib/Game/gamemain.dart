@@ -1,6 +1,8 @@
 import 'dart:convert';
 import 'dart:async';
+import 'dart:ffi';
 
+import 'package:arithg/routers/dbroute.dart';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:get/utils.dart';
@@ -28,6 +30,7 @@ class GameMain extends StatefulWidget {
 
 class _GameMainState extends State<GameMain> {
   late Map _deviceinfo;
+  late var conn;
   late String _deviceinfoS, uuid, uName;
   final _assetAudioPlayer = AssetsAudioPlayer();
   final _keyAudioPlayer = AssetsAudioPlayer();
@@ -38,22 +41,47 @@ class _GameMainState extends State<GameMain> {
   late NetworkInfo ipmacAddr;
   late bool resBTBGM, resTHBGM, resGMBGM;
 
-  //DB connection   - ref:https://pub.dev/packages/mysql1/example
-  Future _dbConn(String DBname, String sqlsen, List queryVar) async {
-    final conn = await MySqlConnection.connect(ConnectionSettings(
-      host: "localhost",
-      port: 3306,
-      user: 'root',
-      db: 'mathshoot',
-      password: 'Spear19830805',
-    ));
-    var res = await conn.query("select * from user_gameInfo");
+  //DB MySQL connection   - ref:https://pub.dev/packages/mysql1/example
+  Future _dbConn(DBmysql) async {
+    DBmysql('DBhost') ?? "localhost";
+    DBmysql('DBname') ?? "bytepuz";
+    DBmysql('DBport') ?? 3306;
+    DBmysql('DBuser') ?? "root";
+    DBmysql('DBpassword') ?? "Spear19830805";
+    try {
+      conn = await MySqlConnection.connect(ConnectionSettings(
+        host: DBmysql('DBhost'),
+        port: DBmysql('DBport'),
+        user: DBmysql('DBuser'),
+        db: DBmysql('DBname'),
+        password: DBmysql('DBpassword'),
+      ));
+    } catch (e) {
+      print("DB connection failed");
+    } finally {
+      print("MySQL conn succ");
+      return conn;
+    }
+    //conn done
+  }
+
+  //DBconn check
+  Future _selAll(DBname, sqlsen, queryVar) async {
+    DBmysql(
+        DBhost: "localhost",
+        DBport: 3306,
+        DBname: "bytepuz",
+        DBuser: "root",
+        DBpassword: "Spear19830805");
+    _dbConn(DBmysql);
+    var res = await conn.query("select * from user_info");
+    print("res:$res");
     for (var row in res) {
       print('Name:${row[0]},level:${row[3]},Score:${row[4]}');
     }
     ;
+    //conn release
     await conn.close(); // close connection
-    return res;
   }
 
   Future _getDevic() async {

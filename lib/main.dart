@@ -4,12 +4,15 @@ import 'Game/gamemain.dart';
 import 'routers/routers.dart';
 
 void main() {
+  //sharedpreference local storage checking -- pending
   runApp(const MyApp());
   print("test_print");
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
+
+// initial the app within DB,env,cat,healthchk,deployment preparation
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +32,7 @@ class HomePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //sizefit.initialized -- pending
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         title: '',
