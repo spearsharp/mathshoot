@@ -31,8 +31,10 @@ class _GameMainState extends State<GameMain> {
   late String _deviceinfoS, uuid, uName;
   final _assetAudioPlayer = AssetsAudioPlayer();
   final _keyAudioPlayer = AssetsAudioPlayer();
-  late UserProfiles _userProfiles;
-  late UserSettings _userSettings;
+  late UserProfiles
+      _userProfiles; // move to main.dart and independent module for verify
+  late UserSettings
+      _userSettings; // move to main.dart and independent module for verify
   late NetworkInfo ipmacAddr;
   late bool resBTBGM, resTHBGM, resGMBGM;
 
