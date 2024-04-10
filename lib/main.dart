@@ -4,7 +4,7 @@ import 'Game/gamemain.dart';
 import 'routers/routers.dart';
 
 void main() {
-  //sharedpreference local storage checking -- pending
+  //sharedpreference local storage checking -- pending local storage read/write auth,then run app,local data health check
   runApp(const MyApp());
   print("test_print");
 }
@@ -12,10 +12,10 @@ void main() {
 class MyApp extends StatelessWidget {
   const MyApp({Key? key}) : super(key: key);
 
-// initial the app within DB,env,cat,healthchk,deployment preparation
-
   @override
   Widget build(BuildContext context) {
+    //1. initial the app within DB,env,cat,healthchk,deployment preparation,screen size adjustment
+//2. deviceinfo collect
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: '',

@@ -1,6 +1,11 @@
 import 'dart:convert';
 import 'dart:math';
 
+//*************  arithmetic generator  ************/
+// author: Spear
+// date: 02/24/2024
+// arithmetic within +,-,×,÷,()
+//************************************************/
 late int a,
     b,
     c,

@@ -40,8 +40,8 @@ class _GameMainState extends State<GameMain> {
       _userSettings; // move to main.dart and independent module for verify
   late NetworkInfo ipmacAddr;
   late bool resBTBGM, resTHBGM, resGMBGM;
-
-  //DB MySQL connection   - ref:https://pub.dev/packages/mysql1/example
+// payment setting wihtout account/ID,payment page , payment history page - pending - https://www.youtube.com/watch?v=tpILK64NM6M&list=PL3n34TOL-kqIeGsSDa-o7tK-Z6h2ubyf-&index=20&t=192s&pp=gAQBiAQB
+  //DB MySQL connection   - ref:https://pub.dev/packages/mysql1/example , sync with local info. except the Top players list
   Future _dbConn(DBmysql) async {
     DBmysql('DBhost') ?? "localhost";
     DBmysql('DBname') ?? "bytepuz";

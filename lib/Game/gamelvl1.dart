@@ -596,7 +596,7 @@ core function : This section include all core features and functional flag here.
 7.game levelup/game failed
 8.score recorder/awarding
 9.core arith calling
-10topup money
+10.topup money
 */
 
   @override
