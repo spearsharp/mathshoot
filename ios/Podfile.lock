@@ -117,7 +117,7 @@ SPEC CHECKSUMS:
   audioplayers_darwin: 877d9a4d06331c5c374595e46e16453ac7eafa40
   connectivity_plus: bf0076dd84a130856aa636df1c71ccaff908fa1d
   device_info_plus: c6fb39579d0f423935b0c9ce7ee2f44b71b9fce6
-  Flutter: f04841e97a9d0b0a8025694d0796dd46242b2854
+  Flutter: e0871f40cf51350855a761d2e70bf5af5b9b5de7
   fluttertoast: 31b00dabfa7fb7bacd9e7dbee580d7a2ff4bf265
   path_provider_foundation: 29f094ae23ebbca9d3d0cec13889cd9060c0e943
   pay_ios: 8c7beb9c61d885f3f51b61f75f8793023fc8843a
@@ -134,6 +134,6 @@ SPEC CHECKSUMS:
   StripeUICore: b193c7d35e9cd1b04bc9ed4a6fb8c548fcee83fa
   Toast: 91b396c56ee72a5790816f40d3a94dd357abc196
 
-PODFILE CHECKSUM: 018534f11ba63a8453dbf3cff1851945f7cb8bfc
+PODFILE CHECKSUM: 52800c5dc0367c683106cb25804eaff4d87aaf1c
 
 COCOAPODS: 1.15.2

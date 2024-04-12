@@ -1,17 +1,13 @@
-class UserProfiles {
-  final String UUID;
-  final String Name;
-  final int Score;
-  final String Email;
-  final int Level;
-  final int AccBalance;
-  final int BombBalance;
-  final String IPaddress;
-  final List Account; // Account info/google,facebook , twitter login
-  final List DeviceInfo;
-  final List PaymentInfo;
-  final List PersonalLog;
+import 'dart:convert';
 
+import 'package:arithg/model/userinfo.dart';
+
+UserProfiles userProfilesFromJson(String str) =>
+    UserProfiles.fromJson(json.decode(str));
+
+String userProfilesToJson(UserProfiles data) => json.encode(data);
+
+class UserProfiles {
   UserProfiles({
     // all mandatory inputed
     required this.UUID,
@@ -28,7 +24,36 @@ class UserProfiles {
     required this.PersonalLog,
   });
 
-  Map<String, dynamic> toMap() {
+  String UUID;
+  String Name;
+  int Score;
+  String Email;
+  String IPaddress;
+  List Account; // Account info/google,facebook , twitter login
+  int Level;
+  int AccBalance;
+  int BombBalance;
+  List DeviceInfo;
+  List PaymentInfo;
+  List PersonalLog;
+
+  factory UserProfiles.fromJson(Map<String, dynamic> json) {
+    return UserProfiles(
+        UUID: json["UUID"],
+        Name: json['Name'],
+        Score: json['Score'],
+        Email: json['Email'],
+        Account: json['Account'],
+        Level: json['Level'],
+        IPaddress: json['IPaddress'],
+        DeviceInfo: json['DeviceInfo'],
+        AccBalance: json['AccBalance'],
+        BombBalance: json['BombBalance'],
+        PaymentInfo: json['PaymentInfo'],
+        PersonalLog: json['PersonalLog']);
+  }
+
+  Map<String, dynamic> toJson() {
     return {
       'UUID': UUID,
       'Name': Name,
@@ -46,23 +71,38 @@ class UserProfiles {
   }
 }
 
-class UserSettings {
-  final String UUID;
-  final String Name;
-  final bool TouchSound;
-  final bool GameMusic;
-  final bool BGM;
-  final String Portrait;
+UserSettings userSettingFromJson(String str) =>
+    UserSettings.fromJson(json.decode(str));
 
-  UserSettings(
-      {required this.UUID,
-      required this.Name,
-      required this.TouchSound,
-      required this.GameMusic,
-      required this.BGM,
-      required this.Portrait,
-      required});
-  Map<String, dynamic> toMap() {
+String userSettingToJson(UserSettings data) => jsonEncode(data);
+
+class UserSettings {
+  UserSettings({
+    required this.UUID,
+    required this.Name,
+    required this.TouchSound,
+    required this.GameMusic,
+    required this.BGM,
+    required this.Portrait,
+  });
+  String UUID;
+  String Name;
+  bool TouchSound;
+  bool GameMusic;
+  bool BGM;
+  String? Portrait;
+
+  factory UserSettings.fromJson(Map<String, dynamic> json) {
+    return UserSettings(
+        UUID: json['UUID'],
+        Name: json['Name'],
+        TouchSound: json['TouchSound'],
+        GameMusic: json['GameMusic'],
+        BGM: json['BGM'],
+        Portrait: json['Portrait']);
+  }
+
+  Map<String, dynamic> toJson() {
     return {
       'UUID': UUID,
       'Name': Name,
@@ -74,15 +114,11 @@ class UserSettings {
   }
 }
 
-class TxnInfo {
-  final String UUID;
-  final String Name;
-  final String TxnStatus;
-  final double TxnAmt;
-  final String AccNum;
-  final String PaymentType;
-  final DateTime PaymentTime;
+TxnInfo txnInfoFromJson(String str) => TxnInfo.fromJson(json.decode(str));
 
+String txnInfoToJson(TxnInfo data) => json.encode(data);
+
+class TxnInfo {
   TxnInfo({
     required this.UUID,
     required this.Name,
@@ -92,8 +128,26 @@ class TxnInfo {
     required this.PaymentType,
     required this.PaymentTime,
   });
+  String UUID;
+  String Name;
+  String TxnStatus;
+  double TxnAmt;
+  String AccNum;
+  String PaymentType;
+  DateTime PaymentTime;
 
-  Map<String, dynamic> toMap() {
+  factory TxnInfo.fromJson(Map<String, dynamic> json) {
+    return TxnInfo(
+        UUID: json['UUID'],
+        Name: json['Name'],
+        TxnStatus: json['TxnStatus'],
+        TxnAmt: json['TxnAmt'],
+        AccNum: json['AccNum'],
+        PaymentType: json['PaymentType'],
+        PaymentTime: json['PaymentTime']);
+  }
+
+  Map<String, dynamic> toJson() {
     return {
       'UUID': UUID,
       'Name': Name,

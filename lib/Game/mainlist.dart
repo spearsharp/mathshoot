@@ -7,7 +7,7 @@ import '../Game/gamelvl1.dart';
 import '../Game/gamelvl2.dart';
 import '../Game/setting.dart';
 import '../Game/profile.dart';
-import '../model/userinfo.dart';
+import '../model/userInfo.dart';
 import '../services/iconUtil.dart';
 import 'package:icons_plus/icons_plus.dart';
 import 'package:auto_size_text/auto_size_text.dart';
@@ -50,12 +50,13 @@ class _MainlistState extends State<Mainlist> {
     //play BGM
     var maparg = widget.arguments;
     print("maparg:$maparg");
-    accbalance == null ? 1111 : widget.arguments["accbalance"];
-    var _userProfiles = widget.arguments["userProfiles"];
-    var _userSettings = widget.arguments["userSettings"];
+
+    _userProfiles = widget.arguments["userProfiles"];
+    _userSettings = widget.arguments["userSettings"];
     print("tt:::${_userProfiles.toString()}");
 
     accbalance = _userProfiles.AccBalance;
+    accbalance == null ? 1111 : widget.arguments["AccBalance"];
 
     print(
         "mainlist:::userSettings:::${_userSettings!.BGM};;;${_userProfiles!.Name}");
@@ -164,8 +165,6 @@ class _MainlistState extends State<Mainlist> {
   @override
   Widget build(BuildContext context) {
     final _ScreenAdapter = MediaQuery.of(context).size;
-    var _userSettings = widget.arguments["userSettings"];
-    var _userProfiles = widget.arguments["userProfiles"];
     print(
         "_userSettings::::${_userSettings.toString()};;;;_userProfiles::${_userProfiles.toString()}");
     return Scaffold(

@@ -1,12 +1,27 @@
 import 'dart:ffi';
 
-class arithModel {
-  late final String key;
-  late final Int level;
-  late final Int calcnum;
-  late final String? arithquote;
+import 'package:arithg/services/arith.dart';
+import 'package:flutter/foundation.dart';
 
-  // Map<String,Object> arithmodel(){
+class ArithModel {
+  String key;
+  Int level;
+  Int calcnum;
+  String? arithquote;
 
-  // }
+  ArithModel({
+    required this.key,
+    required this.level,
+    required this.calcnum,
+    required this.arithquote,
+  });
+
+  Map<String, dynamic> arithmodel() {
+    return {
+      'UUID': key,
+      'Name': level,
+      'Score': calcnum,
+      'Level': arithquote,
+    };
+  }
 }

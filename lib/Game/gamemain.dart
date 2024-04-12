@@ -118,17 +118,6 @@ class _GameMainState extends State<GameMain> {
     print("ipmacAddr.ipAddress: ${ipmacAddr.ipAddress}");
   }
 
-  Future _setLocalStorage(key, val) async {
-    var res = await localStorage.setData(
-        key, val); // fix the localstorage set get del data module
-    print("res:::");
-    print(res is JsonCodec);
-    // Timer.periodic(const Duration(milliseconds: 4000), (t) {
-    //   print("setdata-done");
-    //   t.cancel();
-    // });
-  }
-
   Future _getLocalStorage(key) async {
     var res = await localStorage
         .getData(key); // fix the localstorage set get del data module
@@ -165,8 +154,6 @@ class _GameMainState extends State<GameMain> {
     late List t_list;
     String t_uuid = await Tools.uuid();
     String t_uName = await Tools.uName(10);
-    _setLocalStorage("UUID", t_uuid);
-    _setLocalStorage("Name", t_uName);
     t_list = [t_uuid, t_uName] as List;
     print("t_list_ninner:${t_list.toString()}");
     return t_list.toString();
@@ -189,8 +176,9 @@ class _GameMainState extends State<GameMain> {
       if (resdata == null) {
         print("localstorage-UUID getting fail");
         // check based on new device or not
-        uuid = Tools.uuid();
-        uName = Tools.uName(10);
+        uuid = await Tools.uuid();
+        uName = await Tools.uName(10);
+        //create user id
         _userProfiles = UserProfiles(
             UUID: uuid,
             Name: uName,
@@ -210,21 +198,26 @@ class _GameMainState extends State<GameMain> {
               "0"
             ],
             PersonalLog: [
-              "0"
+              "initial"
             ]);
         String tempMap = _userProfiles.toString();
         print("_userProfiles:$tempMap");
-        //initial Personal settings
+        //initial Personal settings and configrations
         _userSettings = UserSettings(
           UUID: uuid,
           Name: uName,
           TouchSound: true,
           GameMusic: true,
           BGM: true,
-          Portrait: "",
+          Portrait: "0",
         );
-        var retSetPS = localStorage.setData("UUID", _userSettings.UUID);
+        //create Personal payment acc
+        var retSetPS = localStorage.setData(
+            "UUID", _userSettings.UUID); // save pesonal data
+        var resSetUP = localStorage.setData('_userProfiles', _userProfiles);
+        var retSetUS = localStorage.setData('_userSettings', _userSettings);
         print("userProfiles:$_userProfiles,,,userSettings:$_userSettings");
+
         //1st time login to play BGM
         _assetAudioPlayer.open(
           Audio('audios/mainenteranceBGM.wav'),
@@ -238,12 +231,17 @@ class _GameMainState extends State<GameMain> {
         print("localstorage-UUID getting succ");
         //get all personal info from local and server  ---patch data from server
 
-        String _uuid = localStorage.getData("UUID");
-        print("_uuid:$_uuid");
+        var resUsersProfiles = await localStorage.getData("_userProfiles");
+        var resUsersSettings = await localStorage.getData("_userSettings");
+        _userProfiles = UserProfiles.fromJson(resUsersProfiles);
+        _userSettings = UserSettings.fromJson(resUsersSettings);
+        //change to set get
+        String _uuid = _userProfiles.UUID;
+        String _uName = _userProfiles.Name;
 
-        uuid = _userProfiles.UUID;
-        uName = _userProfiles.Name;
-        print("_userSettings.BGM:${_userSettings.BGM}");
+        print(
+            "_uuid:$_uuid & _uName:$uName & userSettings.BGM:${_userSettings.BGM}");
+
         _userSettings.BGM
             ? _assetAudioPlayer.open(
                 Audio('audios/mainenteranceBGM.wav'),

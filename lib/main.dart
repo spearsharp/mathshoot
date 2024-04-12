@@ -2,9 +2,15 @@ import '../Game/gamemain.dart';
 import 'package:flutter/material.dart';
 import 'Game/gamemain.dart';
 import 'routers/routers.dart';
+import 'model/userinfo.dart';
+import 'services/localStorage.dart';
+import 'services/initialize.dart';
 
 void main() {
+  //Before loading the mainpage need to initialize.
+  //1. deviceinfo collect , screenadapt
   //sharedpreference local storage checking -- pending local storage read/write auth,then run app,local data health check
+
   runApp(const MyApp());
   print("test_print");
 }
@@ -14,8 +20,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    //1. initial the app within DB,env,cat,healthchk,deployment preparation,screen size adjustment
-//2. deviceinfo collect
     return const MaterialApp(
       debugShowCheckedModeBanner: false,
       title: '',

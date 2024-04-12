@@ -3,9 +3,19 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 // ignore: camel_case_types
 class localStorage {
-  static setData(String? key, dynamic val) async {
+  //save userProfiles
+  //get userProfiles
+  //save userSettings
+  //get userProfiles
+  //get userDeviceinfo
+  //save userDeviceinfo
+  //get txninfo
+  //save txninfo
+  //delete caches
+  static setData(String? key, val) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(key!, json.encode(val));
+    return true;
   }
 
   static getData(String? key) async {
@@ -23,4 +33,3 @@ class localStorage {
     return prefs.remove(key!);
   }
 }
-//"db956000-bce0-11ee-96be-6d342d9b757d"
