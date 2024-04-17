@@ -21,3 +21,4 @@ https://zhuanlan.zhihu.com/p/341329900
 http://www.360doc.com/content/23/1115/11/170868_1104102733.shtml
 https://www.pipipi.net/22187.html
 https://github.com/JacksonNing/mahuaPet/blob/master/mahua_pet/lib/caches/shared_storage.dart
+GetX MVC reference : https://www.jianshu.com/p/aacfd5159505

@@ -5,7 +5,8 @@ import 'package:arithg/model/userinfo.dart';
 UserProfiles userProfilesFromJson(String str) =>
     UserProfiles.fromJson(json.decode(str));
 
-String userProfilesToJson(UserProfiles data) => json.encode(data);
+String userProfilesToJson(UserProfiles data, {required String UUID}) =>
+    json.encode(data);
 
 class UserProfiles {
   UserProfiles({

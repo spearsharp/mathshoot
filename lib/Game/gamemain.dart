@@ -31,16 +31,16 @@ class GameMain extends StatefulWidget {
 class _GameMainState extends State<GameMain> {
   late Map _deviceinfo;
   late var conn;
-  late String _deviceinfoS, uuid, uName;
+  late String _deviceinfoS, uuid, uName; // uName not initiialized
   final _assetAudioPlayer = AssetsAudioPlayer();
   final _keyAudioPlayer = AssetsAudioPlayer();
   late UserProfiles
-      _userProfiles; // move to main.dart and independent module for verify
+      userProfiles; // move to main.dart and independent module for verify
   late UserSettings
-      _userSettings; // move to main.dart and independent module for verify
+      userSettings; // move to main.dart and independent module for verify
   late NetworkInfo ipmacAddr;
   late bool resBTBGM, resTHBGM, resGMBGM;
-// payment setting wihtout account/ID,payment page , payment history page - pending - https://www.youtube.com/watch?v=tpILK64NM6M&list=PL3n34TOL-kqIeGsSDa-o7tK-Z6h2ubyf-&index=20&t=192s&pp=gAQBiAQB
+//  -- pendingpayment setting wihtout account/ID,payment page , payment history page - pending - https://www.youtube.com/watch?v=tpILK64NM6M&list=PL3n34TOL-kqIeGsSDa-o7tK-Z6h2ubyf-&index=20&t=192s&pp=gAQBiAQB
   //DB MySQL connection   - ref:https://pub.dev/packages/mysql1/example , sync with local info. except the Top players list
   Future _dbConn(DBmysql) async {
     DBmysql('DBhost') ?? "localhost";
@@ -124,6 +124,10 @@ class _GameMainState extends State<GameMain> {
     return res;
   }
 
+  Future _setLocalStorage(key, val) async {
+    var res = await localStorage.setData(key, val);
+  }
+
   Future _buttonBGM() async {
     final bool resBTBGM = true;
     // var resBTBGM = await _getLocalStorage("BGM");  // pending on localStorage patch
@@ -164,13 +168,15 @@ class _GameMainState extends State<GameMain> {
   @override
   void initState() {
     super.initState();
-    // _getDeviceInfo();
-    // _getIpMacAddr();
+    // _getDeviceInfo() and infra deviceinfo  -- pending
+    // _getIpMacAddr() -- pending
+
     print("system broughtup , testing");
     // _uuidUNameGen().then((value) => print(value as String));
     // _deleteStorage("UUID").then((value) => print(value));
 
     ///User Loing check and localinfo patch
+    // _deleteStorage("UUID");
     _getLocalStorage("UUID").then((resdata) async {
       print("resdata:$resdata");
       if (resdata == null) {
@@ -178,15 +184,17 @@ class _GameMainState extends State<GameMain> {
         // check based on new device or not
         uuid = await Tools.uuid();
         uName = await Tools.uName(10);
-        //create user id
-        _userProfiles = UserProfiles(
+        print("uuid:$uuid --- uName:$uName");
+        //create user id , use set/get to input
+        userProfiles = UserProfiles(
+            // initial userProfiles
             UUID: uuid,
             Name: uName,
             Score: 0,
             Email: "0@0.com",
             Level: 1,
-            AccBalance: 0,
-            BombBalance: 0,
+            AccBalance: 0, // initial accBal
+            BombBalance: 0, // initial bombBal
             IPaddress: "0.0.0.0",
             Account: [
               uuid
@@ -200,10 +208,10 @@ class _GameMainState extends State<GameMain> {
             PersonalLog: [
               "initial"
             ]);
-        String tempMap = _userProfiles.toString();
-        print("_userProfiles:$tempMap");
-        //initial Personal settings and configrations
-        _userSettings = UserSettings(
+        // String tempMap = _userProfiles.toString();
+        print("userProfiles:$userProfiles");
+        userSettings = UserSettings(
+          // initial userSettings
           UUID: uuid,
           Name: uName,
           TouchSound: true,
@@ -211,12 +219,13 @@ class _GameMainState extends State<GameMain> {
           BGM: true,
           Portrait: "0",
         );
-        //create Personal payment acc
+
+        //create Personal payment acc , set/get input
         var retSetPS = localStorage.setData(
-            "UUID", _userSettings.UUID); // save pesonal data
-        var resSetUP = localStorage.setData('_userProfiles', _userProfiles);
-        var retSetUS = localStorage.setData('_userSettings', _userSettings);
-        print("userProfiles:$_userProfiles,,,userSettings:$_userSettings");
+            "UUID", userSettings.UUID); // save pesonal data
+        var resSetUP = localStorage.setData('userProfiles', userProfiles);
+        var retSetUS = localStorage.setData('userSettings', userSettings);
+        print("userProfiles:$userProfiles,,,userSettings:$userSettings");
 
         //1st time login to play BGM
         _assetAudioPlayer.open(
@@ -229,20 +238,27 @@ class _GameMainState extends State<GameMain> {
         //post personal info to server
       } else {
         print("localstorage-UUID getting succ");
+        print('resdata:${resdata}}');
+        var res = localStorage
+            .removeData(resdata); //temp remove ios localstorage for test
+        // res = localStorage.removeData("userProfiles");
+        // res = localStorage.removeData("userSettings");
         //get all personal info from local and server  ---patch data from server
-
-        var resUsersProfiles = await localStorage.getData("_userProfiles");
-        var resUsersSettings = await localStorage.getData("_userSettings");
-        _userProfiles = UserProfiles.fromJson(resUsersProfiles);
-        _userSettings = UserSettings.fromJson(resUsersSettings);
+        var resUsersProfiles = localStorage.getData("userProfiles");
+        var resUsersSettings = localStorage.getData("userSettings");
+        print(resUsersProfiles is String);
+        print(resUsersProfiles is JsonCodec);
+        userProfiles = new UserProfiles.fromJson(resUsersProfiles);
+        userSettings = new UserSettings.fromJson(resUsersSettings);
+        print(UserProfiles.fromJson(resUsersProfiles) is JsonCodec);
         //change to set get
-        String _uuid = _userProfiles.UUID;
-        String _uName = _userProfiles.Name;
+        String _uuid = userProfiles.UUID;
+        String _uName = userProfiles.Name;
 
         print(
-            "_uuid:$_uuid & _uName:$uName & userSettings.BGM:${_userSettings.BGM}");
+            "_uuid:$_uuid & _uName:$uName & userSettings.BGM:${userSettings.BGM}");
 
-        _userSettings.BGM
+        userSettings.BGM
             ? _assetAudioPlayer.open(
                 Audio('audios/mainenteranceBGM.wav'),
                 autoStart: true,
@@ -303,11 +319,11 @@ class _GameMainState extends State<GameMain> {
                         onTap: () {
                           _assetAudioPlayer.stop();
                           var tttt = _assetAudioPlayer.playerState;
-                          print("_assetAudioPlayer:$tttt");
-                          print("_userSettings:$_userSettings");
-                          print("_userProfiles:$_userProfiles");
+                          // print("_assetAudioPlayer:$tttt");
+                          // print("_userSettings:$_userSettings");
+                          // print("_userProfiles:$_userProfiles");
                           //press key sound
-                          _userSettings.BGM
+                          userSettings.BGM
                               ? _keyAudioPlayer.open(
                                   Audio('audios/pressmobilekeyBGM.wav'),
                                   autoStart: true,
@@ -315,8 +331,8 @@ class _GameMainState extends State<GameMain> {
                               : null;
                           Navigator.pushNamed(context, "/mainlist", arguments: {
                             "title": "mainlist",
-                            "userSettings": _userSettings,
-                            "userProfiles": _userProfiles,
+                            "userSettings": userSettings,
+                            "userProfiles": userProfiles,
                           });
                         },
                         child: Container(
@@ -344,7 +360,7 @@ class _GameMainState extends State<GameMain> {
                     InkWell(
                         onTap: () {
                           _assetAudioPlayer.stop;
-                          _userSettings.BGM
+                          userSettings.BGM
                               ? _keyAudioPlayer.open(
                                   Audio('audios/pressmobilekeyBGM.wav'),
                                   autoStart: true,
@@ -381,7 +397,7 @@ class _GameMainState extends State<GameMain> {
                         onTap: () {
                           _assetAudioPlayer.stop;
                           _assetAudioPlayer.dispose();
-                          _userSettings.BGM
+                          userSettings.BGM
                               ? _keyAudioPlayer.open(
                                   Audio('audios/pressmobilekeyBGM.wav'),
                                   autoStart: true,
@@ -408,11 +424,16 @@ class _GameMainState extends State<GameMain> {
                                   letterSpacing: 5.0,
                                   fontFamily: 'Balloony',
                                 )))),
-                    const Positioned(
-                        child: Align(
-                      alignment: Alignment.bottomCenter,
-                      child: Text("adv"), // pending advertisment
-                    ))
+                    InkWell(
+                        onTap: () {
+                          _deleteStorage("userProfiles");
+                          _deleteStorage("userSettings");
+                        },
+                        child: const Align(
+                          alignment: Alignment.bottomCenter,
+                          child: Text(
+                              "adv - click clean cache"), // pending advertisment
+                        ))
                   ],
                 ))
           ])),

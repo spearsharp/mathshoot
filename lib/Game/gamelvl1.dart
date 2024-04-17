@@ -212,6 +212,8 @@ class _GameLvl1State extends State<GameLvl1> {
                   child: StreamBuilder(
                       stream: _scoreController.stream,
                       builder: (context, snapshot) {
+                        // level up and level cleared  -- pending
+                        // game failed alert,DB write , score to be negative  -- pending
                         if (snapshot.hasData) {
                           if (score >= 0) {
                             score += snapshot.data as int;
@@ -255,6 +257,9 @@ class _GameLvl1State extends State<GameLvl1> {
                         // full screen with topup money
                         child: InkWell(
                             onTap: () {
+                              // pause game popup topup/exchange optional musk -- pending
+                              // route to topup page,topup succ,top up failed/cancel,topup/exchange succ write DB  -- pending
+                              // exchange input and exchanged(3bombs/1coin/0.5USD) -- pending
                               print("topup money");
                             },
                             child: const Align(
@@ -291,7 +296,7 @@ class _GameLvl1State extends State<GameLvl1> {
                     image: AssetImage("images/game/bgpic1.jpeg"))),
             child: Stack(
               children: [
-                // clevel = localStorage.getData("levelName"),
+                // clevel = localStorage.getData("levelName"),  -- pending
                 // Text("Children level: $clevel"),
                 ...List.generate(10, (index) {
                   // change the number to generate the numbers of balloon
@@ -558,7 +563,7 @@ class _GameState extends State<Game> with SingleTickerProviderStateMixin {
     if (t) {
 // print("爆炸图");
 //arrow shoot , fadetransition, slidetransition
-      // insert arrowshooting function
+      // insert arrowshooting function with seq animation  -- pending
       t = false;
       return ListView(children: [
         Container(
@@ -647,7 +652,7 @@ core function : This section include all core features and functional flag here.
         final Offset bollonPos = renderBox.localToGlobal(Offset.zero);
         print(
             "Animation-Positioned-component's position is (${bollonPos.dx}, ${bollonPos.dy})");
-//2.arrowshooting controller
+//2.arrowshooting controller --  pending
         arrowLocation = [
           bollonPos.dx,
           bollonPos.dy
@@ -909,13 +914,15 @@ class _KeyPadState extends State<KeyPad> with SingleTickerProviderStateMixin {
                           height: widget.screenHeight * 0.17,
                           child: InkWell(
                               onTap: () {
+                                //function trigger bomb drop and break ballon -- pending
+                                //Zero bomb alert -- pending
                                 print(
-                                    "bomb break the balloon,detect the bomb number"); // 1 bomb for 1 bolloon  and trigger bolloon break animation - target the balloon on answer, write the returned answer into a list and for bomb break
+                                    "bomb break the balloon,detect the bomb number"); // 1 bomb for 1 bolloon  and trigger bolloon break animation - target the balloon on answer, write the returned answer into a list and for bomb break -- pending
                               },
                               child: Row(
                                 children: [
                                   Text(
-                                    "$bombbalance",
+                                    "$bombbalance", // bombbal realtime updates
                                     style: TextStyle(
                                         fontFamily: "MotleyForces",
                                         fontSize: widget.screenWidth * 0.06,

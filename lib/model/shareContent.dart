@@ -4,7 +4,7 @@ class ShareContent {
   //global variable
 
   //user profile
-  static const userProfileContent = "userProfileContent";
+  static const userProfile = "userProfiles";
   //userSetting
   static const userSettings = "userSettings";
   //device information

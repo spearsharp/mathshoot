@@ -3,15 +3,12 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 // ignore: camel_case_types
 class localStorage {
-  //save userProfiles
-  //get userProfiles
-  //save userSettings
-  //get userProfiles
-  //get userDeviceinfo
-  //save userDeviceinfo
-  //get txninfo
-  //save txninfo
-  //delete caches
+  //get userProfiles  -- pending
+  //get userProfiles -- pending
+  //get userDeviceinfo -- pending
+  //get txninfo -- pending
+  //delete caches -- pending
+
   static setData(String? key, val) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     prefs.setString(key!, json.encode(val));
