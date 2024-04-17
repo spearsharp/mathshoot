@@ -19,7 +19,6 @@ import '../services/ipmacAddr.dart';
 import '../model/userInfo.dart';
 import 'package:dio/dio.dart';
 import 'package:crypto/crypto.dart';
-import 'package:mysql1/mysql1.dart';
 
 class GameMain extends StatefulWidget {
   const GameMain({Key? key}) : super(key: key);
@@ -30,7 +29,7 @@ class GameMain extends StatefulWidget {
 
 class _GameMainState extends State<GameMain> {
   late Map _deviceinfo;
-  late var conn;
+
   late String _deviceinfoS, uuid, uName; // uName not initiialized
   final _assetAudioPlayer = AssetsAudioPlayer();
   final _keyAudioPlayer = AssetsAudioPlayer();
@@ -41,54 +40,13 @@ class _GameMainState extends State<GameMain> {
   late NetworkInfo ipmacAddr;
   late bool resBTBGM, resTHBGM, resGMBGM;
 //  -- pendingpayment setting wihtout account/ID,payment page , payment history page - pending - https://www.youtube.com/watch?v=tpILK64NM6M&list=PL3n34TOL-kqIeGsSDa-o7tK-Z6h2ubyf-&index=20&t=192s&pp=gAQBiAQB
-  //DB MySQL connection   - ref:https://pub.dev/packages/mysql1/example , sync with local info. except the Top players list
-  Future _dbConn(DBmysql) async {
-    DBmysql('DBhost') ?? "localhost";
-    DBmysql('DBname') ?? "bytepuz";
-    DBmysql('DBport') ?? 3306;
-    DBmysql('DBuser') ?? "root";
-    DBmysql('DBpassword') ?? "Spear19830805";
-    try {
-      conn = await MySqlConnection.connect(ConnectionSettings(
-        host: DBmysql('DBhost'),
-        port: DBmysql('DBport'),
-        user: DBmysql('DBuser'),
-        db: DBmysql('DBname'),
-        password: DBmysql('DBpassword'),
-      ));
-    } catch (e) {
-      print("DB connection failed");
-    } finally {
-      print("MySQL conn succ");
-      return conn;
-    }
-    //conn done
-  }
 
-  //DBconn check
-  Future _selAll(DBname, sqlsen, queryVar) async {
-    DBmysql(
-        DBhost: "localhost",
-        DBport: 3306,
-        DBname: "bytepuz",
-        DBuser: "root",
-        DBpassword: "Spear19830805");
-    _dbConn(DBmysql);
-    var res = await conn.query("select * from user_info");
-    print("res:$res");
-    for (var row in res) {
-      print('Name:${row[0]},level:${row[3]},Score:${row[4]}');
-    }
-    ;
-    //conn release
-    await conn.close(); // close connection
-  }
-
+//get deviceInfo
   Future _getDevic() async {
     final deviceinfoplugin = DeviceInfoPlugin();
     final deviceinfo = await deviceinfoplugin.deviceInfo;
     final deviceinfomap = deviceinfo.data;
-    _deviceinfo = deviceinfomap;
+    Map<String, dynamic> _deviceinfo = deviceinfomap;
     _deviceinfoS = jsonEncode(_deviceinfo);
     print("_deviceinfo:$_deviceinfo");
     print("_deviceinfoS:$_deviceinfoS");
@@ -149,9 +107,9 @@ class _GameMainState extends State<GameMain> {
     // ignore: unrelated_type_equality_checks
   }
 
-  Future _deleteStorage(key) async {
+  Future _deleteStorage(key, action) async {
     var res = await localStorage.removeData(key);
-    print("res:::$res");
+    print("res:::delete - $action - $res");
   }
 
   Future _uuidUNameGen<List>() async {
@@ -176,7 +134,7 @@ class _GameMainState extends State<GameMain> {
     // _deleteStorage("UUID").then((value) => print(value));
 
     ///User Loing check and localinfo patch
-    // _deleteStorage("UUID");
+    // _deleteStorage("UUID", "delete");
     _getLocalStorage("UUID").then((resdata) async {
       print("resdata:$resdata");
       if (resdata == null) {
@@ -223,8 +181,10 @@ class _GameMainState extends State<GameMain> {
         //create Personal payment acc , set/get input
         var retSetPS = localStorage.setData(
             "UUID", userSettings.UUID); // save pesonal data
-        var resSetUP = localStorage.setData('userProfiles', userProfiles);
-        var retSetUS = localStorage.setData('userSettings', userSettings);
+        var resSetUP = localStorage.setData(
+            'userProfiles', jsonEncode(userProfiles.toJson()));
+        var retSetUS = localStorage.setData(
+            'userSettings', jsonEncode(userSettings.toJson()));
         print("userProfiles:$userProfiles,,,userSettings:$userSettings");
 
         //1st time login to play BGM
@@ -239,18 +199,14 @@ class _GameMainState extends State<GameMain> {
       } else {
         print("localstorage-UUID getting succ");
         print('resdata:${resdata}}');
-        var res = localStorage
-            .removeData(resdata); //temp remove ios localstorage for test
-        // res = localStorage.removeData("userProfiles");
-        // res = localStorage.removeData("userSettings");
         //get all personal info from local and server  ---patch data from server
-        var resUsersProfiles = localStorage.getData("userProfiles");
-        var resUsersSettings = localStorage.getData("userSettings");
-        print(resUsersProfiles is String);
-        print(resUsersProfiles is JsonCodec);
-        userProfiles = new UserProfiles.fromJson(resUsersProfiles);
-        userSettings = new UserSettings.fromJson(resUsersSettings);
-        print(UserProfiles.fromJson(resUsersProfiles) is JsonCodec);
+        var tmpUP = localStorage.getData("userProfiles");
+        print("tmpUP:$tmpUP");
+        userProfiles = UserProfiles.fromJson(tmpUP);
+        userSettings =
+            UserSettings.fromJson(localStorage.getData("userSettings"));
+        print(userProfiles is String);
+        print(userProfiles is JsonCodec);
         //change to set get
         String _uuid = userProfiles.UUID;
         String _uName = userProfiles.Name;
@@ -426,8 +382,8 @@ class _GameMainState extends State<GameMain> {
                                 )))),
                     InkWell(
                         onTap: () {
-                          _deleteStorage("userProfiles");
-                          _deleteStorage("userSettings");
+                          _deleteStorage("userProfiles", "deleteUserProfiles");
+                          _deleteStorage("userSettings", "deleteUserSettings");
                         },
                         child: const Align(
                           alignment: Alignment.bottomCenter,
