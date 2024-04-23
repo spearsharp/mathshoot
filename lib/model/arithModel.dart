@@ -1,6 +1,6 @@
 import 'dart:ffi';
 
-import 'package:arithg/services/arith.dart';
+import '../services/arith.dart';
 import 'package:flutter/foundation.dart';
 
 class ArithModel {

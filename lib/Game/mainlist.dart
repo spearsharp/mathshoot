@@ -55,7 +55,7 @@ class _MainlistState extends State<Mainlist> {
     _userSettings = widget.arguments["userSettings"];
     print("tt:::${_userProfiles.toString()}");
 
-    accbalance = _userProfiles.AccBalance;
+    accbalance = _userProfiles.AccBalance!;
     accbalance == null ? 1111 : widget.arguments["AccBalance"];
 
     print(

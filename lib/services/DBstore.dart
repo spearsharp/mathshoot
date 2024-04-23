@@ -1,5 +1,5 @@
 import 'dart:convert';
-import 'package:arithg/routers/dbroute.dart';
+import '../routers/dbroute.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:mysql1/mysql1.dart';
 

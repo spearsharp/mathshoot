@@ -1,7 +1,5 @@
 import 'dart:convert';
 
-import 'package:arithg/model/userinfo.dart';
-
 UserProfiles userProfilesFromJson(String str) =>
     UserProfiles.fromJson(json.decode(str));
 
@@ -11,32 +9,32 @@ String userProfilesToJson(UserProfiles data, {required String UUID}) =>
 class UserProfiles {
   UserProfiles({
     // all mandatory inputed
-    required this.UUID,
-    required this.Name,
-    required this.Score,
-    required this.Email,
-    required this.Account,
-    required this.Level,
-    required this.IPaddress,
-    required this.DeviceInfo,
-    required this.AccBalance,
-    required this.BombBalance,
-    required this.PaymentInfo,
-    required this.PersonalLog,
+    this.UUID,
+    this.Name,
+    this.Score,
+    this.Email,
+    this.Account,
+    this.Level,
+    this.IPaddress,
+    this.DeviceInfo,
+    this.AccBalance,
+    this.BombBalance,
+    this.PaymentInfo,
+    this.PersonalLog,
   });
 
-  String UUID;
-  String Name;
-  int Score;
-  String Email;
-  String IPaddress;
-  List Account; // Account info/google,facebook , twitter login
-  int Level;
-  int AccBalance;
-  int BombBalance;
-  List DeviceInfo;
-  List PaymentInfo;
-  List PersonalLog;
+  String? UUID;
+  String? Name;
+  int? Score;
+  String? Email;
+  String? IPaddress;
+  List? Account; // Account info/google,facebook , twitter login
+  int? Level;
+  int? AccBalance;
+  int? BombBalance;
+  List? DeviceInfo;
+  List? PaymentInfo;
+  List? PersonalLog;
 
   factory UserProfiles.fromJson(Map<String, dynamic> json) {
     return UserProfiles(
@@ -79,15 +77,15 @@ String userSettingToJson(UserSettings data) => jsonEncode(data);
 
 class UserSettings {
   UserSettings({
-    required this.UUID,
-    required this.Name,
+    this.UUID,
+    this.Name,
     required this.TouchSound,
     required this.GameMusic,
     required this.BGM,
-    required this.Portrait,
+    this.Portrait,
   });
-  String UUID;
-  String Name;
+  String? UUID;
+  String? Name;
   bool TouchSound;
   bool GameMusic;
   bool BGM;
@@ -121,21 +119,21 @@ String txnInfoToJson(TxnInfo data) => json.encode(data);
 
 class TxnInfo {
   TxnInfo({
-    required this.UUID,
-    required this.Name,
-    required this.TxnStatus,
-    required this.TxnAmt,
-    required this.AccNum,
-    required this.PaymentType,
-    required this.PaymentTime,
+    this.UUID,
+    this.Name,
+    this.TxnStatus,
+    this.TxnAmt,
+    this.AccNum,
+    this.PaymentType,
+    this.PaymentTime,
   });
-  String UUID;
-  String Name;
-  String TxnStatus;
-  double TxnAmt;
-  String AccNum;
-  String PaymentType;
-  DateTime PaymentTime;
+  String? UUID;
+  String? Name;
+  String? TxnStatus;
+  double? TxnAmt;
+  String? AccNum;
+  String? PaymentType;
+  DateTime? PaymentTime;
 
   factory TxnInfo.fromJson(Map<String, dynamic> json) {
     return TxnInfo(

@@ -2,11 +2,17 @@ import 'dart:convert';
 import 'dart:async';
 import 'dart:ffi';
 
-import 'package:arithg/routers/dbroute.dart';
+import '../model/userinfo.dart';
+
+import '../model/shareContent.dart';
+import '../routers/dbroute.dart';
+import '../services/shareUtils.dart';
 import 'package:assets_audio_player/assets_audio_player.dart';
 import 'package:device_info_plus/device_info_plus.dart';
 import 'package:get/utils.dart';
 import 'package:mysql1/mysql1.dart';
+import '../services/initialize.dart';
+import '../services/result.dart';
 import '../services/screeenAdapter.dart';
 import '../routers/routers.dart';
 import '../Game/gamelvl1.dart';
@@ -16,7 +22,6 @@ import 'package:shared_preferences/shared_preferences.dart';
 import '../services/localStorage.dart';
 import '../services/util.dart';
 import '../services/ipmacAddr.dart';
-import '../model/userInfo.dart';
 import 'package:dio/dio.dart';
 import 'package:crypto/crypto.dart';
 
@@ -29,7 +34,7 @@ class GameMain extends StatefulWidget {
 
 class _GameMainState extends State<GameMain> {
   late Map _deviceinfo;
-
+  late var conn;
   late String _deviceinfoS, uuid, uName; // uName not initiialized
   final _assetAudioPlayer = AssetsAudioPlayer();
   final _keyAudioPlayer = AssetsAudioPlayer();
@@ -38,19 +43,52 @@ class _GameMainState extends State<GameMain> {
   late UserSettings
       userSettings; // move to main.dart and independent module for verify
   late NetworkInfo ipmacAddr;
-  late bool resBTBGM, resTHBGM, resGMBGM;
+  late bool resBTBGM, resTHBGM, resGMBGM, initialsucc;
 //  -- pendingpayment setting wihtout account/ID,payment page , payment history page - pending - https://www.youtube.com/watch?v=tpILK64NM6M&list=PL3n34TOL-kqIeGsSDa-o7tK-Z6h2ubyf-&index=20&t=192s&pp=gAQBiAQB
+//db connection
+  Future _dbConn(DBmysql) async {
+    DBmysql('DBhost') ?? "localhost";
+    DBmysql('DBname') ?? "bytepuz";
+    DBmysql('DBport') ?? 3306;
+    DBmysql('DBuser') ?? "root";
+    DBmysql('DBpassword') ?? "Spear19830805";
+    try {
+      conn = await MySqlConnection.connect(ConnectionSettings(
+        host: DBmysql('DBhost'),
+        port: DBmysql('DBport'),
+        user: DBmysql('DBuser'),
+        db: DBmysql('DBname'),
+        password: DBmysql('DBpassword'),
+      ));
+    } catch (e) {
+      initialsucc = false;
+      print("DB connection failed");
+    } finally {
+      print("MySQL conn succ");
+      return conn;
+    }
+    //conn done
+  }
 
-//get deviceInfo
+//device info collection
   Future _getDevic() async {
     final deviceinfoplugin = DeviceInfoPlugin();
-    final deviceinfo = await deviceinfoplugin.deviceInfo;
-    final deviceinfomap = deviceinfo.data;
-    Map<String, dynamic> _deviceinfo = deviceinfomap;
-    _deviceinfoS = jsonEncode(_deviceinfo);
-    print("_deviceinfo:$_deviceinfo");
-    print("_deviceinfoS:$_deviceinfoS");
-    print("succ_get_deviceINfo");
+    try {
+      final deviceinfo = await deviceinfoplugin.deviceInfo;
+      final deviceinfomap = deviceinfo.data;
+      _deviceinfo = deviceinfomap;
+      _deviceinfoS = jsonEncode(_deviceinfo);
+    } catch (e) {
+      initialsucc = false;
+      return initialsucc;
+    } finally {
+      print("_deviceinfo:$_deviceinfo");
+      print("_deviceinfoS:$_deviceinfoS");
+      print("succ_get_deviceINfo");
+      print("c");
+      return _deviceinfoS; // return string
+      // return deviceinfomap; // return map
+    }
   }
 
   Future _patchPersonalInfo(uuid) async {
@@ -135,9 +173,9 @@ class _GameMainState extends State<GameMain> {
 
     ///User Loing check and localinfo patch
     // _deleteStorage("UUID", "delete");
-    _getLocalStorage("UUID").then((resdata) async {
+    Initialize.getUserProfiles().then((resdata) async {
       print("resdata:$resdata");
-      if (resdata == null) {
+      if (resdata.data == null) {
         print("localstorage-UUID getting fail");
         // check based on new device or not
         uuid = await Tools.uuid();
@@ -200,16 +238,17 @@ class _GameMainState extends State<GameMain> {
         print("localstorage-UUID getting succ");
         print('resdata:${resdata}}');
         //get all personal info from local and server  ---patch data from server
-        var tmpUP = localStorage.getData("userProfiles");
-        print("tmpUP:$tmpUP");
-        userProfiles = UserProfiles.fromJson(tmpUP);
-        userSettings =
-            UserSettings.fromJson(localStorage.getData("userSettings"));
+
+        var UPdata = json.decode(resdata.data);
+        userProfiles = UserProfiles.fromJson(UPdata);
+        DataRes USdata = Initialize.getUserSettings();
+        var RUSdata = json.decode(USdata.data);
+        userSettings = UserSettings.fromJson(RUSdata);
         print(userProfiles is String);
         print(userProfiles is JsonCodec);
         //change to set get
-        String _uuid = userProfiles.UUID;
-        String _uName = userProfiles.Name;
+        String? _uuid = userProfiles.UUID;
+        String? _uName = userProfiles.Name;
 
         print(
             "_uuid:$_uuid & _uName:$uName & userSettings.BGM:${userSettings.BGM}");
@@ -221,7 +260,7 @@ class _GameMainState extends State<GameMain> {
                 showNotification: true,
                 loopMode: LoopMode.single,
               )
-            : null;
+            : _assetAudioPlayer.stopped;
         // UserProfiles userProfilesSev = _patchPersonalInfo(uuid);
         //health check on data synchronized
       }
